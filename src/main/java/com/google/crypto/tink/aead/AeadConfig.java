@@ -35,11 +35,11 @@ import java.security.GeneralSecurityException;
  * @since 1.0.0
  */
 public final class AeadConfig {
-  public static final String AES_CTR_HMAC_AEAD_TYPE_URL =
-      new AesCtrHmacAeadKeyManager().getKeyType();
-  public static final String AES_GCM_TYPE_URL = new AesGcmKeyManager().getKeyType();
-  public static final String AES_GCM_SIV_TYPE_URL = new AesGcmSivKeyManager().getKeyType();
-  public static final String AES_EAX_TYPE_URL = new AesEaxKeyManager().getKeyType();
+  //public static final String AES_CTR_HMAC_AEAD_TYPE_URL =
+  //    new AesCtrHmacAeadKeyManager().getKeyType();
+  //public static final String AES_GCM_TYPE_URL = new AesGcmKeyManager().getKeyType();
+  //public static final String AES_GCM_SIV_TYPE_URL = new AesGcmSivKeyManager().getKeyType();
+  //public static final String AES_EAX_TYPE_URL = new AesEaxKeyManager().getKeyType();
   //public static final String KMS_AEAD_TYPE_URL = new KmsAeadKeyManager().getKeyType();
   //public static final String KMS_ENVELOPE_AEAD_TYPE_URL =
   //    new KmsEnvelopeAeadKeyManager().getKeyType();
@@ -105,19 +105,19 @@ public final class AeadConfig {
     AeadWrapper.register();
 
     MacConfig.register();
-    AesCtrHmacAeadKeyManager.register(/*newKeyAllowed=*/ true);
-    AesGcmKeyManager.register(/*newKeyAllowed=*/ true);
+    //AesCtrHmacAeadKeyManager.register(/*newKeyAllowed=*/ true);
+    //AesGcmKeyManager.register(/*newKeyAllowed=*/ true);
 
     if (TinkFips.useOnlyFips()) {
       // If Tink is built in FIPS-mode do not register algorithms which are not compatible.
       return;
     }
 
-    AesEaxKeyManager.register(/*newKeyAllowed=*/ true);
-    AesGcmSivKeyManager.register(/*newKeyAllowed=*/ true);
+    //AesEaxKeyManager.register(/*newKeyAllowed=*/ true);
+    //AesGcmSivKeyManager.register(/*newKeyAllowed=*/ true);
     ChaCha20Poly1305KeyManager.register(/*newKeyAllowed=*/ true);
-    KmsAeadKeyManager.register(/*newKeyAllowed=*/ true);
-    KmsEnvelopeAeadKeyManager.register(/*newKeyAllowed=*/ true);
+    //KmsAeadKeyManager.register(/*newKeyAllowed=*/ true);
+    //KmsEnvelopeAeadKeyManager.register(/*newKeyAllowed=*/ true);
     XChaCha20Poly1305KeyManager.register(/*newKeyAllowed=*/ true);
   }
 

@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink.prf;
 
-import com.google.crypto.tink.proto.AesCmacPrfKeyFormat;
 import com.google.crypto.tink.proto.HashType;
 import com.google.crypto.tink.proto.HkdfPrfKeyFormat;
 import com.google.crypto.tink.proto.HkdfPrfParams;
@@ -71,14 +70,14 @@ public final class PrfKeyTemplates {
         .build();
   }
 
-  private static KeyTemplate createAes256CmacTemplate() {
-    AesCmacPrfKeyFormat format = AesCmacPrfKeyFormat.newBuilder().setKeySize(32).build();
-    return KeyTemplate.newBuilder()
-        .setTypeUrl(new AesCmacPrfKeyManager().getKeyType())
-        .setValue(format.toByteString())
-        .setOutputPrefixType(OutputPrefixType.RAW)
-        .build();
-  }
+  //private static KeyTemplate createAes256CmacTemplate() {
+  //  AesCmacPrfKeyFormat format = AesCmacPrfKeyFormat.newBuilder().setKeySize(32).build();
+  //  return KeyTemplate.newBuilder()
+  //      .setTypeUrl(new AesCmacPrfKeyManager().getKeyType())
+  //      .setValue(format.toByteString())
+  //      .setOutputPrefixType(OutputPrefixType.RAW)
+  //      .build();
+  //}
   /**
    * Generates a {@link KeyTemplate} for a {@link com.google.crypto.tink.proto.HkdfPrfKey} key with
    * the following parameters.
@@ -93,5 +92,5 @@ public final class PrfKeyTemplates {
 
   public static final KeyTemplate HMAC_SHA256_PRF = createHmacTemplate(32, HashType.SHA256);
   public static final KeyTemplate HMAC_SHA512_PRF = createHmacTemplate(64, HashType.SHA512);
-  public static final KeyTemplate AES_CMAC_PRF = createAes256CmacTemplate();
+  //public static final KeyTemplate AES_CMAC_PRF = createAes256CmacTemplate();
 }

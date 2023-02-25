@@ -19,14 +19,12 @@ package com.google.crypto.tink.signature;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertThrows;
 
-import com.google.crypto.tink.DeterministicAead;
 import com.google.crypto.tink.InsecureSecretKeyAccess;
 import com.google.crypto.tink.KeyTemplates;
 import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.PublicKeySign;
 import com.google.crypto.tink.PublicKeyVerify;
 import com.google.crypto.tink.TinkJsonProtoKeysetFormat;
-import com.google.crypto.tink.daead.DeterministicAeadConfig;
 import com.google.crypto.tink.testing.TestUtil;
 import java.security.GeneralSecurityException;
 import org.junit.BeforeClass;
@@ -43,7 +41,7 @@ public final class SignatureTest {
   @BeforeClass
   public static void setUp() throws Exception {
     SignatureConfig.register();
-    DeterministicAeadConfig.register(); // Needed for getPrimitiveFromNonSignatureKeyset_throws.
+    //DeterministicAeadConfig.register(); // Needed for getPrimitiveFromNonSignatureKeyset_throws.
   }
 
   @DataPoints("templates")
@@ -330,17 +328,17 @@ public final class SignatureTest {
           + "  ]"
           + "}";
 
-  @Theory
-  public void getPrimitiveFromNonSignatureKeyset_throws()
-      throws Exception {
-    KeysetHandle handle =
-        TinkJsonProtoKeysetFormat.parseKeyset(
-            JSON_DAEAD_KEYSET, InsecureSecretKeyAccess.get());
+  //@Theory
+  //public void getPrimitiveFromNonSignatureKeyset_throws()
+  //    throws Exception {
+  //  KeysetHandle handle =
+  //      TinkJsonProtoKeysetFormat.parseKeyset(
+  //          JSON_DAEAD_KEYSET, InsecureSecretKeyAccess.get());
 
-    // Test that the keyset can create a DeterministicAead primitive, but neither PublicKeySign
-    // nor PublicKeyVerify primitives.
-    Object unused = handle.getPrimitive(DeterministicAead.class);
-    assertThrows(GeneralSecurityException.class, () -> handle.getPrimitive(PublicKeySign.class));
-    assertThrows(GeneralSecurityException.class, () -> handle.getPrimitive(PublicKeyVerify.class));
-  }
+  //  // Test that the keyset can create a DeterministicAead primitive, but neither PublicKeySign
+  //  // nor PublicKeyVerify primitives.
+  //  Object unused = handle.getPrimitive(DeterministicAead.class);
+  //  assertThrows(GeneralSecurityException.class, () -> handle.getPrimitive(PublicKeySign.class));
+  //  assertThrows(GeneralSecurityException.class, () -> handle.getPrimitive(PublicKeyVerify.class));
+  //}
 }

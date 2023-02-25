@@ -20,14 +20,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertThrows;
 
-import com.google.crypto.tink.DeterministicAead;
 import com.google.crypto.tink.InsecureSecretKeyAccess;
 import com.google.crypto.tink.KeyTemplates;
 import com.google.crypto.tink.KeysetHandle;
-import com.google.crypto.tink.Mac;
 import com.google.crypto.tink.TinkJsonProtoKeysetFormat;
-import com.google.crypto.tink.daead.DeterministicAeadConfig;
-import java.security.GeneralSecurityException;
+
 import org.junit.BeforeClass;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
@@ -42,13 +39,13 @@ public final class PrfTest {
   @BeforeClass
   public static void setUp() throws Exception {
     PrfConfig.register();
-    DeterministicAeadConfig.register(); // Needed for getPrimitiveFromNonMacKeyset_throws.
+    //DeterministicAeadConfig.register(); // Needed for getPrimitiveFromNonMacKeyset_throws.
   }
 
   @DataPoints("templates")
   public static final String[] TEMPLATES =
       new String[] {
-        "AES_CMAC_PRF",
+        //"AES_CMAC_PRF",
         "HMAC_SHA256_PRF",
         "HMAC_SHA512_PRF",
         "HKDF_SHA256",
@@ -164,32 +161,32 @@ public final class PrfTest {
 
   }
 
-  // A keyset with a valid DeterministicAead key. This keyset can't be used with the Mac primitive.
-  private static final String JSON_DAEAD_KEYSET =
-      ""
-          + "{"
-          + "  \"primaryKeyId\": 961932622,"
-          + "  \"key\": ["
-          + "    {"
-          + "      \"keyData\": {"
-          + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesSivKey\","
-          + "        \"keyMaterialType\": \"SYMMETRIC\","
-          + "        \"value\": \"EkCJ9r5iwc5uxq5ugFyrHXh5dijTa7qalWUgZ8Gf08RxNd545FjtLMYL7ObcaFtCS"
-          + "kvV2+7u6F2DN+kqUjAfkf2W\""
-          + "      },"
-          + "      \"outputPrefixType\": \"TINK\","
-          + "      \"keyId\": 961932622,"
-          + "      \"status\": \"ENABLED\""
-          + "    }"
-          + "  ]"
-          + "}";
+  //// A keyset with a valid DeterministicAead key. This keyset can't be used with the Mac primitive.
+  //private static final String JSON_DAEAD_KEYSET =
+  //    ""
+  //        + "{"
+  //        + "  \"primaryKeyId\": 961932622,"
+  //        + "  \"key\": ["
+  //        + "    {"
+  //        + "      \"keyData\": {"
+  //        + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesSivKey\","
+  //        + "        \"keyMaterialType\": \"SYMMETRIC\","
+  //        + "        \"value\": \"EkCJ9r5iwc5uxq5ugFyrHXh5dijTa7qalWUgZ8Gf08RxNd545FjtLMYL7ObcaFtCS"
+  //        + "kvV2+7u6F2DN+kqUjAfkf2W\""
+  //        + "      },"
+  //        + "      \"outputPrefixType\": \"TINK\","
+  //        + "      \"keyId\": 961932622,"
+  //        + "      \"status\": \"ENABLED\""
+  //        + "    }"
+  //        + "  ]"
+  //        + "}";
 
-  @Theory
-  public void getPrimitiveFromNonMacKeyset_throws() throws Exception {
-    KeysetHandle handle =
-        TinkJsonProtoKeysetFormat.parseKeyset(JSON_DAEAD_KEYSET, InsecureSecretKeyAccess.get());
-    // Test that the keyset can create a DeterministicAead primitive, but not a Mac.
-    Object unused = handle.getPrimitive(DeterministicAead.class);
-    assertThrows(GeneralSecurityException.class, () -> handle.getPrimitive(Mac.class));
-  }
+  //@Theory
+  //public void getPrimitiveFromNonMacKeyset_throws() throws Exception {
+  //  KeysetHandle handle =
+  //      TinkJsonProtoKeysetFormat.parseKeyset(JSON_DAEAD_KEYSET, InsecureSecretKeyAccess.get());
+  //  // Test that the keyset can create a DeterministicAead primitive, but not a Mac.
+  //  Object unused = handle.getPrimitive(DeterministicAead.class);
+  //  assertThrows(GeneralSecurityException.class, () -> handle.getPrimitive(Mac.class));
+  //}
 }

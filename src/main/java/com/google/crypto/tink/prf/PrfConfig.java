@@ -39,7 +39,7 @@ public final class PrfConfig {
       return;
     }
 
-    AesCmacPrfKeyManager.register(/*newKeyAllowed=*/ true);
+    //AesCmacPrfKeyManager.register(/*newKeyAllowed=*/ true);
     HkdfPrfKeyManager.register(/*newKeyAllowed=*/ true);
   }
 

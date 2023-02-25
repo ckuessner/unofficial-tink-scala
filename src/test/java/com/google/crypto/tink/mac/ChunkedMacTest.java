@@ -21,7 +21,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.google.crypto.tink.Key;
 import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.Mac;
-import com.google.crypto.tink.mac.AesCmacParameters.Variant;
 import com.google.crypto.tink.mac.HmacParameters.HashType;
 import com.google.crypto.tink.util.SecretBytes;
 import java.nio.ByteBuffer;
@@ -50,7 +49,7 @@ public class ChunkedMacTest {
   @BeforeClass
   public static void setUp() throws Exception {
     MacConfig.register();
-    AesCmacProtoSerialization.register();
+    //AesCmacProtoSerialization.register();
     HmacProtoSerialization.register();
     ChunkedMacWrapper.register();
     createTestKeys();
@@ -65,14 +64,14 @@ public class ChunkedMacTest {
         createDefaultHmacParameters(HmacParameters.Variant.CRUNCHY);
     HmacParameters tinkHmacParameters =
         createDefaultHmacParameters(HmacParameters.Variant.TINK);
-    AesCmacParameters noPrefixAesCmacParameters =
-        createDefaultAesCmacParameters(AesCmacParameters.Variant.NO_PREFIX);
-    AesCmacParameters legacyAesCmacParameters =
-        createDefaultAesCmacParameters(AesCmacParameters.Variant.LEGACY);
-    AesCmacParameters crunchyAesCmacParameters =
-        createDefaultAesCmacParameters(AesCmacParameters.Variant.CRUNCHY);
-    AesCmacParameters tinkAesCmacParameters =
-        createDefaultAesCmacParameters(AesCmacParameters.Variant.TINK);
+    //AesCmacParameters noPrefixAesCmacParameters =
+    //    createDefaultAesCmacParameters(AesCmacParameters.Variant.NO_PREFIX);
+    //AesCmacParameters legacyAesCmacParameters =
+    //    createDefaultAesCmacParameters(AesCmacParameters.Variant.LEGACY);
+    //AesCmacParameters crunchyAesCmacParameters =
+    //    createDefaultAesCmacParameters(AesCmacParameters.Variant.CRUNCHY);
+    //AesCmacParameters tinkAesCmacParameters =
+    //    createDefaultAesCmacParameters(AesCmacParameters.Variant.TINK);
 
     try {
       keys =
@@ -82,58 +81,58 @@ public class ChunkedMacTest {
                 .setKeyBytes(SecretBytes.randomBytes(HMAC_KEY_SIZE))
                 .setIdRequirement(null)
                 .build(),
-            AesCmacKey.builder()
-                .setParameters(noPrefixAesCmacParameters)
-                .setAesKeyBytes(SecretBytes.randomBytes(AES_CMAC_KEY_SIZE))
-                .setIdRequirement(null)
-                .build(),
+            //AesCmacKey.builder()
+            //    .setParameters(noPrefixAesCmacParameters)
+            //    .setAesKeyBytes(SecretBytes.randomBytes(AES_CMAC_KEY_SIZE))
+            //    .setIdRequirement(null)
+            //    .build(),
             HmacKey.builder()
                 .setParameters(tinkHmacParameters)
                 .setKeyBytes(SecretBytes.randomBytes(HMAC_KEY_SIZE))
                 .setIdRequirement(4)
                 .build(),
-            AesCmacKey.builder()
-                .setParameters(tinkAesCmacParameters)
-                .setAesKeyBytes(SecretBytes.randomBytes(AES_CMAC_KEY_SIZE))
-                .setIdRequirement(5)
-                .build(),
+            //AesCmacKey.builder()
+            //    .setParameters(tinkAesCmacParameters)
+            //    .setAesKeyBytes(SecretBytes.randomBytes(AES_CMAC_KEY_SIZE))
+            //    .setIdRequirement(5)
+            //    .build(),
             HmacKey.builder()
                 .setParameters(crunchyHmacParameters)
                 .setKeyBytes(SecretBytes.randomBytes(HMAC_KEY_SIZE))
                 .setIdRequirement(6)
                 .build(),
-            AesCmacKey.builder()
-                .setParameters(crunchyAesCmacParameters)
-                .setAesKeyBytes(SecretBytes.randomBytes(AES_CMAC_KEY_SIZE))
-                .setIdRequirement(7)
-                .build(),
+            //AesCmacKey.builder()
+            //    .setParameters(crunchyAesCmacParameters)
+            //    .setAesKeyBytes(SecretBytes.randomBytes(AES_CMAC_KEY_SIZE))
+            //    .setIdRequirement(7)
+            //    .build(),
             HmacKey.builder()
                 .setParameters(legacyHmacParameters)
                 .setKeyBytes(SecretBytes.randomBytes(HMAC_KEY_SIZE))
                 .setIdRequirement(8)
                 .build(),
-            AesCmacKey.builder()
-                .setParameters(legacyAesCmacParameters)
-                .setAesKeyBytes(SecretBytes.randomBytes(AES_CMAC_KEY_SIZE))
-                .setIdRequirement(9)
-                .build(),
+            //AesCmacKey.builder()
+            //    .setParameters(legacyAesCmacParameters)
+            //    .setAesKeyBytes(SecretBytes.randomBytes(AES_CMAC_KEY_SIZE))
+            //    .setIdRequirement(9)
+            //    .build(),
           };
     } catch (GeneralSecurityException e) {
       throw new IllegalStateException(e);
     }
   }
 
-  private static AesCmacParameters createDefaultAesCmacParameters(Variant variant) {
-    try {
-      return AesCmacParameters.builder()
-          .setKeySizeBytes(AES_CMAC_KEY_SIZE)
-          .setTagSizeBytes(AES_CMAC_TAG_SIZE)
-          .setVariant(variant)
-          .build();
-    } catch (GeneralSecurityException e) {
-      throw new IllegalStateException(e);
-    }
-  }
+  //private static AesCmacParameters createDefaultAesCmacParameters(Variant variant) {
+  //  try {
+  //    return AesCmacParameters.builder()
+  //        .setKeySizeBytes(AES_CMAC_KEY_SIZE)
+  //        .setTagSizeBytes(AES_CMAC_TAG_SIZE)
+  //        .setVariant(variant)
+  //        .build();
+  //  } catch (GeneralSecurityException e) {
+  //    throw new IllegalStateException(e);
+  //  }
+  //}
 
   private static HmacParameters createDefaultHmacParameters(HmacParameters.Variant variant) {
     try {

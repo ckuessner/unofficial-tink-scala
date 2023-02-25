@@ -96,7 +96,7 @@ public final class MacConfig {
       return;
     }
 
-    AesCmacKeyManager.register(true);
+    //AesCmacKeyManager.register(true);
   }
 
   /**

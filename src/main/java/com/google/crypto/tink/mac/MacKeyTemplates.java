@@ -16,8 +16,6 @@
 
 package com.google.crypto.tink.mac;
 
-import com.google.crypto.tink.proto.AesCmacKeyFormat;
-import com.google.crypto.tink.proto.AesCmacParams;
 import com.google.crypto.tink.proto.HashType;
 import com.google.crypto.tink.proto.HmacKeyFormat;
 import com.google.crypto.tink.proto.HmacParams;
@@ -121,16 +119,16 @@ public final class MacKeyTemplates {
    *   <li>OutputPrefixType: TINK
    * </ul>
    */
-  public static final KeyTemplate AES_CMAC =
-      KeyTemplate.newBuilder()
-          .setValue(
-              AesCmacKeyFormat.newBuilder()
-                  .setKeySize(32)
-                  .setParams(AesCmacParams.newBuilder().setTagSize(16).build())
-                  .build().toByteString())
-          .setTypeUrl(new AesCmacKeyManager().getKeyType())
-          .setOutputPrefixType(OutputPrefixType.TINK)
-          .build();
+  //public static final KeyTemplate AES_CMAC =
+  //    KeyTemplate.newBuilder()
+  //        .setValue(
+  //            AesCmacKeyFormat.newBuilder()
+  //                .setKeySize(32)
+  //                .setParams(AesCmacParams.newBuilder().setTagSize(16).build())
+  //                .build().toByteString())
+  //        .setTypeUrl(new AesCmacKeyManager().getKeyType())
+  //        .setOutputPrefixType(OutputPrefixType.TINK)
+  //        .build();
 
   /**
    * @return a {@link KeyTemplate} containing a {@link HmacKeyFormat} with some specified

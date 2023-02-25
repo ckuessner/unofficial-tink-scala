@@ -28,23 +28,10 @@ import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.PrimitiveSet;
 import com.google.crypto.tink.Registry;
 import com.google.crypto.tink.TinkProtoKeysetFormat;
-import com.google.crypto.tink.aead.AeadConfig;
-import com.google.crypto.tink.daead.DeterministicAeadConfig;
 import com.google.crypto.tink.hybrid.HybridKeyTemplates;
 import com.google.crypto.tink.mac.MacConfig;
 import com.google.crypto.tink.monitoring.MonitoringAnnotations;
 import com.google.crypto.tink.prf.PrfConfig;
-import com.google.crypto.tink.proto.AesCtrHmacAeadKey;
-import com.google.crypto.tink.proto.AesCtrHmacStreamingKey;
-import com.google.crypto.tink.proto.AesCtrHmacStreamingParams;
-import com.google.crypto.tink.proto.AesCtrKey;
-import com.google.crypto.tink.proto.AesCtrParams;
-import com.google.crypto.tink.proto.AesEaxKey;
-import com.google.crypto.tink.proto.AesEaxParams;
-import com.google.crypto.tink.proto.AesGcmHkdfStreamingKey;
-import com.google.crypto.tink.proto.AesGcmHkdfStreamingParams;
-import com.google.crypto.tink.proto.AesGcmKey;
-import com.google.crypto.tink.proto.AesSivKey;
 import com.google.crypto.tink.proto.EcPointFormat;
 import com.google.crypto.tink.proto.EcdsaParams;
 import com.google.crypto.tink.proto.EcdsaPrivateKey;
@@ -72,7 +59,6 @@ import com.google.crypto.tink.proto.RsaSsaPkcs1Params;
 import com.google.crypto.tink.proto.RsaSsaPkcs1PublicKey;
 import com.google.crypto.tink.proto.RsaSsaPssParams;
 import com.google.crypto.tink.proto.RsaSsaPssPublicKey;
-import com.google.crypto.tink.streamingaead.StreamingAeadConfig;
 import com.google.crypto.tink.subtle.EllipticCurves;
 import com.google.crypto.tink.subtle.Hex;
 import com.google.crypto.tink.subtle.Random;
@@ -251,101 +237,101 @@ public final class TestUtil {
         createPrfKey(keyValue), PrfConfig.PRF_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
   }
 
-  /** @return a {@code AesCtrKey}. */
-  public static AesCtrKey createAesCtrKey(byte[] keyValue, int ivSize) throws Exception {
-    AesCtrParams aesCtrParams = AesCtrParams.newBuilder().setIvSize(ivSize).build();
-    return AesCtrKey.newBuilder()
-        .setParams(aesCtrParams)
-        .setKeyValue(ByteString.copyFrom(keyValue))
-        .build();
-  }
+  ///** @return a {@code AesCtrKey}. */
+  //public static AesCtrKey createAesCtrKey(byte[] keyValue, int ivSize) throws Exception {
+  //  AesCtrParams aesCtrParams = AesCtrParams.newBuilder().setIvSize(ivSize).build();
+  //  return AesCtrKey.newBuilder()
+  //      .setParams(aesCtrParams)
+  //      .setKeyValue(ByteString.copyFrom(keyValue))
+  //      .build();
+  //}
 
-  /** @return a {@code KeyData} containing a {@code AesCtrHmacStreamingKey}. */
-  public static KeyData createAesCtrHmacStreamingKeyData(
-      byte[] keyValue, int derivedKeySize, int ciphertextSegmentSize) throws Exception {
-    HmacParams hmacParams = HmacParams.newBuilder().setHash(HashType.SHA256).setTagSize(16).build();
-    AesCtrHmacStreamingParams keyParams =
-        AesCtrHmacStreamingParams.newBuilder()
-            .setCiphertextSegmentSize(ciphertextSegmentSize)
-            .setDerivedKeySize(derivedKeySize)
-            .setHkdfHashType(HashType.SHA256)
-            .setHmacParams(hmacParams)
-            .build();
-    AesCtrHmacStreamingKey keyProto =
-        AesCtrHmacStreamingKey.newBuilder()
-            .setVersion(0)
-            .setKeyValue(ByteString.copyFrom(keyValue))
-            .setParams(keyParams)
-            .build();
-    return createKeyData(
-        keyProto,
-        StreamingAeadConfig.AES_CTR_HMAC_STREAMINGAEAD_TYPE_URL,
-        KeyData.KeyMaterialType.SYMMETRIC);
-  }
+  ///** @return a {@code KeyData} containing a {@code AesCtrHmacStreamingKey}. */
+  //public static KeyData createAesCtrHmacStreamingKeyData(
+  //    byte[] keyValue, int derivedKeySize, int ciphertextSegmentSize) throws Exception {
+  //  HmacParams hmacParams = HmacParams.newBuilder().setHash(HashType.SHA256).setTagSize(16).build();
+  //  AesCtrHmacStreamingParams keyParams =
+  //      AesCtrHmacStreamingParams.newBuilder()
+  //          .setCiphertextSegmentSize(ciphertextSegmentSize)
+  //          .setDerivedKeySize(derivedKeySize)
+  //          .setHkdfHashType(HashType.SHA256)
+  //          .setHmacParams(hmacParams)
+  //          .build();
+  //  AesCtrHmacStreamingKey keyProto =
+  //      AesCtrHmacStreamingKey.newBuilder()
+  //          .setVersion(0)
+  //          .setKeyValue(ByteString.copyFrom(keyValue))
+  //          .setParams(keyParams)
+  //          .build();
+  //  return createKeyData(
+  //      keyProto,
+  //      StreamingAeadConfig.AES_CTR_HMAC_STREAMINGAEAD_TYPE_URL,
+  //      KeyData.KeyMaterialType.SYMMETRIC);
+  //}
 
-  /** @return a {@code KeyData} containing a {@code AesGcmHkdfStreamingKey}. */
-  public static KeyData createAesGcmHkdfStreamingKeyData(
-      byte[] keyValue, int derivedKeySize, int ciphertextSegmentSize) throws Exception {
-    AesGcmHkdfStreamingParams keyParams =
-        AesGcmHkdfStreamingParams.newBuilder()
-            .setCiphertextSegmentSize(ciphertextSegmentSize)
-            .setDerivedKeySize(derivedKeySize)
-            .setHkdfHashType(HashType.SHA256)
-            .build();
-    AesGcmHkdfStreamingKey keyProto =
-        AesGcmHkdfStreamingKey.newBuilder()
-            .setVersion(0)
-            .setKeyValue(ByteString.copyFrom(keyValue))
-            .setParams(keyParams)
-            .build();
-    return createKeyData(
-        keyProto,
-        StreamingAeadConfig.AES_GCM_HKDF_STREAMINGAEAD_TYPE_URL,
-        KeyData.KeyMaterialType.SYMMETRIC);
-  }
+  ///** @return a {@code KeyData} containing a {@code AesGcmHkdfStreamingKey}. */
+  //public static KeyData createAesGcmHkdfStreamingKeyData(
+  //    byte[] keyValue, int derivedKeySize, int ciphertextSegmentSize) throws Exception {
+  //  AesGcmHkdfStreamingParams keyParams =
+  //      AesGcmHkdfStreamingParams.newBuilder()
+  //          .setCiphertextSegmentSize(ciphertextSegmentSize)
+  //          .setDerivedKeySize(derivedKeySize)
+  //          .setHkdfHashType(HashType.SHA256)
+  //          .build();
+  //  AesGcmHkdfStreamingKey keyProto =
+  //      AesGcmHkdfStreamingKey.newBuilder()
+  //          .setVersion(0)
+  //          .setKeyValue(ByteString.copyFrom(keyValue))
+  //          .setParams(keyParams)
+  //          .build();
+  //  return createKeyData(
+  //      keyProto,
+  //      StreamingAeadConfig.AES_GCM_HKDF_STREAMINGAEAD_TYPE_URL,
+  //      KeyData.KeyMaterialType.SYMMETRIC);
+  //}
 
-  /** @return a {@code KeyData} containing a {@code AesCtrHmacAeadKey}. */
-  public static KeyData createAesCtrHmacAeadKeyData(
-      byte[] aesCtrKeyValue, int ivSize, byte[] hmacKeyValue, int tagSize) throws Exception {
-    AesCtrKey aesCtrKey = createAesCtrKey(aesCtrKeyValue, ivSize);
-    HmacKey hmacKey = createHmacKey(hmacKeyValue, tagSize);
+  ///** @return a {@code KeyData} containing a {@code AesCtrHmacAeadKey}. */
+  //public static KeyData createAesCtrHmacAeadKeyData(
+  //    byte[] aesCtrKeyValue, int ivSize, byte[] hmacKeyValue, int tagSize) throws Exception {
+  //  AesCtrKey aesCtrKey = createAesCtrKey(aesCtrKeyValue, ivSize);
+  //  HmacKey hmacKey = createHmacKey(hmacKeyValue, tagSize);
 
-    AesCtrHmacAeadKey keyProto =
-        AesCtrHmacAeadKey.newBuilder().setAesCtrKey(aesCtrKey).setHmacKey(hmacKey).build();
-    return createKeyData(
-        keyProto, AeadConfig.AES_CTR_HMAC_AEAD_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
-  }
+  //  AesCtrHmacAeadKey keyProto =
+  //      AesCtrHmacAeadKey.newBuilder().setAesCtrKey(aesCtrKey).setHmacKey(hmacKey).build();
+  //  return createKeyData(
+  //      keyProto, AeadConfig.AES_CTR_HMAC_AEAD_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
+  //}
 
-  /** @return a {@code KeyData} containing a {@code AesSivKey}. */
-  public static KeyData createAesSivKeyData(int keySize) throws Exception {
-    AesSivKey keyProto =
-        AesSivKey.newBuilder().setKeyValue(ByteString.copyFrom(Random.randBytes(keySize))).build();
-    return TestUtil.createKeyData(
-        keyProto, DeterministicAeadConfig.AES_SIV_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
-  }
+  ///** @return a {@code KeyData} containing a {@code AesSivKey}. */
+  //public static KeyData createAesSivKeyData(int keySize) throws Exception {
+  //  AesSivKey keyProto =
+  //      AesSivKey.newBuilder().setKeyValue(ByteString.copyFrom(Random.randBytes(keySize))).build();
+  //  return TestUtil.createKeyData(
+  //      keyProto, DeterministicAeadConfig.AES_SIV_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
+  //}
 
-  /** @return a {@code KeyData} containing a {@code AesGcmKey}. */
-  public static KeyData createAesGcmKeyData(byte[] keyValue) throws Exception {
-    AesGcmKey keyProto = AesGcmKey.newBuilder().setKeyValue(ByteString.copyFrom(keyValue)).build();
-    return createKeyData(keyProto, AeadConfig.AES_GCM_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
-  }
+  ///** @return a {@code KeyData} containing a {@code AesGcmKey}. */
+  //public static KeyData createAesGcmKeyData(byte[] keyValue) throws Exception {
+  //  AesGcmKey keyProto = AesGcmKey.newBuilder().setKeyValue(ByteString.copyFrom(keyValue)).build();
+  //  return createKeyData(keyProto, AeadConfig.AES_GCM_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
+  //}
 
-  /** @return a {@code KeyData} containing a {@code AesEaxKey}. */
-  public static KeyData createAesEaxKeyData(byte[] keyValue, int ivSizeInBytes) throws Exception {
-    AesEaxKey keyProto =
-        AesEaxKey.newBuilder()
-            .setKeyValue(ByteString.copyFrom(keyValue))
-            .setParams(AesEaxParams.newBuilder().setIvSize(ivSizeInBytes).build())
-            .build();
-    return createKeyData(keyProto, AeadConfig.AES_EAX_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
-  }
+  ///** @return a {@code KeyData} containing a {@code AesEaxKey}. */
+  //public static KeyData createAesEaxKeyData(byte[] keyValue, int ivSizeInBytes) throws Exception {
+  //  AesEaxKey keyProto =
+  //      AesEaxKey.newBuilder()
+  //          .setKeyValue(ByteString.copyFrom(keyValue))
+  //          .setParams(AesEaxParams.newBuilder().setIvSize(ivSizeInBytes).build())
+  //          .build();
+  //  return createKeyData(keyProto, AeadConfig.AES_EAX_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
+  //}
 
-  /** @return a KMS key URI in a format defined by Google Cloud KMS. */
-  public static String createGcpKmsKeyUri(
-      String projectId, String location, String ringId, String keyId) {
-    return String.format(
-        "projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s", projectId, location, ringId, keyId);
-  }
+  ///** @return a KMS key URI in a format defined by Google Cloud KMS. */
+  //public static String createGcpKmsKeyUri(
+  //    String projectId, String location, String ringId, String keyId) {
+  //  return String.format(
+  //      "projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s", projectId, location, ringId, keyId);
+  //}
 
   /**
    * @return a {@code EcdsaPrivateKey} constructed from {@code EcdsaPublicKey} and the byte array of
@@ -470,84 +456,84 @@ public final class TestUtil {
         .setE(ByteString.copyFrom(exponent))
         .build();
   }
-  /**
-   * @return a freshly generated {@code EciesAeadHkdfPrivateKey} constructed with specified
-   *     parameters.
-   */
-  public static EciesAeadHkdfPrivateKey generateEciesAeadHkdfPrivKey(
-      EllipticCurveType curve,
-      HashType hashType,
-      EcPointFormat pointFormat,
-      KeyTemplate demKeyTemplate,
-      byte[] salt)
-      throws Exception {
-    ECParameterSpec ecParams;
-    switch (curve) {
-      case NIST_P256:
-        ecParams = EllipticCurves.getNistP256Params();
-        break;
-      case NIST_P384:
-        ecParams = EllipticCurves.getNistP384Params();
-        break;
-      case NIST_P521:
-        ecParams = EllipticCurves.getNistP521Params();
-        break;
-      default:
-        throw new NoSuchAlgorithmException("Curve not implemented:" + curve);
-    }
-    KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-    keyGen.initialize(ecParams);
-    KeyPair keyPair = keyGen.generateKeyPair();
-    ECPublicKey pubKey = (ECPublicKey) keyPair.getPublic();
-    ECPrivateKey privKey = (ECPrivateKey) keyPair.getPrivate();
-    ECPoint w = pubKey.getW();
-    EciesAeadHkdfPublicKey eciesPubKey =
-        createEciesAeadHkdfPubKey(
-            curve,
-            hashType,
-            pointFormat,
-            demKeyTemplate,
-            w.getAffineX().toByteArray(),
-            w.getAffineY().toByteArray(),
-            salt);
-    return createEciesAeadHkdfPrivKey(eciesPubKey, privKey.getS().toByteArray());
-  }
+  ///**
+  // * @return a freshly generated {@code EciesAeadHkdfPrivateKey} constructed with specified
+  // *     parameters.
+  // */
+  //public static EciesAeadHkdfPrivateKey generateEciesAeadHkdfPrivKey(
+  //    EllipticCurveType curve,
+  //    HashType hashType,
+  //    EcPointFormat pointFormat,
+  //    KeyTemplate demKeyTemplate,
+  //    byte[] salt)
+  //    throws Exception {
+  //  ECParameterSpec ecParams;
+  //  switch (curve) {
+  //    case NIST_P256:
+  //      ecParams = EllipticCurves.getNistP256Params();
+  //      break;
+  //    case NIST_P384:
+  //      ecParams = EllipticCurves.getNistP384Params();
+  //      break;
+  //    case NIST_P521:
+  //      ecParams = EllipticCurves.getNistP521Params();
+  //      break;
+  //    default:
+  //      throw new NoSuchAlgorithmException("Curve not implemented:" + curve);
+  //  }
+  //  KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
+  //  keyGen.initialize(ecParams);
+  //  KeyPair keyPair = keyGen.generateKeyPair();
+  //  ECPublicKey pubKey = (ECPublicKey) keyPair.getPublic();
+  //  ECPrivateKey privKey = (ECPrivateKey) keyPair.getPrivate();
+  //  ECPoint w = pubKey.getW();
+  //  EciesAeadHkdfPublicKey eciesPubKey =
+  //      createEciesAeadHkdfPubKey(
+  //          curve,
+  //          hashType,
+  //          pointFormat,
+  //          demKeyTemplate,
+  //          w.getAffineX().toByteArray(),
+  //          w.getAffineY().toByteArray(),
+  //          salt);
+  //  return createEciesAeadHkdfPrivKey(eciesPubKey, privKey.getS().toByteArray());
+  //}
 
-  /**
-   * @return a {@code KeyData} containing a {@code EciesAeadHkdfPrivateKey} with the specified key
-   *     material and parameters.
-   */
-  public static EciesAeadHkdfPrivateKey createEciesAeadHkdfPrivKey(
-      EciesAeadHkdfPublicKey pubKey, byte[] privKeyValue) throws Exception {
-    final int version = 0;
-    return EciesAeadHkdfPrivateKey.newBuilder()
-        .setVersion(version)
-        .setPublicKey(pubKey)
-        .setKeyValue(ByteString.copyFrom(privKeyValue))
-        .build();
-  }
+  ///**
+  // * @return a {@code KeyData} containing a {@code EciesAeadHkdfPrivateKey} with the specified key
+  // *     material and parameters.
+  // */
+  //public static EciesAeadHkdfPrivateKey createEciesAeadHkdfPrivKey(
+  //    EciesAeadHkdfPublicKey pubKey, byte[] privKeyValue) throws Exception {
+  //  final int version = 0;
+  //  return EciesAeadHkdfPrivateKey.newBuilder()
+  //      .setVersion(version)
+  //      .setPublicKey(pubKey)
+  //      .setKeyValue(ByteString.copyFrom(privKeyValue))
+  //      .build();
+  //}
 
-  /** @return a {@code EciesAeadHkdfPublicKey} with the specified key material and parameters. */
-  public static EciesAeadHkdfPublicKey createEciesAeadHkdfPubKey(
-      EllipticCurveType curve,
-      HashType hashType,
-      EcPointFormat ecPointFormat,
-      KeyTemplate demKeyTemplate,
-      byte[] pubX,
-      byte[] pubY,
-      byte[] salt)
-      throws Exception {
-    final int version = 0;
-    EciesAeadHkdfParams params =
-        HybridKeyTemplates.createEciesAeadHkdfParams(
-            curve, hashType, ecPointFormat, demKeyTemplate, salt);
-    return EciesAeadHkdfPublicKey.newBuilder()
-        .setVersion(version)
-        .setParams(params)
-        .setX(ByteString.copyFrom(pubX))
-        .setY(ByteString.copyFrom(pubY))
-        .build();
-  }
+  ///** @return a {@code EciesAeadHkdfPublicKey} with the specified key material and parameters. */
+  //public static EciesAeadHkdfPublicKey createEciesAeadHkdfPubKey(
+  //    EllipticCurveType curve,
+  //    HashType hashType,
+  //    EcPointFormat ecPointFormat,
+  //    KeyTemplate demKeyTemplate,
+  //    byte[] pubX,
+  //    byte[] pubY,
+  //    byte[] salt)
+  //    throws Exception {
+  //  final int version = 0;
+  //  EciesAeadHkdfParams params =
+  //      HybridKeyTemplates.createEciesAeadHkdfParams(
+  //          curve, hashType, ecPointFormat, demKeyTemplate, salt);
+  //  return EciesAeadHkdfPublicKey.newBuilder()
+  //      .setVersion(version)
+  //      .setParams(params)
+  //      .setX(ByteString.copyFrom(pubX))
+  //      .setY(ByteString.copyFrom(pubY))
+  //      .build();
+  //}
 
   /** Runs basic tests against an Aead primitive. */
   public static void runBasicAeadTests(Aead aead) throws Exception {
@@ -607,27 +593,27 @@ public final class TestUtil {
     return false;
   }
 
-  /** Returns whether we should skip a test with some AES key size. */
-  public static boolean shouldSkipTestWithAesKeySize(int keySizeInBytes)
-      throws NoSuchAlgorithmException {
-    int maxKeySize = Cipher.getMaxAllowedKeyLength("AES/CTR/NoPadding");
-    if ((keySizeInBytes * 8) > maxKeySize) {
-      System.out.println(
-          String.format(
-              "Unlimited Strength Jurisdiction Policy Files are required"
-                  + " but not installed. Skip tests with keys larger than %s bits.",
-              maxKeySize));
-      return true;
-    }
-    // Android is using Conscrypt as its default JCE provider, but Conscrypt
-    // does not support 192-bit keys.
-    if (isAndroid() && keySizeInBytes == 24) {
-      System.out.println("Skipping tests with 192-bit keys on Android");
-      return true;
-    }
+  ///** Returns whether we should skip a test with some AES key size. */
+  //public static boolean shouldSkipTestWithAesKeySize(int keySizeInBytes)
+  //    throws NoSuchAlgorithmException {
+  //  int maxKeySize = Cipher.getMaxAllowedKeyLength("AES/CTR/NoPadding");
+  //  if ((keySizeInBytes * 8) > maxKeySize) {
+  //    System.out.println(
+  //        String.format(
+  //            "Unlimited Strength Jurisdiction Policy Files are required"
+  //                + " but not installed. Skip tests with keys larger than %s bits.",
+  //            maxKeySize));
+  //    return true;
+  //  }
+  //  // Android is using Conscrypt as its default JCE provider, but Conscrypt
+  //  // does not support 192-bit keys.
+  //  if (isAndroid() && keySizeInBytes == 24) {
+  //    System.out.println("Skipping tests with 192-bit keys on Android");
+  //    return true;
+  //  }
 
-    return false;
-  }
+  //  return false;
+  //}
 
   /**
    * Assertion that an exception's message contains the right message. When this fails, the

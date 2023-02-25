@@ -21,12 +21,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertThrows;
 
 import com.google.crypto.tink.Aead;
-import com.google.crypto.tink.DeterministicAead;
 import com.google.crypto.tink.InsecureSecretKeyAccess;
 import com.google.crypto.tink.KeyTemplates;
 import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.TinkJsonProtoKeysetFormat;
-import com.google.crypto.tink.daead.DeterministicAeadConfig;
+
 import java.security.GeneralSecurityException;
 import org.junit.BeforeClass;
 import org.junit.experimental.theories.DataPoints;
@@ -42,24 +41,24 @@ public final class AeadTest {
   @BeforeClass
   public static void setUp() throws Exception {
     AeadConfig.register();
-    DeterministicAeadConfig.register(); // Needed for getPrimitiveFromNonAeadKeyset_throws.
+    //DeterministicAeadConfig.register(); // Needed for getPrimitiveFromNonAeadKeyset_throws.
   }
 
   @DataPoints("templates")
   public static final String[] TEMPLATES =
       new String[] {
-        "AES128_EAX",
-        "AES128_EAX_RAW",
-        "AES256_EAX",
-        "AES256_EAX_RAW",
-        "AES128_GCM",
-        "AES128_GCM_RAW",
-        "AES256_GCM",
-        "AES256_GCM_RAW",
-        "AES128_CTR_HMAC_SHA256",
-        "AES128_CTR_HMAC_SHA256_RAW",
-        "AES256_CTR_HMAC_SHA256",
-        "AES256_CTR_HMAC_SHA256_RAW",
+        //"AES128_EAX",
+        //"AES128_EAX_RAW",
+        //"AES256_EAX",
+        //"AES256_EAX_RAW",
+        //"AES128_GCM",
+        //"AES128_GCM_RAW",
+        //"AES256_GCM",
+        //"AES256_GCM_RAW",
+        //"AES128_CTR_HMAC_SHA256",
+        //"AES128_CTR_HMAC_SHA256_RAW",
+        //"AES256_CTR_HMAC_SHA256",
+        //"AES256_CTR_HMAC_SHA256_RAW",
         "CHACHA20_POLY1305",
         "CHACHA20_POLY1305_RAW",
         "XCHACHA20_POLY1305",
@@ -91,24 +90,24 @@ public final class AeadTest {
     assertThat(aead.decrypt(aead.encrypt(plaintext, empty), empty)).isEqualTo(plaintext);
   }
 
-  // A keyset with one AEAD key, serialized in Tink's JSON format.
-  private static final String JSON_AEAD_KEYSET =
-      ""
-          + "{"
-          + "  \"primaryKeyId\": 42818733,"
-          + "  \"key\": ["
-          + "    {"
-          + "      \"keyData\": {"
-          + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesGcmKey\","
-          + "        \"keyMaterialType\": \"SYMMETRIC\","
-          + "        \"value\": \"GhCC74uJ+2f4qlpaHwR4ylNQ\""
-          + "      },"
-          + "      \"outputPrefixType\": \"TINK\","
-          + "      \"keyId\": 42818733,"
-          + "      \"status\": \"ENABLED\""
-          + "    }"
-          + "  ]"
-          + "}";
+  //// A keyset with one AEAD key, serialized in Tink's JSON format.
+  //private static final String JSON_AEAD_KEYSET =
+  //    ""
+  //        + "{"
+  //        + "  \"primaryKeyId\": 42818733,"
+  //        + "  \"key\": ["
+  //        + "    {"
+  //        + "      \"keyData\": {"
+  //        + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesGcmKey\","
+  //        + "        \"keyMaterialType\": \"SYMMETRIC\","
+  //        + "        \"value\": \"GhCC74uJ+2f4qlpaHwR4ylNQ\""
+  //        + "      },"
+  //        + "      \"outputPrefixType\": \"TINK\","
+  //        + "      \"keyId\": 42818733,"
+  //        + "      \"status\": \"ENABLED\""
+  //        + "    }"
+  //        + "  ]"
+  //        + "}";
 
   @Theory
   public void readKeysetEncryptDecrypt()
@@ -125,43 +124,43 @@ public final class AeadTest {
     assertThat(decrypted).isEqualTo(plaintext);
   }
 
-  // A keyset with multiple keys. The first key is the same as in JSON_AEAD_KEYSET.
-  private static final String JSON_AEAD_KEYSET_WITH_MULTIPLE_KEYS =
-      ""
-          + "{"
-          + "  \"primaryKeyId\": 365202604,"
-          + "  \"key\": ["
-          + "    {"
-          + "      \"keyData\": {"
-          + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesGcmKey\","
-          + "        \"keyMaterialType\": \"SYMMETRIC\","
-          + "        \"value\": \"GhCC74uJ+2f4qlpaHwR4ylNQ\""
-          + "      },"
-          + "      \"outputPrefixType\": \"TINK\","
-          + "      \"keyId\": 42818733,"
-          + "      \"status\": \"ENABLED\""
-          + "    }, {"
-          + "      \"keyData\": {"
-          + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesEaxKey\","
-          + "        \"keyMaterialType\": \"SYMMETRIC\","
-          + "        \"value\": \"EgIIEBogU4nieBfIeJHBrhC+TjezFgxkkuhQHbyWkUMH+7atLxI=\""
-          + "      },"
-          + "      \"outputPrefixType\": \"RAW\","
-          + "      \"keyId\": 365202604,"
-          + "      \"status\": \"ENABLED\""
-          + "    }, {"
-          + "      \"keyData\": {"
-          + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesCtrHmacAeadKey\","
-          + "        \"keyMaterialType\": \"SYMMETRIC\","
-          + "        \"value\": \"GigaIMttlipP/JvQOpIB0NYhDPoLgWBiIxmtaWbSPa2TeQOmEgQQEAgDEhYaEPcCM"
-          + "mPLgRGhmMmSC4AJ1CESAggQ\""
-          + "      },"
-          + "      \"outputPrefixType\": \"LEGACY\","
-          + "      \"keyId\": 277095770,"
-          + "      \"status\": \"ENABLED\""
-          + "    }"
-          + "  ]"
-          + "}";
+  //// A keyset with multiple keys. The first key is the same as in JSON_AEAD_KEYSET.
+  //private static final String JSON_AEAD_KEYSET_WITH_MULTIPLE_KEYS =
+  //    ""
+  //        + "{"
+  //        + "  \"primaryKeyId\": 365202604,"
+  //        + "  \"key\": ["
+  //        + "    {"
+  //        + "      \"keyData\": {"
+  //        + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesGcmKey\","
+  //        + "        \"keyMaterialType\": \"SYMMETRIC\","
+  //        + "        \"value\": \"GhCC74uJ+2f4qlpaHwR4ylNQ\""
+  //        + "      },"
+  //        + "      \"outputPrefixType\": \"TINK\","
+  //        + "      \"keyId\": 42818733,"
+  //        + "      \"status\": \"ENABLED\""
+  //        + "    }, {"
+  //        + "      \"keyData\": {"
+  //        + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesEaxKey\","
+  //        + "        \"keyMaterialType\": \"SYMMETRIC\","
+  //        + "        \"value\": \"EgIIEBogU4nieBfIeJHBrhC+TjezFgxkkuhQHbyWkUMH+7atLxI=\""
+  //        + "      },"
+  //        + "      \"outputPrefixType\": \"RAW\","
+  //        + "      \"keyId\": 365202604,"
+  //        + "      \"status\": \"ENABLED\""
+  //        + "    }, {"
+  //        + "      \"keyData\": {"
+  //        + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesCtrHmacAeadKey\","
+  //        + "        \"keyMaterialType\": \"SYMMETRIC\","
+  //        + "        \"value\": \"GigaIMttlipP/JvQOpIB0NYhDPoLgWBiIxmtaWbSPa2TeQOmEgQQEAgDEhYaEPcCM"
+  //        + "mPLgRGhmMmSC4AJ1CESAggQ\""
+  //        + "      },"
+  //        + "      \"outputPrefixType\": \"LEGACY\","
+  //        + "      \"keyId\": 277095770,"
+  //        + "      \"status\": \"ENABLED\""
+  //        + "    }"
+  //        + "  ]"
+  //        + "}";
 
   @Theory
   public void multipleKeysReadKeysetWithEncryptDecrypt()
@@ -187,33 +186,33 @@ public final class AeadTest {
     assertThat(aead.decrypt(ciphertext1, associatedData)).isEqualTo(plaintext);
   }
 
-  // A keyset with a valid DeterministicAead key. This keyset can't be used with the Aead primitive.
-  private static final String JSON_DAEAD_KEYSET =
-      ""
-          + "{"
-          + "  \"primaryKeyId\": 961932622,"
-          + "  \"key\": ["
-          + "    {"
-          + "      \"keyData\": {"
-          + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesSivKey\","
-          + "        \"keyMaterialType\": \"SYMMETRIC\","
-          + "        \"value\": \"EkCJ9r5iwc5uxq5ugFyrHXh5dijTa7qalWUgZ8Gf08RxNd545FjtLMYL7ObcaFtCS"
-          + "kvV2+7u6F2DN+kqUjAfkf2W\""
-          + "      },"
-          + "      \"outputPrefixType\": \"TINK\","
-          + "      \"keyId\": 961932622,"
-          + "      \"status\": \"ENABLED\""
-          + "    }"
-          + "  ]"
-          + "}";
+  //// A keyset with a valid DeterministicAead key. This keyset can't be used with the Aead primitive.
+  //private static final String JSON_DAEAD_KEYSET =
+  //    ""
+  //        + "{"
+  //        + "  \"primaryKeyId\": 961932622,"
+  //        + "  \"key\": ["
+  //        + "    {"
+  //        + "      \"keyData\": {"
+  //        + "        \"typeUrl\": \"type.googleapis.com/google.crypto.tink.AesSivKey\","
+  //        + "        \"keyMaterialType\": \"SYMMETRIC\","
+  //        + "        \"value\": \"EkCJ9r5iwc5uxq5ugFyrHXh5dijTa7qalWUgZ8Gf08RxNd545FjtLMYL7ObcaFtCS"
+  //        + "kvV2+7u6F2DN+kqUjAfkf2W\""
+  //        + "      },"
+  //        + "      \"outputPrefixType\": \"TINK\","
+  //        + "      \"keyId\": 961932622,"
+  //        + "      \"status\": \"ENABLED\""
+  //        + "    }"
+  //        + "  ]"
+  //        + "}";
 
-  @Theory
-  public void getPrimitiveFromNonAeadKeyset_throws()
-      throws Exception {
-    KeysetHandle handle =
-        TinkJsonProtoKeysetFormat.parseKeyset(JSON_DAEAD_KEYSET, InsecureSecretKeyAccess.get());
-    // Test that the keyset can create a DeterministicAead primitive, but not a Aead.
-    Object unused = handle.getPrimitive(DeterministicAead.class);
-    assertThrows(GeneralSecurityException.class, () -> handle.getPrimitive(Aead.class));
-  }
+  //@Theory
+  //public void getPrimitiveFromNonAeadKeyset_throws()
+  //    throws Exception {
+  //  KeysetHandle handle =
+  //      TinkJsonProtoKeysetFormat.parseKeyset(JSON_DAEAD_KEYSET, InsecureSecretKeyAccess.get());
+  //  // Test that the keyset can create a DeterministicAead primitive, but not a Aead.
+  //  Object unused = handle.getPrimitive(DeterministicAead.class);
+  //  assertThrows(GeneralSecurityException.class, () -> handle.getPrimitive(Aead.class));
+  //}
 }

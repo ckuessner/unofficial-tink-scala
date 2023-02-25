@@ -27,13 +27,9 @@ import com.google.crypto.tink.internal.MutablePrimitiveRegistry;
 import com.google.crypto.tink.internal.MutableSerializationRegistry;
 import com.google.crypto.tink.internal.PrimitiveConstructor;
 import com.google.crypto.tink.internal.ProtoKeySerialization;
-import com.google.crypto.tink.mac.AesCmacKey;
-import com.google.crypto.tink.mac.AesCmacParameters;
-import com.google.crypto.tink.mac.AesCmacParameters.Variant;
 import com.google.crypto.tink.mac.MacConfig;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.proto.OutputPrefixType;
-import com.google.crypto.tink.subtle.PrfAesCmac;
 import com.google.crypto.tink.subtle.PrfMac;
 import com.google.crypto.tink.util.Bytes;
 import com.google.crypto.tink.util.SecretBytes;
@@ -68,9 +64,9 @@ public class KeysetHandleFullPrimitiveTest {
           KeysetHandleFullPrimitiveTest::parseTestKey,
           Bytes.copyFrom("testKeyForFullPrimitiveUrl".getBytes(UTF_8)),
           ProtoKeySerialization.class);
-  private static final PrimitiveConstructor<AesCmacKey, Mac> MAC_PRIMITIVE_CONSTRUCTOR =
-      PrimitiveConstructor.create(
-          KeysetHandleFullPrimitiveTest::createMacPrimitive, AesCmacKey.class, Mac.class);
+  //private static final PrimitiveConstructor<AesCmacKey, Mac> MAC_PRIMITIVE_CONSTRUCTOR =
+  //    PrimitiveConstructor.create(
+  //        KeysetHandleFullPrimitiveTest::createMacPrimitive, AesCmacKey.class, Mac.class);
 
   private static class SingleTestPrimitive {}
 
@@ -209,11 +205,11 @@ public class KeysetHandleFullPrimitiveTest {
     }
   }
 
-  private static Mac createMacPrimitive(AesCmacKey key) throws GeneralSecurityException {
-    return new PrfMac(
-        new PrfAesCmac(key.getAesKey().toByteArray(InsecureSecretKeyAccess.get())),
-        key.getParameters().getTotalTagSizeBytes());
-  }
+  //private static Mac createMacPrimitive(AesCmacKey key) throws GeneralSecurityException {
+  //  return new PrfMac(
+  //      new PrfAesCmac(key.getAesKey().toByteArray(InsecureSecretKeyAccess.get())),
+  //      key.getParameters().getTotalTagSizeBytes());
+  //}
 
   @Test
   public void getPrimitive_fullPrimitiveWithoutPrimitive_worksCorrectly() throws Exception {
@@ -285,67 +281,67 @@ public class KeysetHandleFullPrimitiveTest {
         () -> keysetHandle.getPrimitive(WrappedTestPrimitive.class));
   }
 
-  @Test
-  public void getPrimitive_fullPrimitiveWithPrimitive_worksCorrectly() throws Exception {
-    Registry.reset();
-    MutablePrimitiveRegistry.globalInstance()
-        .registerPrimitiveConstructor(MAC_PRIMITIVE_CONSTRUCTOR);
-    MacTestWrapper.register();
-    MacConfig.register();
-    AesCmacParameters parameters =
-        AesCmacParameters.builder()
-            .setKeySizeBytes(32)
-            .setTagSizeBytes(10)
-            .setVariant(Variant.TINK)
-            .build();
-    KeysetHandle keysetHandle =
-        KeysetHandle.newBuilder()
-            .addEntry(
-                KeysetHandle.importKey(
-                        AesCmacKey.builder()
-                            .setParameters(parameters)
-                            .setAesKeyBytes(SecretBytes.randomBytes(32))
-                            .setIdRequirement(1234)
-                            .build())
-                    .setStatus(KeyStatus.ENABLED)
-                    .withFixedId(1234)
-                    .makePrimary())
-            .addEntry(
-                KeysetHandle.importKey(
-                        AesCmacKey.builder()
-                            .setParameters(parameters)
-                            .setAesKeyBytes(SecretBytes.randomBytes(32))
-                            .setIdRequirement(1235)
-                            .build())
-                    .setStatus(KeyStatus.ENABLED)
-                    .withFixedId(1235))
-            .addEntry(
-                KeysetHandle.importKey(
-                        AesCmacKey.builder()
-                            .setParameters(parameters)
-                            .setAesKeyBytes(SecretBytes.randomBytes(32))
-                            .setIdRequirement(1236)
-                            .build())
-                    .setStatus(KeyStatus.ENABLED)
-                    .withFixedId(1236))
-            .addEntry(
-                KeysetHandle.importKey(
-                        AesCmacKey.builder()
-                            .setParameters(parameters)
-                            .setAesKeyBytes(SecretBytes.randomBytes(32))
-                            .setIdRequirement(1237)
-                            .build())
-                    .setStatus(KeyStatus.ENABLED)
-                    .withFixedId(1237))
-            .build();
+  //@Test
+  //public void getPrimitive_fullPrimitiveWithPrimitive_worksCorrectly() throws Exception {
+  //  Registry.reset();
+  //  MutablePrimitiveRegistry.globalInstance()
+  //      .registerPrimitiveConstructor(MAC_PRIMITIVE_CONSTRUCTOR);
+  //  MacTestWrapper.register();
+  //  MacConfig.register();
+  //  AesCmacParameters parameters =
+  //      AesCmacParameters.builder()
+  //          .setKeySizeBytes(32)
+  //          .setTagSizeBytes(10)
+  //          .setVariant(Variant.TINK)
+  //          .build();
+  //  KeysetHandle keysetHandle =
+  //      KeysetHandle.newBuilder()
+  //          .addEntry(
+  //              KeysetHandle.importKey(
+  //                      AesCmacKey.builder()
+  //                          .setParameters(parameters)
+  //                          .setAesKeyBytes(SecretBytes.randomBytes(32))
+  //                          .setIdRequirement(1234)
+  //                          .build())
+  //                  .setStatus(KeyStatus.ENABLED)
+  //                  .withFixedId(1234)
+  //                  .makePrimary())
+  //          .addEntry(
+  //              KeysetHandle.importKey(
+  //                      AesCmacKey.builder()
+  //                          .setParameters(parameters)
+  //                          .setAesKeyBytes(SecretBytes.randomBytes(32))
+  //                          .setIdRequirement(1235)
+  //                          .build())
+  //                  .setStatus(KeyStatus.ENABLED)
+  //                  .withFixedId(1235))
+  //          .addEntry(
+  //              KeysetHandle.importKey(
+  //                      AesCmacKey.builder()
+  //                          .setParameters(parameters)
+  //                          .setAesKeyBytes(SecretBytes.randomBytes(32))
+  //                          .setIdRequirement(1236)
+  //                          .build())
+  //                  .setStatus(KeyStatus.ENABLED)
+  //                  .withFixedId(1236))
+  //          .addEntry(
+  //              KeysetHandle.importKey(
+  //                      AesCmacKey.builder()
+  //                          .setParameters(parameters)
+  //                          .setAesKeyBytes(SecretBytes.randomBytes(32))
+  //                          .setIdRequirement(1237)
+  //                          .build())
+  //                  .setStatus(KeyStatus.ENABLED)
+  //                  .withFixedId(1237))
+  //          .build();
 
-    WrappedMacTestPrimitive primitive = keysetHandle.getPrimitive(WrappedMacTestPrimitive.class);
+  //  WrappedMacTestPrimitive primitive = keysetHandle.getPrimitive(WrappedMacTestPrimitive.class);
 
-    for (List<Entry<Mac>> list : primitive.getPrimitiveSet().getAll()) {
-      for (PrimitiveSet.Entry<Mac> entry : list) {
-        assertThat(entry.getFullPrimitive()).isNotNull();
-        assertThat(entry.getPrimitive()).isNotNull();
-      }
-    }
-  }
+  //  for (List<Entry<Mac>> list : primitive.getPrimitiveSet().getAll()) {
+  //    for (PrimitiveSet.Entry<Mac> entry : list) {
+  //      assertThat(entry.getFullPrimitive()).isNotNull();
+  //      assertThat(entry.getPrimitive()).isNotNull();
+  //    }
+  //  }
+  //}
 }
