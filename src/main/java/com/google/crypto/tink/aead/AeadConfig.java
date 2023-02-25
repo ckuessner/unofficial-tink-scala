@@ -17,7 +17,6 @@
 package com.google.crypto.tink.aead;
 
 import com.google.crypto.tink.config.TinkFips;
-import com.google.crypto.tink.mac.MacConfig;
 import com.google.crypto.tink.proto.RegistryConfig;
 import java.security.GeneralSecurityException;
 
@@ -104,7 +103,7 @@ public final class AeadConfig {
   public static void register() throws GeneralSecurityException {
     AeadWrapper.register();
 
-    MacConfig.register();
+    //MacConfig.register();
     //AesCtrHmacAeadKeyManager.register(/*newKeyAllowed=*/ true);
     //AesGcmKeyManager.register(/*newKeyAllowed=*/ true);
 

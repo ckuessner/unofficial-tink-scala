@@ -17,7 +17,6 @@
 package com.google.crypto.tink.config;
 
 import com.google.crypto.tink.hybrid.HybridConfig;
-import com.google.crypto.tink.prf.PrfConfig;
 import com.google.crypto.tink.proto.RegistryConfig;
 import com.google.crypto.tink.signature.SignatureConfig;
 import java.security.GeneralSecurityException;
@@ -86,7 +85,7 @@ public final class TinkConfig {
   public static void register() throws GeneralSecurityException {
     //DeterministicAeadConfig.register();
     HybridConfig.register(); // includes Aead and Mac
-    PrfConfig.register();
+    //PrfConfig.register();
     SignatureConfig.register();
     //StreamingAeadConfig.register();
   }

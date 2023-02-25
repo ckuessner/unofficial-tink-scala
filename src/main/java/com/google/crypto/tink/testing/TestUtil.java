@@ -29,9 +29,7 @@ import com.google.crypto.tink.PrimitiveSet;
 import com.google.crypto.tink.Registry;
 import com.google.crypto.tink.TinkProtoKeysetFormat;
 import com.google.crypto.tink.hybrid.HybridKeyTemplates;
-import com.google.crypto.tink.mac.MacConfig;
 import com.google.crypto.tink.monitoring.MonitoringAnnotations;
-import com.google.crypto.tink.prf.PrfConfig;
 import com.google.crypto.tink.proto.EcPointFormat;
 import com.google.crypto.tink.proto.EcdsaParams;
 import com.google.crypto.tink.proto.EcdsaPrivateKey;
@@ -223,19 +221,19 @@ public final class TestUtil {
         .build();
   }
 
-  /** @return a {@code KeyData} containing a {@code HmacKey}. */
-  public static KeyData createHmacKeyData(byte[] keyValue, int tagSize) throws Exception {
-    return createKeyData(
-        createHmacKey(keyValue, tagSize),
-        MacConfig.HMAC_TYPE_URL,
-        KeyData.KeyMaterialType.SYMMETRIC);
-  }
+  ///** @return a {@code KeyData} containing a {@code HmacKey}. */
+  //public static KeyData createHmacKeyData(byte[] keyValue, int tagSize) throws Exception {
+  //  return createKeyData(
+  //      createHmacKey(keyValue, tagSize),
+  //      MacConfig.HMAC_TYPE_URL,
+  //      KeyData.KeyMaterialType.SYMMETRIC);
+  //}
 
   /** @return a {@code KeyData} containing a {@code HkdfPrfKey}. */
-  public static KeyData createPrfKeyData(byte[] keyValue) throws Exception {
-    return createKeyData(
-        createPrfKey(keyValue), PrfConfig.PRF_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
-  }
+  //public static KeyData createPrfKeyData(byte[] keyValue) throws Exception {
+  //  return createKeyData(
+  //      createPrfKey(keyValue), PrfConfig.PRF_TYPE_URL, KeyData.KeyMaterialType.SYMMETRIC);
+  //}
 
   ///** @return a {@code AesCtrKey}. */
   //public static AesCtrKey createAesCtrKey(byte[] keyValue, int ivSize) throws Exception {
