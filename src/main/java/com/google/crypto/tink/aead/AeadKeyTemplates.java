@@ -222,20 +222,20 @@ public final class AeadKeyTemplates {
         .build();
   }
 
-  /**
-   * @return a new {@link KeyTemplate} that can generate a {@link KmsAeadKey} pointing to {@code
-   *     keyUri}.
-   */
-  public static KeyTemplate createKmsAeadKeyTemplate(String keyUri) {
-    KmsAeadKeyFormat format = KmsAeadKeyFormat.newBuilder()
-        .setKeyUri(keyUri)
-        .build();
-    return KeyTemplate.newBuilder()
-        .setValue(format.toByteString())
-        .setTypeUrl(new KmsAeadKeyManager().getKeyType())
-        .setOutputPrefixType(OutputPrefixType.TINK)
-        .build();
-  }
+  ///**
+  // * @return a new {@link KeyTemplate} that can generate a {@link KmsAeadKey} pointing to {@code
+  // *     keyUri}.
+  // */
+  //public static KeyTemplate createKmsAeadKeyTemplate(String keyUri) {
+  //  KmsAeadKeyFormat format = KmsAeadKeyFormat.newBuilder()
+  //      .setKeyUri(keyUri)
+  //      .build();
+  //  return KeyTemplate.newBuilder()
+  //      .setValue(format.toByteString())
+  //      .setTypeUrl(new KmsAeadKeyManager().getKeyType())
+  //      .setOutputPrefixType(OutputPrefixType.TINK)
+  //      .build();
+  //}
 
   /**
    * @return a new {@link KeyTemplate} that can generate a {@link
@@ -246,18 +246,18 @@ public final class AeadKeyTemplates {
    *     template, Tink does not generate new key material, but only creates a reference to the
    *     remote KEK.
    */
-  public static KeyTemplate createKmsEnvelopeAeadKeyTemplate(
-      String kekUri, KeyTemplate dekTemplate) {
-    KmsEnvelopeAeadKeyFormat format = KmsEnvelopeAeadKeyFormat.newBuilder()
-        .setDekTemplate(dekTemplate)
-        .setKekUri(kekUri)
-        .build();
-    return KeyTemplate.newBuilder()
-        .setValue(format.toByteString())
-        .setTypeUrl(new KmsEnvelopeAeadKeyManager().getKeyType())
-        .setOutputPrefixType(OutputPrefixType.RAW)
-        .build();
-  }
+  //public static KeyTemplate createKmsEnvelopeAeadKeyTemplate(
+  //    String kekUri, KeyTemplate dekTemplate) {
+  //  KmsEnvelopeAeadKeyFormat format = KmsEnvelopeAeadKeyFormat.newBuilder()
+  //      .setDekTemplate(dekTemplate)
+  //      .setKekUri(kekUri)
+  //      .build();
+  //  return KeyTemplate.newBuilder()
+  //      .setValue(format.toByteString())
+  //      .setTypeUrl(new KmsEnvelopeAeadKeyManager().getKeyType())
+  //      .setOutputPrefixType(OutputPrefixType.RAW)
+  //      .build();
+  //}
 
   private AeadKeyTemplates() {}
 }

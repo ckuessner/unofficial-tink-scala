@@ -40,9 +40,9 @@ public final class AeadConfig {
   public static final String AES_GCM_TYPE_URL = new AesGcmKeyManager().getKeyType();
   public static final String AES_GCM_SIV_TYPE_URL = new AesGcmSivKeyManager().getKeyType();
   public static final String AES_EAX_TYPE_URL = new AesEaxKeyManager().getKeyType();
-  public static final String KMS_AEAD_TYPE_URL = new KmsAeadKeyManager().getKeyType();
-  public static final String KMS_ENVELOPE_AEAD_TYPE_URL =
-      new KmsEnvelopeAeadKeyManager().getKeyType();
+  //public static final String KMS_AEAD_TYPE_URL = new KmsAeadKeyManager().getKeyType();
+  //public static final String KMS_ENVELOPE_AEAD_TYPE_URL =
+  //    new KmsEnvelopeAeadKeyManager().getKeyType();
   public static final String CHACHA20_POLY1305_TYPE_URL =
       new ChaCha20Poly1305KeyManager().getKeyType();
   public static final String XCHACHA20_POLY1305_TYPE_URL =
