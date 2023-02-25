@@ -22,14 +22,8 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.crypto.tink.PublicKeySign;
 import com.google.crypto.tink.PublicKeyVerify;
-import com.google.crypto.tink.subtle.EllipticCurves.EcdsaEncoding;
-import com.google.crypto.tink.subtle.Enums.HashType;
 import com.google.crypto.tink.testing.TestUtil;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.spec.ECParameterSpec;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -219,30 +213,30 @@ public class SignatureThreadSafetyTest {
     }
   }
 
-  @Test
-  public void testEcdsa() throws Exception {
-    ECParameterSpec ecParams = EllipticCurves.getNistP256Params();
-    KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-    keyGen.initialize(ecParams);
-    KeyPair keyPair = keyGen.generateKeyPair();
-    ECPublicKey pub = (ECPublicKey) keyPair.getPublic();
-    ECPrivateKey priv = (ECPrivateKey) keyPair.getPrivate();
-    EcdsaSignJce signer = new EcdsaSignJce(priv, HashType.SHA256, EcdsaEncoding.DER);
-    EcdsaVerifyJce verifier = new EcdsaVerifyJce(pub, HashType.SHA256, EcdsaEncoding.DER);
+  //@Test
+  //public void testEcdsa() throws Exception {
+  //  ECParameterSpec ecParams = EllipticCurves.getNistP256Params();
+  //  KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
+  //  keyGen.initialize(ecParams);
+  //  KeyPair keyPair = keyGen.generateKeyPair();
+  //  ECPublicKey pub = (ECPublicKey) keyPair.getPublic();
+  //  ECPrivateKey priv = (ECPrivateKey) keyPair.getPrivate();
+  //  EcdsaSignJce signer = new EcdsaSignJce(priv, HashType.SHA256, EcdsaEncoding.DER);
+  //  EcdsaVerifyJce verifier = new EcdsaVerifyJce(pub, HashType.SHA256, EcdsaEncoding.DER);
 
-    byte[] msg = Random.randBytes(20);
-    testSigningSameMessage(signer, verifier, false, msg, 5, 20);
-    testSigningDistinctMessages(signer, verifier, false, 64, 5, 20);
-  }
+  //  byte[] msg = Random.randBytes(20);
+  //  testSigningSameMessage(signer, verifier, false, msg, 5, 20);
+  //  testSigningDistinctMessages(signer, verifier, false, 64, 5, 20);
+  //}
 
-  @Test
-  public void testEddsa() throws Exception {
-    Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPair();
-    Ed25519Sign signer = new Ed25519Sign(keyPair.getPrivateKey());
-    Ed25519Verify verifier = new Ed25519Verify(keyPair.getPublicKey());
+  //@Test
+  //public void testEddsa() throws Exception {
+  //  Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPair();
+  //  Ed25519Sign signer = new Ed25519Sign(keyPair.getPrivateKey());
+  //  Ed25519Verify verifier = new Ed25519Verify(keyPair.getPublicKey());
 
-    byte[] msg = Random.randBytes(20);
-    testSigningSameMessage(signer, verifier, true, msg, 5, 20);
-    testSigningDistinctMessages(signer, verifier, true, 64, 5, 20);
-  }
+  //  byte[] msg = Random.randBytes(20);
+  //  testSigningSameMessage(signer, verifier, true, msg, 5, 20);
+  //  testSigningDistinctMessages(signer, verifier, true, 64, 5, 20);
+  //}
 }

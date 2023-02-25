@@ -38,20 +38,20 @@ import java.security.GeneralSecurityException;
  * @since 1.0.0
  */
 public final class SignatureConfig {
-  public static final String ECDSA_PUBLIC_KEY_TYPE_URL = new EcdsaVerifyKeyManager().getKeyType();
-  public static final String ECDSA_PRIVATE_KEY_TYPE_URL = new EcdsaSignKeyManager().getKeyType();
+  //public static final String ECDSA_PUBLIC_KEY_TYPE_URL = new EcdsaVerifyKeyManager().getKeyType();
+  //public static final String ECDSA_PRIVATE_KEY_TYPE_URL = new EcdsaSignKeyManager().getKeyType();
   public static final String ED25519_PUBLIC_KEY_TYPE_URL =
       new Ed25519PublicKeyManager().getKeyType();
   public static final String ED25519_PRIVATE_KEY_TYPE_URL =
       new Ed25519PrivateKeyManager().getKeyType();
-  public static final String RSA_PKCS1_PRIVATE_KEY_TYPE_URL =
-      new RsaSsaPkcs1SignKeyManager().getKeyType();
-  public static final String RSA_PKCS1_PUBLIC_KEY_TYPE_URL =
-      new RsaSsaPkcs1VerifyKeyManager().getKeyType();
-  public static final String RSA_PSS_PRIVATE_KEY_TYPE_URL =
-      new RsaSsaPssSignKeyManager().getKeyType();
-  public static final String RSA_PSS_PUBLIC_KEY_TYPE_URL =
-      new RsaSsaPssVerifyKeyManager().getKeyType();
+  //public static final String RSA_PKCS1_PRIVATE_KEY_TYPE_URL =
+  //    new RsaSsaPkcs1SignKeyManager().getKeyType();
+  //public static final String RSA_PKCS1_PUBLIC_KEY_TYPE_URL =
+  //    new RsaSsaPkcs1VerifyKeyManager().getKeyType();
+  //public static final String RSA_PSS_PRIVATE_KEY_TYPE_URL =
+  //    new RsaSsaPssSignKeyManager().getKeyType();
+  //public static final String RSA_PSS_PUBLIC_KEY_TYPE_URL =
+  //    new RsaSsaPssVerifyKeyManager().getKeyType();
 
   /**
    * @deprecated Call {@link #register} instead.
@@ -102,15 +102,15 @@ public final class SignatureConfig {
     PublicKeySignWrapper.register();
     PublicKeyVerifyWrapper.register();
 
-    EcdsaSignKeyManager.registerPair(/*newKeyAllowed=*/ true);
-    RsaSsaPkcs1SignKeyManager.registerPair(/*newKeyAllowed=*/ true);
+    //EcdsaSignKeyManager.registerPair(/*newKeyAllowed=*/ true);
+    //RsaSsaPkcs1SignKeyManager.registerPair(/*newKeyAllowed=*/ true);
 
     if (TinkFips.useOnlyFips()) {
       // If Tink is built in FIPS-mode do not register algorithms which are not compatible.
       return;
     }
 
-    RsaSsaPssSignKeyManager.registerPair(/*newKeyAllowed=*/ true);
+    //RsaSsaPssSignKeyManager.registerPair(/*newKeyAllowed=*/ true);
     Ed25519PrivateKeyManager.registerPair(/*newKeyAllowed=*/ true);
   }
 

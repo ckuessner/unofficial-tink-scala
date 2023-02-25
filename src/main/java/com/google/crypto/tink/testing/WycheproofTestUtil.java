@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink.testing;
 
-import com.google.crypto.tink.subtle.EllipticCurves;
 import com.google.crypto.tink.subtle.Enums.HashType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -110,24 +109,24 @@ public final class WycheproofTestUtil {
             path, numTests, algorithm, generatorVersion));
     return result;
   }
-  /**
-   * Gets curve type from curve name.
-   *
-   * @throws NoSuchAlgorithmException iff the curve name is unknown.
-   */
-  public static EllipticCurves.CurveType getCurveType(String curveName)
-      throws NoSuchAlgorithmException {
-    switch (curveName) {
-      case "secp256r1":
-        return EllipticCurves.CurveType.NIST_P256;
-      case "secp384r1":
-        return EllipticCurves.CurveType.NIST_P384;
-      case "secp521r1":
-        return EllipticCurves.CurveType.NIST_P521;
-      default:
-        throw new NoSuchAlgorithmException("Unknown curve name: " + curveName);
-    }
-  }
+  ///**
+  // * Gets curve type from curve name.
+  // *
+  // * @throws NoSuchAlgorithmException iff the curve name is unknown.
+  // */
+  //public static EllipticCurves.CurveType getCurveType(String curveName)
+  //    throws NoSuchAlgorithmException {
+  //  switch (curveName) {
+  //    case "secp256r1":
+  //      return EllipticCurves.CurveType.NIST_P256;
+  //    case "secp384r1":
+  //      return EllipticCurves.CurveType.NIST_P384;
+  //    case "secp521r1":
+  //      return EllipticCurves.CurveType.NIST_P521;
+  //    default:
+  //      throw new NoSuchAlgorithmException("Unknown curve name: " + curveName);
+  //  }
+  //}
 
   /** @return true if the test case has one of the flags. */
   public static boolean checkFlags(JsonObject testcase, String... flags) throws Exception {

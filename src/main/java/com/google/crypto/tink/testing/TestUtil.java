@@ -39,7 +39,6 @@ import com.google.crypto.tink.proto.EciesAeadHkdfParams;
 import com.google.crypto.tink.proto.EciesAeadHkdfPrivateKey;
 import com.google.crypto.tink.proto.EciesAeadHkdfPublicKey;
 import com.google.crypto.tink.proto.EllipticCurveType;
-import com.google.crypto.tink.proto.HashType;
 import com.google.crypto.tink.proto.HkdfPrfKey;
 import com.google.crypto.tink.proto.HkdfPrfParams;
 import com.google.crypto.tink.proto.HmacKey;
@@ -57,21 +56,13 @@ import com.google.crypto.tink.proto.RsaSsaPkcs1Params;
 import com.google.crypto.tink.proto.RsaSsaPkcs1PublicKey;
 import com.google.crypto.tink.proto.RsaSsaPssParams;
 import com.google.crypto.tink.proto.RsaSsaPssPublicKey;
-import com.google.crypto.tink.subtle.EllipticCurves;
 import com.google.crypto.tink.subtle.Hex;
 import com.google.crypto.tink.subtle.Random;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.MessageLite;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -190,26 +181,26 @@ public final class TestUtil {
         .build();
   }
 
-  /** @return a {@code HmacKey}. */
-  public static HmacKey createHmacKey(byte[] keyValue, int tagSize) throws Exception {
-    HmacParams params =
-        HmacParams.newBuilder().setHash(HashType.SHA256).setTagSize(tagSize).build();
+  ///** @return a {@code HmacKey}. */
+  //public static HmacKey createHmacKey(byte[] keyValue, int tagSize) throws Exception {
+  //  HmacParams params =
+  //      HmacParams.newBuilder().setHash(HashType.SHA256).setTagSize(tagSize).build();
 
-    return HmacKey.newBuilder()
-        .setParams(params)
-        .setKeyValue(ByteString.copyFrom(keyValue))
-        .build();
-  }
+  //  return HmacKey.newBuilder()
+  //      .setParams(params)
+  //      .setKeyValue(ByteString.copyFrom(keyValue))
+  //      .build();
+  //}
 
-  /** @return a {@code HkdfPrfKey}. */
-  public static HkdfPrfKey createPrfKey(byte[] keyValue) throws Exception {
-    HkdfPrfParams params = HkdfPrfParams.newBuilder().setHash(HashType.SHA256).build();
+  ///** @return a {@code HkdfPrfKey}. */
+  //public static HkdfPrfKey createPrfKey(byte[] keyValue) throws Exception {
+  //  HkdfPrfParams params = HkdfPrfParams.newBuilder().setHash(HashType.SHA256).build();
 
-    return HkdfPrfKey.newBuilder()
-        .setParams(params)
-        .setKeyValue(ByteString.copyFrom(keyValue))
-        .build();
-  }
+  //  return HkdfPrfKey.newBuilder()
+  //      .setParams(params)
+  //      .setKeyValue(ByteString.copyFrom(keyValue))
+  //      .build();
+  //}
 
   /** @return a {@code KeyData} from a specified key. */
   public static KeyData createKeyData(MessageLite key, String typeUrl, KeyData.KeyMaterialType type)
@@ -331,129 +322,129 @@ public final class TestUtil {
   //      "projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s", projectId, location, ringId, keyId);
   //}
 
-  /**
-   * @return a {@code EcdsaPrivateKey} constructed from {@code EcdsaPublicKey} and the byte array of
-   *     private key.
-   */
-  public static EcdsaPrivateKey createEcdsaPrivKey(EcdsaPublicKey pubKey, byte[] privKey) {
-    final int version = 0;
-    return EcdsaPrivateKey.newBuilder()
-        .setVersion(version)
-        .setPublicKey(pubKey)
-        .setKeyValue(ByteString.copyFrom(privKey))
-        .build();
-  }
+  ///**
+  // * @return a {@code EcdsaPrivateKey} constructed from {@code EcdsaPublicKey} and the byte array of
+  // *     private key.
+  // */
+  //public static EcdsaPrivateKey createEcdsaPrivKey(EcdsaPublicKey pubKey, byte[] privKey) {
+  //  final int version = 0;
+  //  return EcdsaPrivateKey.newBuilder()
+  //      .setVersion(version)
+  //      .setPublicKey(pubKey)
+  //      .setKeyValue(ByteString.copyFrom(privKey))
+  //      .build();
+  //}
 
   /**
    * @return a {@code EcdsaPublicKey} constructed from {@code EllipticCurveType} and {@code
    *     HashType}.
    */
-  public static EcdsaPublicKey generateEcdsaPubKey(
-      EllipticCurveType curve, HashType hashType, EcdsaSignatureEncoding encoding)
-      throws Exception {
-    EcdsaPrivateKey privKey = generateEcdsaPrivKey(curve, hashType, encoding);
-    return privKey.getPublicKey();
-  }
+  //public static EcdsaPublicKey generateEcdsaPubKey(
+  //    EllipticCurveType curve, HashType hashType, EcdsaSignatureEncoding encoding)
+  //    throws Exception {
+  //  EcdsaPrivateKey privKey = generateEcdsaPrivKey(curve, hashType, encoding);
+  //  return privKey.getPublicKey();
+  //}
 
-  /**
-   * @return a {@code EcdsaPrivateKey} constructed from {@code EllipticCurveType} and {@code
-   *     HashType}.
-   */
-  public static EcdsaPrivateKey generateEcdsaPrivKey(
-      EllipticCurveType curve, HashType hashType, EcdsaSignatureEncoding encoding)
-      throws Exception {
-    ECParameterSpec ecParams;
-    switch (curve) {
-      case NIST_P256:
-        ecParams = EllipticCurves.getNistP256Params();
-        break;
-      case NIST_P384:
-        ecParams = EllipticCurves.getNistP384Params();
-        break;
-      case NIST_P521:
-        ecParams = EllipticCurves.getNistP521Params();
-        break;
-      default:
-        throw new NoSuchAlgorithmException("Curve not implemented:" + curve);
-    }
-    KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-    keyGen.initialize(ecParams);
-    KeyPair keyPair = keyGen.generateKeyPair();
-    ECPublicKey pubKey = (ECPublicKey) keyPair.getPublic();
-    ECPrivateKey privKey = (ECPrivateKey) keyPair.getPrivate();
-    ECPoint w = pubKey.getW();
-    EcdsaPublicKey ecdsaPubKey =
-        createEcdsaPubKey(
-            hashType, curve, encoding, w.getAffineX().toByteArray(), w.getAffineY().toByteArray());
+  ///**
+  // * @return a {@code EcdsaPrivateKey} constructed from {@code EllipticCurveType} and {@code
+  // *     HashType}.
+  // */
+  //public static EcdsaPrivateKey generateEcdsaPrivKey(
+  //    EllipticCurveType curve, HashType hashType, EcdsaSignatureEncoding encoding)
+  //    throws Exception {
+  //  ECParameterSpec ecParams;
+  //  switch (curve) {
+  //    case NIST_P256:
+  //      ecParams = EllipticCurves.getNistP256Params();
+  //      break;
+  //    case NIST_P384:
+  //      ecParams = EllipticCurves.getNistP384Params();
+  //      break;
+  //    case NIST_P521:
+  //      ecParams = EllipticCurves.getNistP521Params();
+  //      break;
+  //    default:
+  //      throw new NoSuchAlgorithmException("Curve not implemented:" + curve);
+  //  }
+  //  KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
+  //  keyGen.initialize(ecParams);
+  //  KeyPair keyPair = keyGen.generateKeyPair();
+  //  ECPublicKey pubKey = (ECPublicKey) keyPair.getPublic();
+  //  ECPrivateKey privKey = (ECPrivateKey) keyPair.getPrivate();
+  //  ECPoint w = pubKey.getW();
+  //  EcdsaPublicKey ecdsaPubKey =
+  //      createEcdsaPubKey(
+  //          hashType, curve, encoding, w.getAffineX().toByteArray(), w.getAffineY().toByteArray());
 
-    return createEcdsaPrivKey(ecdsaPubKey, privKey.getS().toByteArray());
-  }
+  //  return createEcdsaPrivKey(ecdsaPubKey, privKey.getS().toByteArray());
+  //}
 
-  /**
-   * @return a {@code EcdsaPublicKey} constructed from {@code HashType}, {@code EllipticCurveType}
-   *     and affine coordinates of the public key.
-   */
-  public static EcdsaPublicKey createEcdsaPubKey(
-      HashType hashType,
-      EllipticCurveType curve,
-      EcdsaSignatureEncoding encoding,
-      byte[] pubX,
-      byte[] pubY)
-      throws Exception {
-    final int version = 0;
-    EcdsaParams ecdsaParams =
-        EcdsaParams.newBuilder()
-            .setHashType(hashType)
-            .setCurve(curve)
-            .setEncoding(encoding)
-            .build();
-    return EcdsaPublicKey.newBuilder()
-        .setVersion(version)
-        .setParams(ecdsaParams)
-        .setX(ByteString.copyFrom(pubX))
-        .setY(ByteString.copyFrom(pubY))
-        .build();
-  }
+  ///**
+  // * @return a {@code EcdsaPublicKey} constructed from {@code HashType}, {@code EllipticCurveType}
+  // *     and affine coordinates of the public key.
+  // */
+  //public static EcdsaPublicKey createEcdsaPubKey(
+  //    HashType hashType,
+  //    EllipticCurveType curve,
+  //    EcdsaSignatureEncoding encoding,
+  //    byte[] pubX,
+  //    byte[] pubY)
+  //    throws Exception {
+  //  final int version = 0;
+  //  EcdsaParams ecdsaParams =
+  //      EcdsaParams.newBuilder()
+  //          .setHashType(hashType)
+  //          .setCurve(curve)
+  //          .setEncoding(encoding)
+  //          .build();
+  //  return EcdsaPublicKey.newBuilder()
+  //      .setVersion(version)
+  //      .setParams(ecdsaParams)
+  //      .setX(ByteString.copyFrom(pubX))
+  //      .setY(ByteString.copyFrom(pubY))
+  //      .build();
+  //}
 
-  /**
-   * @return a {@code RsaSsaPkcs1PublicKey} constructed from {@code modulus}, {@code exponent} and
-   *     {@code hashType}.
-   */
-  public static RsaSsaPkcs1PublicKey createRsaSsaPkcs1PubKey(
-      byte[] modulus, byte[] exponent, HashType hashType) throws Exception {
-    final int version = 0;
-    RsaSsaPkcs1Params params = RsaSsaPkcs1Params.newBuilder().setHashType(hashType).build();
+  ///**
+  // * @return a {@code RsaSsaPkcs1PublicKey} constructed from {@code modulus}, {@code exponent} and
+  // *     {@code hashType}.
+  // */
+  //public static RsaSsaPkcs1PublicKey createRsaSsaPkcs1PubKey(
+  //    byte[] modulus, byte[] exponent, HashType hashType) throws Exception {
+  //  final int version = 0;
+  //  RsaSsaPkcs1Params params = RsaSsaPkcs1Params.newBuilder().setHashType(hashType).build();
 
-    return RsaSsaPkcs1PublicKey.newBuilder()
-        .setVersion(version)
-        .setParams(params)
-        .setN(ByteString.copyFrom(modulus))
-        .setE(ByteString.copyFrom(exponent))
-        .build();
-  }
+  //  return RsaSsaPkcs1PublicKey.newBuilder()
+  //      .setVersion(version)
+  //      .setParams(params)
+  //      .setN(ByteString.copyFrom(modulus))
+  //      .setE(ByteString.copyFrom(exponent))
+  //      .build();
+  //}
 
-  /**
-   * Returns a {@code RsaSsaPssPublicKey} constructed from {@code modulus}, {@code exponent}, {@code
-   * sigHash}, {@code mgf1Hash} and {@code saltLength}.
-   */
-  public static RsaSsaPssPublicKey createRsaSsaPssPubKey(
-      byte[] modulus, byte[] exponent, HashType sigHash, HashType mgf1Hash, int saltLength)
-      throws Exception {
-    final int version = 0;
-    RsaSsaPssParams params =
-        RsaSsaPssParams.newBuilder()
-            .setSigHash(sigHash)
-            .setMgf1Hash(mgf1Hash)
-            .setSaltLength(saltLength)
-            .build();
+  ///**
+  // * Returns a {@code RsaSsaPssPublicKey} constructed from {@code modulus}, {@code exponent}, {@code
+  // * sigHash}, {@code mgf1Hash} and {@code saltLength}.
+  // */
+  //public static RsaSsaPssPublicKey createRsaSsaPssPubKey(
+  //    byte[] modulus, byte[] exponent, HashType sigHash, HashType mgf1Hash, int saltLength)
+  //    throws Exception {
+  //  final int version = 0;
+  //  RsaSsaPssParams params =
+  //      RsaSsaPssParams.newBuilder()
+  //          .setSigHash(sigHash)
+  //          .setMgf1Hash(mgf1Hash)
+  //          .setSaltLength(saltLength)
+  //          .build();
 
-    return RsaSsaPssPublicKey.newBuilder()
-        .setVersion(version)
-        .setParams(params)
-        .setN(ByteString.copyFrom(modulus))
-        .setE(ByteString.copyFrom(exponent))
-        .build();
-  }
+  //  return RsaSsaPssPublicKey.newBuilder()
+  //      .setVersion(version)
+  //      .setParams(params)
+  //      .setN(ByteString.copyFrom(modulus))
+  //      .setE(ByteString.copyFrom(exponent))
+  //      .build();
+  //}
   ///**
   // * @return a freshly generated {@code EciesAeadHkdfPrivateKey} constructed with specified
   // *     parameters.
@@ -625,22 +616,22 @@ public final class TestUtil {
     assertTrue(message, e.getMessage().contains(contains));
   }
 
-  /** Asserts that {@code key} is generated from {@code keyTemplate}. */
-  public static void assertHmacKey(com.google.crypto.tink.KeyTemplate keyTemplate, Keyset.Key key)
-      throws Exception {
-    assertThat(key.getKeyId()).isGreaterThan(0);
-    assertThat(key.getStatus()).isEqualTo(KeyStatusType.ENABLED);
-    assertThat(key.getOutputPrefixType()).isEqualTo(OutputPrefixType.TINK);
-    assertThat(key.hasKeyData()).isTrue();
-    assertThat(key.getKeyData().getTypeUrl()).isEqualTo(keyTemplate.getTypeUrl());
+  ///** Asserts that {@code key} is generated from {@code keyTemplate}. */
+  //public static void assertHmacKey(com.google.crypto.tink.KeyTemplate keyTemplate, Keyset.Key key)
+  //    throws Exception {
+  //  assertThat(key.getKeyId()).isGreaterThan(0);
+  //  assertThat(key.getStatus()).isEqualTo(KeyStatusType.ENABLED);
+  //  assertThat(key.getOutputPrefixType()).isEqualTo(OutputPrefixType.TINK);
+  //  assertThat(key.hasKeyData()).isTrue();
+  //  assertThat(key.getKeyData().getTypeUrl()).isEqualTo(keyTemplate.getTypeUrl());
 
-    HmacKeyFormat hmacKeyFormat =
-        HmacKeyFormat.parseFrom(keyTemplate.getValue(), ExtensionRegistryLite.getEmptyRegistry());
-    HmacKey hmacKey =
-        HmacKey.parseFrom(key.getKeyData().getValue(), ExtensionRegistryLite.getEmptyRegistry());
-    assertThat(hmacKey.getParams()).isEqualTo(hmacKeyFormat.getParams());
-    assertThat(hmacKey.getKeyValue().size()).isEqualTo(hmacKeyFormat.getKeySize());
-  }
+  //  HmacKeyFormat hmacKeyFormat =
+  //      HmacKeyFormat.parseFrom(keyTemplate.getValue(), ExtensionRegistryLite.getEmptyRegistry());
+  //  HmacKey hmacKey =
+  //      HmacKey.parseFrom(key.getKeyData().getValue(), ExtensionRegistryLite.getEmptyRegistry());
+  //  assertThat(hmacKey.getParams()).isEqualTo(hmacKeyFormat.getParams());
+  //  assertThat(hmacKey.getKeyValue().size()).isEqualTo(hmacKeyFormat.getKeySize());
+  //}
 
   /** Asserts that {@code KeyInfo} is corresponding to a key from {@code keyTemplate}. */
   public static void assertKeyInfo(

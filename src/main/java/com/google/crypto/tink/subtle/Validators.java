@@ -16,11 +16,9 @@
 
 package com.google.crypto.tink.subtle;
 
-import com.google.crypto.tink.config.internal.TinkFipsUtil;
 import com.google.crypto.tink.subtle.Enums.HashType;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.util.Locale;
@@ -96,58 +94,58 @@ public final class Validators {
     throw new GeneralSecurityException("Unsupported hash: " + hash.name());
   }
 
-  /**
-   * Validates whether {@code modulusSize} is at least 2048-bit.
-   *
-   * <p>To reach 128-bit security strength, RSA's modulus must be at least 3072-bit while 2048-bit
-   * RSA key only has 112-bit security. Nevertheless, a 2048-bit RSA key is considered safe by NIST
-   * until 2030 (see https://www.keylength.com/en/4/).
-   *
-   * @throws GeneralSecurityException if {@code modulusSize} is less than 2048-bit or if the modulus
-   *     violates FIPS restrictions if they have been enabled.
-   */
-  public static void validateRsaModulusSize(int modulusSize) throws GeneralSecurityException {
-    if (modulusSize < MIN_RSA_MODULUS_SIZE) {
-      throw new GeneralSecurityException(
-          String.format(
-              "Modulus size is %d; only modulus size >= 2048-bit is supported", modulusSize));
-    }
-    // In FIPS only mode we check here if the modulus is 2048 or 3072, as this is the
-    // only size which is covered by the FIPS validation and supported by Tink.
-    // See
-    // https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3318
-    if (TinkFipsUtil.useOnlyFips()) {
-      if (modulusSize != 2048 && modulusSize != 3072) {
-        throw new GeneralSecurityException(
-            String.format(
-                "Modulus size is %d; only modulus size of 2048- or 3072-bit is supported in FIPS"
-                    + " mode.",
-                modulusSize));
-      }
-    }
-  }
+  ///**
+  // * Validates whether {@code modulusSize} is at least 2048-bit.
+  // *
+  // * <p>To reach 128-bit security strength, RSA's modulus must be at least 3072-bit while 2048-bit
+  // * RSA key only has 112-bit security. Nevertheless, a 2048-bit RSA key is considered safe by NIST
+  // * until 2030 (see https://www.keylength.com/en/4/).
+  // *
+  // * @throws GeneralSecurityException if {@code modulusSize} is less than 2048-bit or if the modulus
+  // *     violates FIPS restrictions if they have been enabled.
+  // */
+  //public static void validateRsaModulusSize(int modulusSize) throws GeneralSecurityException {
+  //  if (modulusSize < MIN_RSA_MODULUS_SIZE) {
+  //    throw new GeneralSecurityException(
+  //        String.format(
+  //            "Modulus size is %d; only modulus size >= 2048-bit is supported", modulusSize));
+  //  }
+  //  // In FIPS only mode we check here if the modulus is 2048 or 3072, as this is the
+  //  // only size which is covered by the FIPS validation and supported by Tink.
+  //  // See
+  //  // https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3318
+  //  if (TinkFipsUtil.useOnlyFips()) {
+  //    if (modulusSize != 2048 && modulusSize != 3072) {
+  //      throw new GeneralSecurityException(
+  //          String.format(
+  //              "Modulus size is %d; only modulus size of 2048- or 3072-bit is supported in FIPS"
+  //                  + " mode.",
+  //              modulusSize));
+  //    }
+  //  }
+  //}
 
-  /**
-   * Validates whether {@code publicExponent} is odd and greater than 65536.
-   *
-   * <p>The primes p and q are chosen such that (p-1)(q-1) is relatively prime to the public
-   * exponent. Therefore, the public exponent must be odd. Furthermore, choosing a public exponent
-   * which is not greater than 65536 can lead to weak instantiations of RSA. A public exponent which
-   * is odd and greater than 65536 conforms to the requirements set by NIST FIPS 186-4
-   * (Appendix B.3.1).
-   *
-   * @throws GeneralSecurityException if {@code publicExponent} is even or not greater than 65536.
-   */
-  public static void validateRsaPublicExponent(
-      BigInteger publicExponent) throws GeneralSecurityException {
-    if (!publicExponent.testBit(0)) {
-      throw new GeneralSecurityException("Public exponent must be odd.");
-    }
+  ///**
+  // * Validates whether {@code publicExponent} is odd and greater than 65536.
+  // *
+  // * <p>The primes p and q are chosen such that (p-1)(q-1) is relatively prime to the public
+  // * exponent. Therefore, the public exponent must be odd. Furthermore, choosing a public exponent
+  // * which is not greater than 65536 can lead to weak instantiations of RSA. A public exponent which
+  // * is odd and greater than 65536 conforms to the requirements set by NIST FIPS 186-4
+  // * (Appendix B.3.1).
+  // *
+  // * @throws GeneralSecurityException if {@code publicExponent} is even or not greater than 65536.
+  // */
+  //public static void validateRsaPublicExponent(
+  //    BigInteger publicExponent) throws GeneralSecurityException {
+  //  if (!publicExponent.testBit(0)) {
+  //    throw new GeneralSecurityException("Public exponent must be odd.");
+  //  }
 
-    if (publicExponent.compareTo(BigInteger.valueOf(65536)) <= 0) {
-      throw new GeneralSecurityException("Public exponent must be greater than 65536.");
-    }
-  }
+  //  if (publicExponent.compareTo(BigInteger.valueOf(65536)) <= 0) {
+  //    throw new GeneralSecurityException("Public exponent must be greater than 65536.");
+  //  }
+  //}
 
   /*
    * @throws IOException if {@code f} exists.
