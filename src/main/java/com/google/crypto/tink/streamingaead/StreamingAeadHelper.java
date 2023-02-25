@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink.streamingaead;
 
-import androidx.annotation.RequiresApi;
 import com.google.crypto.tink.PrimitiveSet;
 import com.google.crypto.tink.StreamingAead;
 import java.io.IOException;
@@ -63,7 +62,6 @@ final class StreamingAeadHelper implements StreamingAead {
   }
 
   @Override
-  @RequiresApi(24) // https://developer.android.com/reference/java/nio/channels/SeekableByteChannel
   public SeekableByteChannel newSeekableDecryptingChannel(
       SeekableByteChannel ciphertextChannel, byte[] associatedData)
       throws GeneralSecurityException, IOException {

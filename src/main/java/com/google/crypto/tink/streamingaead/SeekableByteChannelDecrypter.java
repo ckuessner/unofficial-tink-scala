@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink.streamingaead;
 
-import androidx.annotation.RequiresApi;
 import com.google.crypto.tink.PrimitiveSet;
 import com.google.crypto.tink.StreamingAead;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -30,7 +29,6 @@ import java.util.Deque;
 import javax.annotation.concurrent.GuardedBy;
 
 /** A decrypter for ciphertext given in a {@link SeekableByteChannel}. */
-@RequiresApi(24) // https://developer.android.com/reference/java/nio/channels/SeekableByteChannel
 final class SeekableByteChannelDecrypter implements SeekableByteChannel {
   @GuardedBy("this")
   SeekableByteChannel attemptingChannel;
