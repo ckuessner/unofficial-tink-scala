@@ -22,13 +22,9 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.CleartextKeysetHandle;
-import com.google.crypto.tink.CryptoFormat;
 import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.PrimitiveSet;
 import com.google.crypto.tink.Registry;
-import com.google.crypto.tink.internal.MutableMonitoringRegistry;
-import com.google.crypto.tink.internal.testing.FakeMonitoringClient;
-import com.google.crypto.tink.monitoring.MonitoringAnnotations;
 import com.google.crypto.tink.proto.AesCtrHmacAeadKey;
 import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.proto.KeyStatusType;
@@ -40,7 +36,7 @@ import com.google.crypto.tink.subtle.Random;
 import com.google.crypto.tink.testing.TestUtil;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
@@ -395,104 +391,104 @@ public class AeadWrapperTest {
         GeneralSecurityException.class, () -> keysetHandle.getPrimitive(Aead.class));
   }
 
-  @Test
-  public void testAeadWithoutAnnotations_hasNoMonitoring() throws Exception {
-    FakeMonitoringClient fakeMonitoringClient = new FakeMonitoringClient();
-    MutableMonitoringRegistry.globalInstance().clear();
-    MutableMonitoringRegistry.globalInstance().registerMonitoringClient(fakeMonitoringClient);
+  //@Test
+  //public void testAeadWithoutAnnotations_hasNoMonitoring() throws Exception {
+  //  FakeMonitoringClient fakeMonitoringClient = new FakeMonitoringClient();
+  //  MutableMonitoringRegistry.globalInstance().clear();
+  //  MutableMonitoringRegistry.globalInstance().registerMonitoringClient(fakeMonitoringClient);
 
-    Aead aead =
-        new AeadWrapper()
-            .wrap(
-                TestUtil.createPrimitiveSet(
-                    TestUtil.createKeyset(
-                        getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, OutputPrefixType.TINK)),
-                    Aead.class));
+  //  Aead aead =
+  //      new AeadWrapper()
+  //          .wrap(
+  //              TestUtil.createPrimitiveSet(
+  //                  TestUtil.createKeyset(
+  //                      getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, OutputPrefixType.TINK)),
+  //                  Aead.class));
 
-    byte[] plaintext = "plaintext".getBytes(UTF_8);
-    byte[] associatedData = "associatedData".getBytes(UTF_8);
-    byte[] ciphertext = aead.encrypt(plaintext, associatedData);
-    assertThat(aead.decrypt(ciphertext, associatedData)).isEqualTo(plaintext);
-    assertThrows(
-        GeneralSecurityException.class, () -> aead.decrypt(ciphertext, "invalid".getBytes(UTF_8)));
+  //  byte[] plaintext = "plaintext".getBytes(UTF_8);
+  //  byte[] associatedData = "associatedData".getBytes(UTF_8);
+  //  byte[] ciphertext = aead.encrypt(plaintext, associatedData);
+  //  assertThat(aead.decrypt(ciphertext, associatedData)).isEqualTo(plaintext);
+  //  assertThrows(
+  //      GeneralSecurityException.class, () -> aead.decrypt(ciphertext, "invalid".getBytes(UTF_8)));
 
-    // Without annotations, nothing gets logged.
-    assertThat(fakeMonitoringClient.getLogEntries()).isEmpty();
-    assertThat(fakeMonitoringClient.getLogFailureEntries()).isEmpty();
-  }
+  //  // Without annotations, nothing gets logged.
+  //  assertThat(fakeMonitoringClient.getLogEntries()).isEmpty();
+  //  assertThat(fakeMonitoringClient.getLogFailureEntries()).isEmpty();
+  //}
 
-  @Test
-  public void testAeadWithAnnotations_hasMonitoring() throws Exception {
-    FakeMonitoringClient fakeMonitoringClient = new FakeMonitoringClient();
-    MutableMonitoringRegistry.globalInstance().clear();
-    MutableMonitoringRegistry.globalInstance().registerMonitoringClient(fakeMonitoringClient);
+  //@Test
+  //public void testAeadWithAnnotations_hasMonitoring() throws Exception {
+  //  FakeMonitoringClient fakeMonitoringClient = new FakeMonitoringClient();
+  //  MutableMonitoringRegistry.globalInstance().clear();
+  //  MutableMonitoringRegistry.globalInstance().registerMonitoringClient(fakeMonitoringClient);
 
-    Key key1 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 42, OutputPrefixType.TINK);
-    Key key2 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 43, OutputPrefixType.RAW);
+  //  Key key1 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 42, OutputPrefixType.TINK);
+  //  Key key2 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 43, OutputPrefixType.RAW);
 
-    byte[] plaintext = Random.randBytes(20);
-    byte[] plaintext2 = Random.randBytes(30);
-    byte[] associatedData = Random.randBytes(40);
+  //  byte[] plaintext = Random.randBytes(20);
+  //  byte[] plaintext2 = Random.randBytes(30);
+  //  byte[] associatedData = Random.randBytes(40);
 
-    // generate ciphertext2 using key2
-    Aead aead2 =
-        new AeadWrapper()
-            .wrap(TestUtil.createPrimitiveSet(TestUtil.createKeyset(key2), Aead.class));
-    byte[] ciphertext2 = aead2.encrypt(plaintext2, associatedData);
+  //  // generate ciphertext2 using key2
+  //  Aead aead2 =
+  //      new AeadWrapper()
+  //          .wrap(TestUtil.createPrimitiveSet(TestUtil.createKeyset(key2), Aead.class));
+  //  byte[] ciphertext2 = aead2.encrypt(plaintext2, associatedData);
 
-    MonitoringAnnotations annotations =
-        MonitoringAnnotations.newBuilder().add("annotation_name", "annotation_value").build();
-    PrimitiveSet<Aead> primitives =
-        TestUtil.createPrimitiveSetWithAnnotations(
-            TestUtil.createKeyset(key1, key2), // key1 is the primary key
-            annotations,
-            Aead.class);
-    Aead aead = new AeadWrapper().wrap(primitives);
+  //  MonitoringAnnotations annotations =
+  //      MonitoringAnnotations.newBuilder().add("annotation_name", "annotation_value").build();
+  //  PrimitiveSet<Aead> primitives =
+  //      TestUtil.createPrimitiveSetWithAnnotations(
+  //          TestUtil.createKeyset(key1, key2), // key1 is the primary key
+  //          annotations,
+  //          Aead.class);
+  //  Aead aead = new AeadWrapper().wrap(primitives);
 
-    byte[] ciphertext = aead.encrypt(plaintext, associatedData);  // uses key1 to encrypt
-    byte[] decrypted = aead.decrypt(ciphertext, associatedData);
-    assertThat(decrypted).isEqualTo(plaintext);
-    byte[] decrypted2 = aead.decrypt(ciphertext2, associatedData);
-    assertThat(decrypted2).isEqualTo(plaintext2);
+  //  byte[] ciphertext = aead.encrypt(plaintext, associatedData);  // uses key1 to encrypt
+  //  byte[] decrypted = aead.decrypt(ciphertext, associatedData);
+  //  assertThat(decrypted).isEqualTo(plaintext);
+  //  byte[] decrypted2 = aead.decrypt(ciphertext2, associatedData);
+  //  assertThat(decrypted2).isEqualTo(plaintext2);
 
-    assertThrows(GeneralSecurityException.class, () -> aead.decrypt(ciphertext, new byte[0]));
+  //  assertThrows(GeneralSecurityException.class, () -> aead.decrypt(ciphertext, new byte[0]));
 
-    List<FakeMonitoringClient.LogEntry> logEntries = fakeMonitoringClient.getLogEntries();
-    assertThat(logEntries).hasSize(3);
-    FakeMonitoringClient.LogEntry encEntry = logEntries.get(0);
-    assertThat(encEntry.getKeyId()).isEqualTo(42);
-    assertThat(encEntry.getPrimitive()).isEqualTo("aead");
-    assertThat(encEntry.getApi()).isEqualTo("encrypt");
-    assertThat(encEntry.getNumBytesAsInput()).isEqualTo(plaintext.length);
-    assertThat(encEntry.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
+  //  List<FakeMonitoringClient.LogEntry> logEntries = fakeMonitoringClient.getLogEntries();
+  //  assertThat(logEntries).hasSize(3);
+  //  FakeMonitoringClient.LogEntry encEntry = logEntries.get(0);
+  //  assertThat(encEntry.getKeyId()).isEqualTo(42);
+  //  assertThat(encEntry.getPrimitive()).isEqualTo("aead");
+  //  assertThat(encEntry.getApi()).isEqualTo("encrypt");
+  //  assertThat(encEntry.getNumBytesAsInput()).isEqualTo(plaintext.length);
+  //  assertThat(encEntry.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
 
-    FakeMonitoringClient.LogEntry decEntry = logEntries.get(1);
-    assertThat(decEntry.getKeyId()).isEqualTo(42);
-    assertThat(decEntry.getPrimitive()).isEqualTo("aead");
-    assertThat(decEntry.getApi()).isEqualTo("decrypt");
-    // ciphertext was encrypted with key1, which has a TINK ouput prefix. This adds a 5 bytes prefix
-    // to the ciphertext. This prefix is not included in getNumBytesAsInput.
-    assertThat(decEntry.getNumBytesAsInput())
-        .isEqualTo(ciphertext.length - CryptoFormat.NON_RAW_PREFIX_SIZE);
-    assertThat(decEntry.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
+  //  FakeMonitoringClient.LogEntry decEntry = logEntries.get(1);
+  //  assertThat(decEntry.getKeyId()).isEqualTo(42);
+  //  assertThat(decEntry.getPrimitive()).isEqualTo("aead");
+  //  assertThat(decEntry.getApi()).isEqualTo("decrypt");
+  //  // ciphertext was encrypted with key1, which has a TINK ouput prefix. This adds a 5 bytes prefix
+  //  // to the ciphertext. This prefix is not included in getNumBytesAsInput.
+  //  assertThat(decEntry.getNumBytesAsInput())
+  //      .isEqualTo(ciphertext.length - CryptoFormat.NON_RAW_PREFIX_SIZE);
+  //  assertThat(decEntry.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
 
-    FakeMonitoringClient.LogEntry dec2Entry = logEntries.get(2);
-    assertThat(dec2Entry.getKeyId()).isEqualTo(43);
-    assertThat(dec2Entry.getPrimitive()).isEqualTo("aead");
-    assertThat(dec2Entry.getApi()).isEqualTo("decrypt");
-    // ciphertext2 was encrypted with key2, which has a RAW ouput prefix.
-    assertThat(dec2Entry.getNumBytesAsInput()).isEqualTo(ciphertext2.length);
-    assertThat(dec2Entry.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
+  //  FakeMonitoringClient.LogEntry dec2Entry = logEntries.get(2);
+  //  assertThat(dec2Entry.getKeyId()).isEqualTo(43);
+  //  assertThat(dec2Entry.getPrimitive()).isEqualTo("aead");
+  //  assertThat(dec2Entry.getApi()).isEqualTo("decrypt");
+  //  // ciphertext2 was encrypted with key2, which has a RAW ouput prefix.
+  //  assertThat(dec2Entry.getNumBytesAsInput()).isEqualTo(ciphertext2.length);
+  //  assertThat(dec2Entry.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
 
-    List<FakeMonitoringClient.LogFailureEntry> failures =
-        fakeMonitoringClient.getLogFailureEntries();
-    assertThat(failures).hasSize(1);
-    FakeMonitoringClient.LogFailureEntry decFailure = failures.get(0);
-    assertThat(decFailure.getPrimitive()).isEqualTo("aead");
-    assertThat(decFailure.getApi()).isEqualTo("decrypt");
-    assertThat(decFailure.getKeysetInfo().getPrimaryKeyId()).isEqualTo(42);
-    assertThat(decFailure.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
-  }
+  //  List<FakeMonitoringClient.LogFailureEntry> failures =
+  //      fakeMonitoringClient.getLogFailureEntries();
+  //  assertThat(failures).hasSize(1);
+  //  FakeMonitoringClient.LogFailureEntry decFailure = failures.get(0);
+  //  assertThat(decFailure.getPrimitive()).isEqualTo("aead");
+  //  assertThat(decFailure.getApi()).isEqualTo("decrypt");
+  //  assertThat(decFailure.getKeysetInfo().getPrimaryKeyId()).isEqualTo(42);
+  //  assertThat(decFailure.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
+  //}
 
   private static class AlwaysFailingAead implements Aead {
     public AlwaysFailingAead() {}
@@ -508,44 +504,44 @@ public class AeadWrapperTest {
     }
   }
 
-  @Test
-  public void testFailingAeadWithAnnotations_hasMonitoring() throws Exception {
-    FakeMonitoringClient fakeMonitoringClient = new FakeMonitoringClient();
-    MutableMonitoringRegistry.globalInstance().clear();
-    MutableMonitoringRegistry.globalInstance().registerMonitoringClient(fakeMonitoringClient);
+  //@Test
+  //public void testFailingAeadWithAnnotations_hasMonitoring() throws Exception {
+  //  FakeMonitoringClient fakeMonitoringClient = new FakeMonitoringClient();
+  //  MutableMonitoringRegistry.globalInstance().clear();
+  //  MutableMonitoringRegistry.globalInstance().registerMonitoringClient(fakeMonitoringClient);
 
-    MonitoringAnnotations annotations =
-        MonitoringAnnotations.newBuilder().add("annotation_name", "annotation_value").build();
-    PrimitiveSet<Aead> primitives =
-        PrimitiveSet.newBuilder(Aead.class)
-            .setAnnotations(annotations)
-            .addPrimaryPrimitive(
-                new AlwaysFailingAead(),
-                getKey(aesCtrHmacAeadKey, /*keyId=*/ 42, OutputPrefixType.TINK))
-            .build();
-    Aead aead = new AeadWrapper().wrap(primitives);
+  //  MonitoringAnnotations annotations =
+  //      MonitoringAnnotations.newBuilder().add("annotation_name", "annotation_value").build();
+  //  PrimitiveSet<Aead> primitives =
+  //      PrimitiveSet.newBuilder(Aead.class)
+  //          .setAnnotations(annotations)
+  //          .addPrimaryPrimitive(
+  //              new AlwaysFailingAead(),
+  //              getKey(aesCtrHmacAeadKey, /*keyId=*/ 42, OutputPrefixType.TINK))
+  //          .build();
+  //  Aead aead = new AeadWrapper().wrap(primitives);
 
-    byte[] randomBytes = Random.randBytes(20);
-    byte[] associatedData = Random.randBytes(20);
-    assertThrows(GeneralSecurityException.class, () -> aead.encrypt(randomBytes, associatedData));
-    assertThrows(GeneralSecurityException.class, () -> aead.decrypt(randomBytes, associatedData));
+  //  byte[] randomBytes = Random.randBytes(20);
+  //  byte[] associatedData = Random.randBytes(20);
+  //  assertThrows(GeneralSecurityException.class, () -> aead.encrypt(randomBytes, associatedData));
+  //  assertThrows(GeneralSecurityException.class, () -> aead.decrypt(randomBytes, associatedData));
 
-    assertThat(fakeMonitoringClient.getLogEntries()).isEmpty();
+  //  assertThat(fakeMonitoringClient.getLogEntries()).isEmpty();
 
-    List<FakeMonitoringClient.LogFailureEntry> failures =
-        fakeMonitoringClient.getLogFailureEntries();
-    assertThat(failures).hasSize(2);
-    FakeMonitoringClient.LogFailureEntry encFailure = failures.get(0);
-    assertThat(encFailure.getPrimitive()).isEqualTo("aead");
-    assertThat(encFailure.getApi()).isEqualTo("encrypt");
-    assertThat(encFailure.getKeysetInfo().getPrimaryKeyId()).isEqualTo(42);
-    assertThat(encFailure.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
+  //  List<FakeMonitoringClient.LogFailureEntry> failures =
+  //      fakeMonitoringClient.getLogFailureEntries();
+  //  assertThat(failures).hasSize(2);
+  //  FakeMonitoringClient.LogFailureEntry encFailure = failures.get(0);
+  //  assertThat(encFailure.getPrimitive()).isEqualTo("aead");
+  //  assertThat(encFailure.getApi()).isEqualTo("encrypt");
+  //  assertThat(encFailure.getKeysetInfo().getPrimaryKeyId()).isEqualTo(42);
+  //  assertThat(encFailure.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
 
-    FakeMonitoringClient.LogFailureEntry decFailure = failures.get(1);
-    assertThat(decFailure.getPrimitive()).isEqualTo("aead");
-    assertThat(decFailure.getApi()).isEqualTo("decrypt");
-    assertThat(decFailure.getKeysetInfo().getPrimaryKeyId()).isEqualTo(42);
-    assertThat(decFailure.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
-  }
+  //  FakeMonitoringClient.LogFailureEntry decFailure = failures.get(1);
+  //  assertThat(decFailure.getPrimitive()).isEqualTo("aead");
+  //  assertThat(decFailure.getApi()).isEqualTo("decrypt");
+  //  assertThat(decFailure.getKeysetInfo().getPrimaryKeyId()).isEqualTo(42);
+  //  assertThat(decFailure.getKeysetInfo().getAnnotations()).isEqualTo(annotations);
+  //}
 
 }

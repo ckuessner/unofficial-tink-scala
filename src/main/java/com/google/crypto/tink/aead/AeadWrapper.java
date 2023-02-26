@@ -21,10 +21,6 @@ import com.google.crypto.tink.CryptoFormat;
 import com.google.crypto.tink.PrimitiveSet;
 import com.google.crypto.tink.PrimitiveWrapper;
 import com.google.crypto.tink.Registry;
-import com.google.crypto.tink.internal.MonitoringUtil;
-import com.google.crypto.tink.internal.MutableMonitoringRegistry;
-import com.google.crypto.tink.monitoring.MonitoringClient;
-import com.google.crypto.tink.monitoring.MonitoringKeysetInfo;
 import com.google.crypto.tink.subtle.Bytes;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -46,20 +42,20 @@ public class AeadWrapper implements PrimitiveWrapper<Aead, Aead> {
 
   private static class WrappedAead implements Aead {
     private final PrimitiveSet<Aead> pSet;
-    private final MonitoringClient.Logger encLogger;
-    private final MonitoringClient.Logger decLogger;
+    //private final MonitoringClient.Logger encLogger;
+    //private final MonitoringClient.Logger decLogger;
 
     private WrappedAead(PrimitiveSet<Aead> pSet) {
       this.pSet = pSet;
-      if (pSet.hasAnnotations()) {
-        MonitoringClient client = MutableMonitoringRegistry.globalInstance().getMonitoringClient();
-        MonitoringKeysetInfo keysetInfo = MonitoringUtil.getMonitoringKeysetInfo(pSet);
-        this.encLogger = client.createLogger(keysetInfo, "aead", "encrypt");
-        this.decLogger = client.createLogger(keysetInfo, "aead", "decrypt");
-      } else {
-        this.encLogger = MonitoringUtil.DO_NOTHING_LOGGER;
-        this.decLogger = MonitoringUtil.DO_NOTHING_LOGGER;
-      }
+      //if (pSet.hasAnnotations()) {
+      //  MonitoringClient client = MutableMonitoringRegistry.globalInstance().getMonitoringClient();
+      //  MonitoringKeysetInfo keysetInfo = MonitoringUtil.getMonitoringKeysetInfo(pSet);
+      //  this.encLogger = client.createLogger(keysetInfo, "aead", "encrypt");
+      //  this.decLogger = client.createLogger(keysetInfo, "aead", "decrypt");
+      //} else {
+      //  this.encLogger = MonitoringUtil.DO_NOTHING_LOGGER;
+      //  this.decLogger = MonitoringUtil.DO_NOTHING_LOGGER;
+      //}
     }
 
     @Override
@@ -70,10 +66,10 @@ public class AeadWrapper implements PrimitiveWrapper<Aead, Aead> {
             Bytes.concat(
                 pSet.getPrimary().getIdentifier(),
                 pSet.getPrimary().getPrimitive().encrypt(plaintext, associatedData));
-        encLogger.log(pSet.getPrimary().getKeyId(), plaintext.length);
+        //encLogger.log(pSet.getPrimary().getKeyId(), plaintext.length);
         return output;
       } catch (GeneralSecurityException e) {
-        encLogger.logFailure();
+        //encLogger.logFailure();
         throw e;
       }
     }
@@ -89,10 +85,10 @@ public class AeadWrapper implements PrimitiveWrapper<Aead, Aead> {
         for (PrimitiveSet.Entry<Aead> entry : entries) {
           try {
             byte[] result = entry.getPrimitive().decrypt(ciphertextNoPrefix, associatedData);
-            decLogger.log(entry.getKeyId(), ciphertextNoPrefix.length);
+            //decLogger.log(entry.getKeyId(), ciphertextNoPrefix.length);
             return result;
           } catch (GeneralSecurityException e) {
-            logger.info("ciphertext prefix matches a key, but cannot decrypt: " + e);
+            //logger.info("ciphertext prefix matches a key, but cannot decrypt: " + e);
             continue;
           }
         }
@@ -103,13 +99,13 @@ public class AeadWrapper implements PrimitiveWrapper<Aead, Aead> {
       for (PrimitiveSet.Entry<Aead> entry : entries) {
         try {
           byte[] result = entry.getPrimitive().decrypt(ciphertext, associatedData);
-          decLogger.log(entry.getKeyId(), ciphertext.length);
+          //decLogger.log(entry.getKeyId(), ciphertext.length);
           return result;
         } catch (GeneralSecurityException e) {
           continue;
         }
       }
-      decLogger.logFailure();
+      //decLogger.logFailure();
       // nothing works.
       throw new GeneralSecurityException("decryption failed");
     }

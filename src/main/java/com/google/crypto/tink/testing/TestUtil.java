@@ -29,7 +29,6 @@ import com.google.crypto.tink.PrimitiveSet;
 import com.google.crypto.tink.Registry;
 import com.google.crypto.tink.TinkProtoKeysetFormat;
 import com.google.crypto.tink.hybrid.HybridKeyTemplates;
-import com.google.crypto.tink.monitoring.MonitoringAnnotations;
 import com.google.crypto.tink.proto.EcPointFormat;
 import com.google.crypto.tink.proto.EcdsaParams;
 import com.google.crypto.tink.proto.EcdsaPrivateKey;
@@ -124,25 +123,25 @@ public final class TestUtil {
   /**
    * @return a {@code PrimitiveSet} from a {@code KeySet}
    */
-  public static <P> PrimitiveSet<P> createPrimitiveSetWithAnnotations(
-      Keyset keyset, @Nullable MonitoringAnnotations annotations, Class<P> inputClass)
-      throws GeneralSecurityException {
-    PrimitiveSet.Builder<P> builder = PrimitiveSet.newBuilder(inputClass);
-    if (annotations != null) {
-      builder.setAnnotations(annotations);
-    }
-    for (Keyset.Key key : keyset.getKeyList()) {
-      if (key.getStatus() == KeyStatusType.ENABLED) {
-        P primitive = Registry.getPrimitive(key.getKeyData(), inputClass);
-        if (key.getKeyId() == keyset.getPrimaryKeyId()) {
-          builder.addPrimaryPrimitive(primitive, key);
-        } else {
-          builder.addPrimitive(primitive, key);
-        }
-      }
-    }
-    return builder.build();
-  }
+  //public static <P> PrimitiveSet<P> createPrimitiveSetWithAnnotations(
+  //    Keyset keyset, @Nullable MonitoringAnnotations annotations, Class<P> inputClass)
+  //    throws GeneralSecurityException {
+  //  PrimitiveSet.Builder<P> builder = PrimitiveSet.newBuilder(inputClass);
+  //  if (annotations != null) {
+  //    builder.setAnnotations(annotations);
+  //  }
+  //  for (Keyset.Key key : keyset.getKeyList()) {
+  //    if (key.getStatus() == KeyStatusType.ENABLED) {
+  //      P primitive = Registry.getPrimitive(key.getKeyData(), inputClass);
+  //      if (key.getKeyId() == keyset.getPrimaryKeyId()) {
+  //        builder.addPrimaryPrimitive(primitive, key);
+  //      } else {
+  //        builder.addPrimitive(primitive, key);
+  //      }
+  //    }
+  //  }
+  //  return builder.build();
+  //}
 
   /** @return a {@code Keyset} from a {@code handle}. */
   public static Keyset getKeyset(final KeysetHandle handle) {

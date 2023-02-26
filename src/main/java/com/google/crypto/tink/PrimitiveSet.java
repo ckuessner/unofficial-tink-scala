@@ -18,7 +18,6 @@ package com.google.crypto.tink;
 
 import com.google.crypto.tink.internal.MutableSerializationRegistry;
 import com.google.crypto.tink.internal.ProtoKeySerialization;
-import com.google.crypto.tink.monitoring.MonitoringAnnotations;
 import com.google.crypto.tink.proto.KeyStatusType;
 import com.google.crypto.tink.proto.Keyset;
 import com.google.crypto.tink.proto.OutputPrefixType;
@@ -207,13 +206,13 @@ public final class PrimitiveSet<P> {
     return primary;
   }
 
-  public boolean hasAnnotations() {
-    return !annotations.toMap().isEmpty();
-  }
+  //public boolean hasAnnotations() {
+  //  return !annotations.toMap().isEmpty();
+  //}
 
-  public MonitoringAnnotations getAnnotations() {
-    return annotations;
-  }
+  //public MonitoringAnnotations getAnnotations() {
+  //  return annotations;
+  //}
 
   /** @return all primitives using RAW prefix. */
   public List<Entry<P>> getRawPrimitives() {
@@ -240,25 +239,25 @@ public final class PrimitiveSet<P> {
 
   private Entry<P> primary;
   private final Class<P> primitiveClass;
-  private final MonitoringAnnotations annotations;
+  //private final MonitoringAnnotations annotations;
   private final boolean isMutable;
 
   private PrimitiveSet(Class<P> primitiveClass) {
     this.primitives = new ConcurrentHashMap<>();
     this.primitiveClass = primitiveClass;
-    this.annotations = MonitoringAnnotations.EMPTY;
+    //this.annotations = MonitoringAnnotations.EMPTY;
     this.isMutable = true;
   }
 
   /** Creates an immutable PrimitiveSet. It is used by the Builder.*/
-  private PrimitiveSet(ConcurrentMap<Prefix, List<Entry<P>>> primitives,
-      Entry<P> primary, MonitoringAnnotations annotations, Class<P> primitiveClass) {
-    this.primitives = primitives;
-    this.primary = primary;
-    this.primitiveClass = primitiveClass;
-    this.annotations = annotations;
-    this.isMutable = false;
-  }
+  //private PrimitiveSet(ConcurrentMap<Prefix, List<Entry<P>>> primitives,
+  //    Entry<P> primary, MonitoringAnnotations annotations, Class<P> primitiveClass) {
+  //  this.primitives = primitives;
+  //  this.primary = primary;
+  //  this.primitiveClass = primitiveClass;
+  //  this.annotations = annotations;
+  //  this.isMutable = false;
+  //}
 
   /**
    * Creates a new mutable PrimitiveSet.
@@ -295,25 +294,25 @@ public final class PrimitiveSet<P> {
     this.primary = primary;
   }
 
-  /**
-   * Creates an entry in the primitive table.
-   *
-   * @return the added {@link Entry}
-   * @throws IllegalStateException if object has been created by the {@link Builder}.
-   * @deprecated use {@link Builder.addPrimitive} or {@link Builder.addPrimaryPrimitive} instead.
-   */
-  @Deprecated /* Deprecation under consideration */
-  @CanIgnoreReturnValue
-  public Entry<P> addPrimitive(final P primitive, Keyset.Key key) throws GeneralSecurityException {
-    if (!isMutable) {
-      throw new IllegalStateException(
-          "addPrimitive cannot be called on an immutable primitive set");
-    }
-    if (key.getStatus() != KeyStatusType.ENABLED) {
-      throw new GeneralSecurityException("only ENABLED key is allowed");
-    }
-    return addEntryToMap(null, primitive, key, primitives);
-  }
+  ///**
+  // * Creates an entry in the primitive table.
+  // *
+  // * @return the added {@link Entry}
+  // * @throws IllegalStateException if object has been created by the {@link Builder}.
+  // * @deprecated use {@link Builder.addPrimitive} or {@link Builder.addPrimaryPrimitive} instead.
+  // */
+  //@Deprecated /* Deprecation under consideration */
+  //@CanIgnoreReturnValue
+  //public Entry<P> addPrimitive(final P primitive, Keyset.Key key) throws GeneralSecurityException {
+  //  if (!isMutable) {
+  //    throw new IllegalStateException(
+  //        "addPrimitive cannot be called on an immutable primitive set");
+  //  }
+  //  if (key.getStatus() != KeyStatusType.ENABLED) {
+  //    throw new GeneralSecurityException("only ENABLED key is allowed");
+  //  }
+  //  return addEntryToMap(null, primitive, key, primitives);
+  //}
 
   public Class<P> getPrimitiveClass() {
     return primitiveClass;
@@ -367,7 +366,7 @@ public final class PrimitiveSet<P> {
     // anymore.
     private ConcurrentMap<Prefix, List<Entry<P>>> primitives = new ConcurrentHashMap<>();
     private Entry<P> primary;
-    private MonitoringAnnotations annotations;
+    //private MonitoringAnnotations annotations;
 
     @CanIgnoreReturnValue
     private Builder<P> addPrimitive(
@@ -431,14 +430,14 @@ public final class PrimitiveSet<P> {
       return addPrimitive(fullPrimitive, primitive, key, true);
     }
 
-    @CanIgnoreReturnValue
-    public Builder<P> setAnnotations(MonitoringAnnotations annotations) {
-      if (primitives == null) {
-        throw new IllegalStateException("setAnnotations cannot be called after build");
-      }
-      this.annotations = annotations;
-      return this;
-    }
+    //@CanIgnoreReturnValue
+    //public Builder<P> setAnnotations(MonitoringAnnotations annotations) {
+    //  if (primitives == null) {
+    //    throw new IllegalStateException("setAnnotations cannot be called after build");
+    //  }
+    //  this.annotations = annotations;
+    //  return this;
+    //}
 
     public PrimitiveSet<P> build() throws GeneralSecurityException {
       if (primitives == null) {
@@ -453,7 +452,7 @@ public final class PrimitiveSet<P> {
 
     private Builder(Class<P> primitiveClass) {
       this.primitiveClass = primitiveClass;
-      this.annotations = MonitoringAnnotations.EMPTY;
+      //this.annotations = MonitoringAnnotations.EMPTY;
     }
   }
 
