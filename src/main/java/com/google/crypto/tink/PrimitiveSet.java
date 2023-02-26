@@ -16,15 +16,12 @@
 
 package com.google.crypto.tink;
 
-import com.google.crypto.tink.internal.MutableSerializationRegistry;
-import com.google.crypto.tink.internal.ProtoKeySerialization;
 import com.google.crypto.tink.proto.KeyStatusType;
 import com.google.crypto.tink.proto.Keyset;
 import com.google.crypto.tink.proto.OutputPrefixType;
 import com.google.crypto.tink.subtle.Hex;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -156,49 +153,49 @@ public final class PrimitiveSet<P> {
     }
   }
 
-  private static <P> Entry<P> addEntryToMap(
-      @Nullable P fullPrimitive,
-      @Nullable P primitive,
-      Keyset.Key key,
-      ConcurrentMap<Prefix, List<Entry<P>>> primitives)
-      throws GeneralSecurityException {
-    @Nullable Integer idRequirement = key.getKeyId();
-    if (key.getOutputPrefixType() == OutputPrefixType.RAW) {
-      idRequirement = null;
-    }
-    Key keyObject =
-        MutableSerializationRegistry.globalInstance()
-            .parseKeyWithLegacyFallback(
-                ProtoKeySerialization.create(
-                    key.getKeyData().getTypeUrl(),
-                    key.getKeyData().getValue(),
-                    key.getKeyData().getKeyMaterialType(),
-                    key.getOutputPrefixType(),
-                    idRequirement),
-                InsecureSecretKeyAccess.get());
-    Entry<P> entry =
-        new Entry<P>(
-            fullPrimitive,
-            primitive,
-            CryptoFormat.getOutputPrefix(key),
-            key.getStatus(),
-            key.getOutputPrefixType(),
-            key.getKeyId(),
-            key.getKeyData().getTypeUrl(),
-            keyObject);
-    List<Entry<P>> list = new ArrayList<>();
-    list.add(entry);
-    // Cannot use byte[] as keys in hash map, convert to Prefix wrapper class.
-    Prefix identifier = new Prefix(entry.getIdentifier());
-    List<Entry<P>> existing = primitives.put(identifier, Collections.unmodifiableList(list));
-    if (existing != null) {
-      List<Entry<P>> newList = new ArrayList<>();
-      newList.addAll(existing);
-      newList.add(entry);
-      primitives.put(identifier, Collections.unmodifiableList(newList));
-    }
-    return entry;
-  }
+  //private static <P> Entry<P> addEntryToMap(
+  //    @Nullable P fullPrimitive,
+  //    @Nullable P primitive,
+  //    Keyset.Key key,
+  //    ConcurrentMap<Prefix, List<Entry<P>>> primitives)
+  //    throws GeneralSecurityException {
+  //  @Nullable Integer idRequirement = key.getKeyId();
+  //  if (key.getOutputPrefixType() == OutputPrefixType.RAW) {
+  //    idRequirement = null;
+  //  }
+  //  Key keyObject =
+  //      MutableSerializationRegistry.globalInstance()
+  //          .parseKeyWithLegacyFallback(
+  //              ProtoKeySerialization.create(
+  //                  key.getKeyData().getTypeUrl(),
+  //                  key.getKeyData().getValue(),
+  //                  key.getKeyData().getKeyMaterialType(),
+  //                  key.getOutputPrefixType(),
+  //                  idRequirement),
+  //              InsecureSecretKeyAccess.get());
+  //  Entry<P> entry =
+  //      new Entry<P>(
+  //          fullPrimitive,
+  //          primitive,
+  //          CryptoFormat.getOutputPrefix(key),
+  //          key.getStatus(),
+  //          key.getOutputPrefixType(),
+  //          key.getKeyId(),
+  //          key.getKeyData().getTypeUrl(),
+  //          keyObject);
+  //  List<Entry<P>> list = new ArrayList<>();
+  //  list.add(entry);
+  //  // Cannot use byte[] as keys in hash map, convert to Prefix wrapper class.
+  //  Prefix identifier = new Prefix(entry.getIdentifier());
+  //  List<Entry<P>> existing = primitives.put(identifier, Collections.unmodifiableList(list));
+  //  if (existing != null) {
+  //    List<Entry<P>> newList = new ArrayList<>();
+  //    newList.addAll(existing);
+  //    newList.add(entry);
+  //    primitives.put(identifier, Collections.unmodifiableList(newList));
+  //  }
+  //  return entry;
+  //}
 
   /** Returns the entry with the primary primitive. */
   @Nullable

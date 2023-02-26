@@ -16,14 +16,11 @@
 
 package com.google.crypto.tink;
 
-import com.google.crypto.tink.annotations.Alpha;
-import com.google.crypto.tink.monitoring.MonitoringAnnotations;
 import com.google.crypto.tink.proto.Keyset;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Map;
 
 /**
  * Static methods for reading or writing cleartext keysets.
@@ -36,21 +33,21 @@ import java.util.Map;
  * @since 1.0.0
  */
 public final class CleartextKeysetHandle {
-  /**
-   * @return a new {@link KeysetHandle} from {@code serialized} that is a serialized {@link Keyset}
-   * @throws GeneralSecurityException
-   * @deprecated use {@link #read} instead
-   */
-  @Deprecated /* Deprecation under consideration */
-  public static final KeysetHandle parseFrom(final byte[] serialized)
-      throws GeneralSecurityException {
-    try {
-      Keyset keyset = Keyset.parseFrom(serialized, ExtensionRegistryLite.getEmptyRegistry());
-      return KeysetHandle.fromKeyset(keyset);
-    } catch (InvalidProtocolBufferException e) {
-      throw new GeneralSecurityException("invalid keyset");
-    }
-  }
+  ///**
+  // * @return a new {@link KeysetHandle} from {@code serialized} that is a serialized {@link Keyset}
+  // * @throws GeneralSecurityException
+  // * @deprecated use {@link #read} instead
+  // */
+  //@Deprecated /* Deprecation under consideration */
+  //public static final KeysetHandle parseFrom(final byte[] serialized)
+  //    throws GeneralSecurityException {
+  //  try {
+  //    Keyset keyset = Keyset.parseFrom(serialized, ExtensionRegistryLite.getEmptyRegistry());
+  //    return KeysetHandle.fromKeyset(keyset);
+  //  } catch (InvalidProtocolBufferException e) {
+  //    throw new GeneralSecurityException("invalid keyset");
+  //  }
+  //}
 
   /**
    * @return a new {@link KeysetHandle} from a {@link Keyset} read with {@code reader}.
@@ -61,20 +58,20 @@ public final class CleartextKeysetHandle {
     return KeysetHandle.fromKeyset(reader.read());
   }
 
-  /**
-   * Creates a {@link KeysetHandle} from a {@code KeysetReader}.
-   *
-   * <p>The additional {@code monitoringAnnotations} are used for monitoring, and will be passed to
-   * the {@link MonitoringClient}.
-   *
-   * @throws GeneralSecurityException when the keyset is invalid or cannot be read.
-   */
-  @Alpha
-  public static KeysetHandle read(KeysetReader reader, Map<String, String> monitoringAnnotations)
-      throws GeneralSecurityException, IOException {
-    return KeysetHandle.fromKeysetAndAnnotations(
-        reader.read(), MonitoringAnnotations.newBuilder().addAll(monitoringAnnotations).build());
-  }
+  ///**
+  // * Creates a {@link KeysetHandle} from a {@code KeysetReader}.
+  // *
+  // * <p>The additional {@code monitoringAnnotations} are used for monitoring, and will be passed to
+  // * the {@link MonitoringClient}.
+  // *
+  // * @throws GeneralSecurityException when the keyset is invalid or cannot be read.
+  // */
+  //@Alpha
+  //public static KeysetHandle read(KeysetReader reader, Map<String, String> monitoringAnnotations)
+  //    throws GeneralSecurityException, IOException {
+  //  return KeysetHandle.fromKeysetAndAnnotations(
+  //      reader.read(), MonitoringAnnotations.newBuilder().addAll(monitoringAnnotations).build());
+  //}
 
   /**
    * @return the keyset underlying this {@code keysetHandle}.
@@ -88,14 +85,14 @@ public final class CleartextKeysetHandle {
     return KeysetHandle.fromKeyset(keyset);
   }
 
-  /**
-   * Serializes and writes the {@link Keyset} managed by {@code handle} to {@code keysetWriter}.
-   *
-   * @throws IOException
-   */
-  public static void write(KeysetHandle handle, KeysetWriter keysetWriter) throws IOException {
-    keysetWriter.write(handle.getKeyset());
-  }
+  ///**
+  // * Serializes and writes the {@link Keyset} managed by {@code handle} to {@code keysetWriter}.
+  // *
+  // * @throws IOException
+  // */
+  //public static void write(KeysetHandle handle, KeysetWriter keysetWriter) throws IOException {
+  //  keysetWriter.write(handle.getKeyset());
+  //}
 
   private CleartextKeysetHandle() {}
 }

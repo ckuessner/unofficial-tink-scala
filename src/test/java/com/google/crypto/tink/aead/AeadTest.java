@@ -21,10 +21,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertThrows;
 
 import com.google.crypto.tink.Aead;
-import com.google.crypto.tink.InsecureSecretKeyAccess;
 import com.google.crypto.tink.KeyTemplates;
 import com.google.crypto.tink.KeysetHandle;
-import com.google.crypto.tink.TinkJsonProtoKeysetFormat;
 
 import java.security.GeneralSecurityException;
 import org.junit.BeforeClass;
@@ -109,20 +107,20 @@ public final class AeadTest {
   //        + "  ]"
   //        + "}";
 
-  @Theory
-  public void readKeysetEncryptDecrypt()
-      throws Exception {
-    KeysetHandle handle =
-        TinkJsonProtoKeysetFormat.parseKeyset(JSON_AEAD_KEYSET, InsecureSecretKeyAccess.get());
+  //@Theory
+  //public void readKeysetEncryptDecrypt()
+  //    throws Exception {
+  //  KeysetHandle handle =
+  //      TinkJsonProtoKeysetFormat.parseKeyset(JSON_AEAD_KEYSET, InsecureSecretKeyAccess.get());
 
-    Aead aead = handle.getPrimitive(Aead.class);
+  //  Aead aead = handle.getPrimitive(Aead.class);
 
-    byte[] plaintext = "plaintext".getBytes(UTF_8);
-    byte[] associatedData = "associatedData".getBytes(UTF_8);
-    byte[] ciphertext = aead.encrypt(plaintext, associatedData);
-    byte[] decrypted = aead.decrypt(ciphertext, associatedData);
-    assertThat(decrypted).isEqualTo(plaintext);
-  }
+  //  byte[] plaintext = "plaintext".getBytes(UTF_8);
+  //  byte[] associatedData = "associatedData".getBytes(UTF_8);
+  //  byte[] ciphertext = aead.encrypt(plaintext, associatedData);
+  //  byte[] decrypted = aead.decrypt(ciphertext, associatedData);
+  //  assertThat(decrypted).isEqualTo(plaintext);
+  //}
 
   //// A keyset with multiple keys. The first key is the same as in JSON_AEAD_KEYSET.
   //private static final String JSON_AEAD_KEYSET_WITH_MULTIPLE_KEYS =
@@ -162,29 +160,29 @@ public final class AeadTest {
   //        + "  ]"
   //        + "}";
 
-  @Theory
-  public void multipleKeysReadKeysetWithEncryptDecrypt()
-      throws Exception {
-    KeysetHandle handle =
-        TinkJsonProtoKeysetFormat.parseKeyset(
-            JSON_AEAD_KEYSET_WITH_MULTIPLE_KEYS, InsecureSecretKeyAccess.get());
+  //@Theory
+  //public void multipleKeysReadKeysetWithEncryptDecrypt()
+  //    throws Exception {
+  //  KeysetHandle handle =
+  //      TinkJsonProtoKeysetFormat.parseKeyset(
+  //          JSON_AEAD_KEYSET_WITH_MULTIPLE_KEYS, InsecureSecretKeyAccess.get());
 
-    Aead aead = handle.getPrimitive(Aead.class);
+  //  Aead aead = handle.getPrimitive(Aead.class);
 
-    byte[] plaintext = "plaintext".getBytes(UTF_8);
-    byte[] associatedData = "associatedData".getBytes(UTF_8);
-    byte[] ciphertext = aead.encrypt(plaintext, associatedData);
-    assertThat(aead.decrypt(ciphertext, associatedData)).isEqualTo(plaintext);
+  //  byte[] plaintext = "plaintext".getBytes(UTF_8);
+  //  byte[] associatedData = "associatedData".getBytes(UTF_8);
+  //  byte[] ciphertext = aead.encrypt(plaintext, associatedData);
+  //  assertThat(aead.decrypt(ciphertext, associatedData)).isEqualTo(plaintext);
 
-    // Also test that aead can decrypt ciphertexts encrypted with a non-primary key. We use
-    // JSON_AEAD_KEYSET to encrypt with the first key.
-    KeysetHandle handle1 =
-        TinkJsonProtoKeysetFormat.parseKeyset(JSON_AEAD_KEYSET, InsecureSecretKeyAccess.get());
+  //  // Also test that aead can decrypt ciphertexts encrypted with a non-primary key. We use
+  //  // JSON_AEAD_KEYSET to encrypt with the first key.
+  //  KeysetHandle handle1 =
+  //      TinkJsonProtoKeysetFormat.parseKeyset(JSON_AEAD_KEYSET, InsecureSecretKeyAccess.get());
 
-    Aead aead1 = handle1.getPrimitive(Aead.class);
-    byte[] ciphertext1 = aead1.encrypt(plaintext, associatedData);
-    assertThat(aead.decrypt(ciphertext1, associatedData)).isEqualTo(plaintext);
-  }
+  //  Aead aead1 = handle1.getPrimitive(Aead.class);
+  //  byte[] ciphertext1 = aead1.encrypt(plaintext, associatedData);
+  //  assertThat(aead.decrypt(ciphertext1, associatedData)).isEqualTo(plaintext);
+  //}
 
   //// A keyset with a valid DeterministicAead key. This keyset can't be used with the Aead primitive.
   //private static final String JSON_DAEAD_KEYSET =

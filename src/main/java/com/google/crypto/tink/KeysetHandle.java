@@ -17,19 +17,11 @@
 package com.google.crypto.tink;
 
 import com.google.crypto.tink.annotations.Alpha;
-import com.google.crypto.tink.internal.LegacyProtoKey;
-import com.google.crypto.tink.internal.LegacyProtoParameters;
-import com.google.crypto.tink.internal.MutableSerializationRegistry;
-import com.google.crypto.tink.internal.ProtoKeySerialization;
-import com.google.crypto.tink.internal.ProtoParametersSerialization;
-import com.google.crypto.tink.internal.TinkBugException;
-import com.google.crypto.tink.monitoring.MonitoringAnnotations;
 import com.google.crypto.tink.proto.EncryptedKeyset;
 import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.proto.KeyStatusType;
 import com.google.crypto.tink.proto.Keyset;
 import com.google.crypto.tink.proto.KeysetInfo;
-import com.google.crypto.tink.proto.OutputPrefixType;
 import com.google.crypto.tink.tinkkey.KeyAccess;
 import com.google.crypto.tink.tinkkey.KeyHandle;
 import com.google.crypto.tink.tinkkey.internal.InternalKeyHandle;
@@ -39,7 +31,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.InvalidProtocolBufferException;
-import java.io.IOException;
+
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -288,25 +280,25 @@ public final class KeysetHandle {
       return id;
     }
 
-    private static Keyset.Key createKeyFromParameters(
-        Parameters parameters, int id, KeyStatusType keyStatusType)
-        throws GeneralSecurityException {
-      ProtoParametersSerialization serializedParameters;
-      if (parameters instanceof LegacyProtoParameters) {
-        serializedParameters = ((LegacyProtoParameters) parameters).getSerialization();
-      } else {
-        serializedParameters =
-            MutableSerializationRegistry.globalInstance()
-                .serializeParameters(parameters, ProtoParametersSerialization.class);
-      }
-      KeyData keyData = Registry.newKeyData(serializedParameters.getKeyTemplate());
-      return Keyset.Key.newBuilder()
-          .setKeyId(id)
-          .setStatus(keyStatusType)
-          .setKeyData(keyData)
-          .setOutputPrefixType(serializedParameters.getKeyTemplate().getOutputPrefixType())
-          .build();
-    }
+    //private static Keyset.Key createKeyFromParameters(
+    //    Parameters parameters, int id, KeyStatusType keyStatusType)
+    //    throws GeneralSecurityException {
+    //  ProtoParametersSerialization serializedParameters;
+    //  if (parameters instanceof LegacyProtoParameters) {
+    //    serializedParameters = ((LegacyProtoParameters) parameters).getSerialization();
+    //  } else {
+    //    serializedParameters =
+    //        MutableSerializationRegistry.globalInstance()
+    //            .serializeParameters(parameters, ProtoParametersSerialization.class);
+    //  }
+    //  KeyData keyData = Registry.newKeyData(serializedParameters.getKeyTemplate());
+    //  return Keyset.Key.newBuilder()
+    //      .setKeyId(id)
+    //      .setStatus(keyStatusType)
+    //      .setKeyData(keyData)
+    //      .setOutputPrefixType(serializedParameters.getKeyTemplate().getOutputPrefixType())
+    //      .build();
+    //}
 
     private static int getNextIdFromBuilderEntry(
         KeysetHandle.Builder.Entry builderEntry, Set<Integer> idsSoFar)
@@ -323,29 +315,29 @@ public final class KeysetHandle {
       return id;
     }
 
-    private static Keyset.Key createKeysetKeyFromBuilderEntry(
-        KeysetHandle.Builder.Entry builderEntry, int id) throws GeneralSecurityException {
-      if (builderEntry.key == null) {
-        return createKeyFromParameters(
-            builderEntry.parameters, id, serializeStatus(builderEntry.getStatus()));
-      } else {
-        ProtoKeySerialization serializedKey;
-        if (builderEntry.key instanceof LegacyProtoKey) {
-          serializedKey =
-              ((LegacyProtoKey) builderEntry.key).getSerialization(InsecureSecretKeyAccess.get());
-        } else {
-          serializedKey =
-              MutableSerializationRegistry.globalInstance()
-                  .serializeKey(
-                      builderEntry.key, ProtoKeySerialization.class, InsecureSecretKeyAccess.get());
-        }
-        @Nullable Integer idRequirement = serializedKey.getIdRequirementOrNull();
-        if (idRequirement != null && idRequirement != id) {
-          throw new GeneralSecurityException("Wrong ID set for key with ID requirement");
-        }
-        return toKeysetKey(id, serializeStatus(builderEntry.getStatus()), serializedKey);
-      }
-    }
+    //private static Keyset.Key createKeysetKeyFromBuilderEntry(
+    //    KeysetHandle.Builder.Entry builderEntry, int id) throws GeneralSecurityException {
+    //  if (builderEntry.key == null) {
+    //    return createKeyFromParameters(
+    //        builderEntry.parameters, id, serializeStatus(builderEntry.getStatus()));
+    //  } else {
+    //    ProtoKeySerialization serializedKey;
+    //    if (builderEntry.key instanceof LegacyProtoKey) {
+    //      serializedKey =
+    //          ((LegacyProtoKey) builderEntry.key).getSerialization(InsecureSecretKeyAccess.get());
+    //    } else {
+    //      serializedKey =
+    //          MutableSerializationRegistry.globalInstance()
+    //              .serializeKey(
+    //                  builderEntry.key, ProtoKeySerialization.class, InsecureSecretKeyAccess.get());
+    //    }
+    //    @Nullable Integer idRequirement = serializedKey.getIdRequirementOrNull();
+    //    if (idRequirement != null && idRequirement != id) {
+    //      throw new GeneralSecurityException("Wrong ID set for key with ID requirement");
+    //    }
+    //    return toKeysetKey(id, serializeStatus(builderEntry.getStatus()), serializedKey);
+    //  }
+    //}
 
     /**
      * Creates a new {@code KeysetHandle}.
@@ -473,61 +465,61 @@ public final class KeysetHandle {
     throw new IllegalStateException("Unknown key status");
   }
 
-  private static Keyset.Key toKeysetKey(
-      int id, KeyStatusType status, ProtoKeySerialization protoKeySerialization) {
-    return Keyset.Key.newBuilder()
-        .setKeyData(
-            KeyData.newBuilder()
-                .setTypeUrl(protoKeySerialization.getTypeUrl())
-                .setValue(protoKeySerialization.getValue())
-                .setKeyMaterialType(protoKeySerialization.getKeyMaterialType()))
-        .setStatus(status)
-        .setKeyId(id)
-        .setOutputPrefixType(protoKeySerialization.getOutputPrefixType())
-        .build();
-  }
+  //private static Keyset.Key toKeysetKey(
+  //    int id, KeyStatusType status, ProtoKeySerialization protoKeySerialization) {
+  //  return Keyset.Key.newBuilder()
+  //      .setKeyData(
+  //          KeyData.newBuilder()
+  //              .setTypeUrl(protoKeySerialization.getTypeUrl())
+  //              .setValue(protoKeySerialization.getValue())
+  //              .setKeyMaterialType(protoKeySerialization.getKeyMaterialType()))
+  //      .setStatus(status)
+  //      .setKeyId(id)
+  //      .setOutputPrefixType(protoKeySerialization.getOutputPrefixType())
+  //      .build();
+  //}
 
-  /**
-   * Returns an immutable list of key objects for this keyset.
-   *
-   * <p>If a status is unparseable or parsing of a key fails, there will be "null" in the
-   * corresponding entry.
-   */
-  private static List<Entry> getEntriesFromKeyset(Keyset keyset) {
-    List<Entry> result = new ArrayList<>(keyset.getKeyCount());
-    for (Keyset.Key protoKey : keyset.getKeyList()) {
-      int id = protoKey.getKeyId();
-      ProtoKeySerialization protoKeySerialization = toProtoKeySerialization(protoKey);
-      try {
-        Key key =
-            MutableSerializationRegistry.globalInstance()
-                .parseKeyWithLegacyFallback(protoKeySerialization, InsecureSecretKeyAccess.get());
-        result.add(
-            new KeysetHandle.Entry(
-                key, parseStatus(protoKey.getStatus()), id, id == keyset.getPrimaryKeyId()));
-      } catch (GeneralSecurityException e) {
-        result.add(null);
-      }
-    }
-    return Collections.unmodifiableList(result);
-  }
+  ///**
+  // * Returns an immutable list of key objects for this keyset.
+  // *
+  // * <p>If a status is unparseable or parsing of a key fails, there will be "null" in the
+  // * corresponding entry.
+  // */
+  //private static List<Entry> getEntriesFromKeyset(Keyset keyset) {
+  //  List<Entry> result = new ArrayList<>(keyset.getKeyCount());
+  //  for (Keyset.Key protoKey : keyset.getKeyList()) {
+  //    int id = protoKey.getKeyId();
+  //    ProtoKeySerialization protoKeySerialization = toProtoKeySerialization(protoKey);
+  //    try {
+  //      Key key =
+  //          MutableSerializationRegistry.globalInstance()
+  //              .parseKeyWithLegacyFallback(protoKeySerialization, InsecureSecretKeyAccess.get());
+  //      result.add(
+  //          new KeysetHandle.Entry(
+  //              key, parseStatus(protoKey.getStatus()), id, id == keyset.getPrimaryKeyId()));
+  //    } catch (GeneralSecurityException e) {
+  //      result.add(null);
+  //    }
+  //  }
+  //  return Collections.unmodifiableList(result);
+  //}
 
-  private static ProtoKeySerialization toProtoKeySerialization(Keyset.Key protoKey) {
-    int id = protoKey.getKeyId();
-    @Nullable
-    Integer idRequirement = protoKey.getOutputPrefixType() == OutputPrefixType.RAW ? null : id;
-    try {
-      return ProtoKeySerialization.create(
-          protoKey.getKeyData().getTypeUrl(),
-          protoKey.getKeyData().getValue(),
-          protoKey.getKeyData().getKeyMaterialType(),
-          protoKey.getOutputPrefixType(),
-          idRequirement);
-    } catch (GeneralSecurityException e) {
-      // Cannot happen -- this only happens if the idRequirement doesn't match OutputPrefixType
-      throw new TinkBugException("Creating a protokey serialization failed", e);
-    }
-  }
+  //private static ProtoKeySerialization toProtoKeySerialization(Keyset.Key protoKey) {
+  //  int id = protoKey.getKeyId();
+  //  @Nullable
+  //  Integer idRequirement = protoKey.getOutputPrefixType() == OutputPrefixType.RAW ? null : id;
+  //  try {
+  //    return ProtoKeySerialization.create(
+  //        protoKey.getKeyData().getTypeUrl(),
+  //        protoKey.getKeyData().getValue(),
+  //        protoKey.getKeyData().getKeyMaterialType(),
+  //        protoKey.getOutputPrefixType(),
+  //        idRequirement);
+  //  } catch (GeneralSecurityException e) {
+  //    // Cannot happen -- this only happens if the idRequirement doesn't match OutputPrefixType
+  //    throw new TinkBugException("Creating a protokey serialization failed", e);
+  //  }
+  //}
 
   private KeysetHandle.Entry entryByIndex(int i) {
     if (entries.get(i) == null) {
@@ -555,26 +547,26 @@ public final class KeysetHandle {
     return importedEntry;
   }
 
-  /**
-   * Creates a new entry with Status "ENABLED" and a new key created from the named parameters. No
-   * ID is set.
-   *
-   * <p>{@code namedParameters} is the key template name that fully specifies the parameters, e.g.
-   * "DHKEM_X25519_HKDF_SHA256_HKDF_SHA256_AES_128_GCM".
-   */
-  public static KeysetHandle.Builder.Entry generateEntryFromParametersName(String namedParameters)
-      throws GeneralSecurityException {
-    if (!Registry.keyTemplateMap().containsKey(namedParameters)) {
-      throw new GeneralSecurityException("cannot find key template: " + namedParameters);
-    }
-    KeyTemplate template = Registry.keyTemplateMap().get(namedParameters);
-    ProtoParametersSerialization serialization =
-        ProtoParametersSerialization.create(template.getProto());
-    Parameters parameters =
-        MutableSerializationRegistry.globalInstance()
-            .parseParametersWithLegacyFallback(serialization);
-    return new KeysetHandle.Builder.Entry(parameters);
-  }
+  ///**
+  // * Creates a new entry with Status "ENABLED" and a new key created from the named parameters. No
+  // * ID is set.
+  // *
+  // * <p>{@code namedParameters} is the key template name that fully specifies the parameters, e.g.
+  // * "DHKEM_X25519_HKDF_SHA256_HKDF_SHA256_AES_128_GCM".
+  // */
+  //public static KeysetHandle.Builder.Entry generateEntryFromParametersName(String namedParameters)
+  //    throws GeneralSecurityException {
+  //  if (!Registry.keyTemplateMap().containsKey(namedParameters)) {
+  //    throw new GeneralSecurityException("cannot find key template: " + namedParameters);
+  //  }
+  //  KeyTemplate template = Registry.keyTemplateMap().get(namedParameters);
+  //  ProtoParametersSerialization serialization =
+  //      ProtoParametersSerialization.create(template.getProto());
+  //  Parameters parameters =
+  //      MutableSerializationRegistry.globalInstance()
+  //          .parseParametersWithLegacyFallback(serialization);
+  //  return new KeysetHandle.Builder.Entry(parameters);
+  //}
 
   /**
    * Creates a new entry with Status "ENABLED" and a new key created from the parameters. No ID is
@@ -591,20 +583,20 @@ public final class KeysetHandle {
    * Contains all entries; but if either parsing the status or the key failed, contains null.
    */
   private final List<Entry> entries;
-  private final MonitoringAnnotations annotations;
+  //private final MonitoringAnnotations annotations;
 
   private KeysetHandle(Keyset keyset, List<Entry> entries) {
     this.keyset = keyset;
     this.entries = entries;
-    this.annotations = MonitoringAnnotations.EMPTY;
+    //this.annotations = MonitoringAnnotations.EMPTY;
   }
 
-  private KeysetHandle(
-      Keyset keyset, List<Entry> entries, MonitoringAnnotations annotations) {
-    this.keyset = keyset;
-    this.entries = entries;
-    this.annotations = annotations;
-  }
+  //private KeysetHandle(
+  //    Keyset keyset, List<Entry> entries, MonitoringAnnotations annotations) {
+  //  this.keyset = keyset;
+  //  this.entries = entries;
+  //  this.annotations = annotations;
+  //}
 
   /**
    * @return a new {@link KeysetHandle} from a {@code keyset}.
@@ -617,16 +609,16 @@ public final class KeysetHandle {
     return new KeysetHandle(keyset, entries);
   }
 
-  /**
-   * @return a new {@link KeysetHandle} from a {@code keyset} and {@code annotations}.
-   * @throws GeneralSecurityException if the keyset is null or empty.
-   */
-  static final KeysetHandle fromKeysetAndAnnotations(
-      Keyset keyset, MonitoringAnnotations annotations) throws GeneralSecurityException {
-    assertEnoughKeyMaterial(keyset);
-    List<Entry> entries = getEntriesFromKeyset(keyset);
-    return new KeysetHandle(keyset, entries, annotations);
-  }
+  ///**
+  // * @return a new {@link KeysetHandle} from a {@code keyset} and {@code annotations}.
+  // * @throws GeneralSecurityException if the keyset is null or empty.
+  // */
+  //static final KeysetHandle fromKeysetAndAnnotations(
+  //    Keyset keyset, MonitoringAnnotations annotations) throws GeneralSecurityException {
+  //  assertEnoughKeyMaterial(keyset);
+  //  List<Entry> entries = getEntriesFromKeyset(keyset);
+  //  return new KeysetHandle(keyset, entries, annotations);
+  //}
 
   /**
    * @return the actual keyset data.
@@ -724,38 +716,38 @@ public final class KeysetHandle {
     return Util.getKeysetInfo(keyset);
   }
 
-  /**
-   * Generates a new {@link KeysetHandle} that contains a single fresh key generated according to
-   * {@code keyTemplate}.
-   *
-   * @throws GeneralSecurityException if the key template is invalid.
-   * @deprecated This method takes a KeyTemplate proto, which is an internal implementation detail.
-   *     Please use the generateNew method that takes a {@link KeyTemplate} POJO.
-   */
-  @Deprecated /* Deprecation under consideration */
-  public static final KeysetHandle generateNew(com.google.crypto.tink.proto.KeyTemplate keyTemplate)
-      throws GeneralSecurityException {
-    LegacyProtoParameters parameters =
-        new LegacyProtoParameters(ProtoParametersSerialization.create(keyTemplate));
-    return KeysetHandle.newBuilder()
-        .addEntry(KeysetHandle.generateEntryFromParameters(parameters).makePrimary().withRandomId())
-        .build();
-  }
+  ///**
+  // * Generates a new {@link KeysetHandle} that contains a single fresh key generated according to
+  // * {@code keyTemplate}.
+  // *
+  // * @throws GeneralSecurityException if the key template is invalid.
+  // * @deprecated This method takes a KeyTemplate proto, which is an internal implementation detail.
+  // *     Please use the generateNew method that takes a {@link KeyTemplate} POJO.
+  // */
+  //@Deprecated /* Deprecation under consideration */
+  //public static final KeysetHandle generateNew(com.google.crypto.tink.proto.KeyTemplate keyTemplate)
+  //    throws GeneralSecurityException {
+  //  LegacyProtoParameters parameters =
+  //      new LegacyProtoParameters(ProtoParametersSerialization.create(keyTemplate));
+  //  return KeysetHandle.newBuilder()
+  //      .addEntry(KeysetHandle.generateEntryFromParameters(parameters).makePrimary().withRandomId())
+  //      .build();
+  //}
 
-  /**
-   * Generates a new {@link KeysetHandle} that contains a single fresh key generated according to
-   * {@code keyTemplate}.
-   *
-   * @throws GeneralSecurityException if the key template is invalid.
-   */
-  public static final KeysetHandle generateNew(KeyTemplate keyTemplate)
-      throws GeneralSecurityException {
-    LegacyProtoParameters parameters =
-        new LegacyProtoParameters(ProtoParametersSerialization.create(keyTemplate.getProto()));
-    return KeysetHandle.newBuilder()
-        .addEntry(KeysetHandle.generateEntryFromParameters(parameters).makePrimary().withRandomId())
-        .build();
-  }
+  ///**
+  // * Generates a new {@link KeysetHandle} that contains a single fresh key generated according to
+  // * {@code keyTemplate}.
+  // *
+  // * @throws GeneralSecurityException if the key template is invalid.
+  // */
+  //public static final KeysetHandle generateNew(KeyTemplate keyTemplate)
+  //    throws GeneralSecurityException {
+  //  LegacyProtoParameters parameters =
+  //      new LegacyProtoParameters(ProtoParametersSerialization.create(keyTemplate.getProto()));
+  //  return KeysetHandle.newBuilder()
+  //      .addEntry(KeysetHandle.generateEntryFromParameters(parameters).makePrimary().withRandomId())
+  //      .build();
+  //}
 
   /**
    * Returns a {@code KeysetHandle} that contains the single {@code KeyHandle} passed as input.
@@ -770,162 +762,162 @@ public final class KeysetHandle {
     return km.getKeysetHandle();
   }
 
-  /**
-   * Tries to create a {@link KeysetHandle} from an encrypted keyset obtained via {@code reader}.
-   *
-   * <p>Users that need to load cleartext keysets can use {@link CleartextKeysetHandle}.
-   *
-   * @return a new {@link KeysetHandle} from {@code encryptedKeysetProto} that was encrypted with
-   *     {@code masterKey}
-   * @throws GeneralSecurityException if cannot decrypt the keyset or it doesn't contain encrypted
-   *     key material
-   */
-  public static final KeysetHandle read(KeysetReader reader, Aead masterKey)
-      throws GeneralSecurityException, IOException {
-    return readWithAssociatedData(reader, masterKey, new byte[0]);
-  }
+  ///**
+  // * Tries to create a {@link KeysetHandle} from an encrypted keyset obtained via {@code reader}.
+  // *
+  // * <p>Users that need to load cleartext keysets can use {@link CleartextKeysetHandle}.
+  // *
+  // * @return a new {@link KeysetHandle} from {@code encryptedKeysetProto} that was encrypted with
+  // *     {@code masterKey}
+  // * @throws GeneralSecurityException if cannot decrypt the keyset or it doesn't contain encrypted
+  // *     key material
+  // */
+  //public static final KeysetHandle read(KeysetReader reader, Aead masterKey)
+  //    throws GeneralSecurityException, IOException {
+  //  return readWithAssociatedData(reader, masterKey, new byte[0]);
+  //}
 
-  /**
-   * Tries to create a {@link KeysetHandle} from an encrypted keyset obtained via {@code reader},
-   * using the provided associated data.
-   *
-   * <p>Users that need to load cleartext keysets can use {@link CleartextKeysetHandle}.
-   *
-   * @return a new {@link KeysetHandle} from {@code encryptedKeysetProto} that was encrypted with
-   *     {@code masterKey}
-   * @throws GeneralSecurityException if cannot decrypt the keyset or it doesn't contain encrypted
-   *     key material
-   */
-  public static final KeysetHandle readWithAssociatedData(
-      KeysetReader reader, Aead masterKey, byte[] associatedData)
-      throws GeneralSecurityException, IOException {
-    EncryptedKeyset encryptedKeyset = reader.readEncrypted();
-    assertEnoughEncryptedKeyMaterial(encryptedKeyset);
-    return KeysetHandle.fromKeyset(decrypt(encryptedKeyset, masterKey, associatedData));
-  }
+  ///**
+  // * Tries to create a {@link KeysetHandle} from an encrypted keyset obtained via {@code reader},
+  // * using the provided associated data.
+  // *
+  // * <p>Users that need to load cleartext keysets can use {@link CleartextKeysetHandle}.
+  // *
+  // * @return a new {@link KeysetHandle} from {@code encryptedKeysetProto} that was encrypted with
+  // *     {@code masterKey}
+  // * @throws GeneralSecurityException if cannot decrypt the keyset or it doesn't contain encrypted
+  // *     key material
+  // */
+  //public static final KeysetHandle readWithAssociatedData(
+  //    KeysetReader reader, Aead masterKey, byte[] associatedData)
+  //    throws GeneralSecurityException, IOException {
+  //  EncryptedKeyset encryptedKeyset = reader.readEncrypted();
+  //  assertEnoughEncryptedKeyMaterial(encryptedKeyset);
+  //  return KeysetHandle.fromKeyset(decrypt(encryptedKeyset, masterKey, associatedData));
+  //}
 
-  /**
-   * Tries to create a {@link KeysetHandle} from a keyset, obtained via {@code reader}, which
-   * contains no secret key material.
-   *
-   * <p>This can be used to load public keysets or envelope encryption keysets. Users that need to
-   * load cleartext keysets can use {@link CleartextKeysetHandle}.
-   *
-   * @return a new {@link KeysetHandle} from {@code serialized} that is a serialized {@link Keyset}
-   * @throws GeneralSecurityException if the keyset is invalid
-   */
-  @SuppressWarnings("UnusedException")
-  public static final KeysetHandle readNoSecret(KeysetReader reader)
-      throws GeneralSecurityException, IOException {
-    try {
-      Keyset keyset = reader.read();
-      assertNoSecretKeyMaterial(keyset);
-      return KeysetHandle.fromKeyset(keyset);
-    } catch (InvalidProtocolBufferException e) {
-      // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
-      throw new GeneralSecurityException("invalid keyset");
-    }
-  }
+  ///**
+  // * Tries to create a {@link KeysetHandle} from a keyset, obtained via {@code reader}, which
+  // * contains no secret key material.
+  // *
+  // * <p>This can be used to load public keysets or envelope encryption keysets. Users that need to
+  // * load cleartext keysets can use {@link CleartextKeysetHandle}.
+  // *
+  // * @return a new {@link KeysetHandle} from {@code serialized} that is a serialized {@link Keyset}
+  // * @throws GeneralSecurityException if the keyset is invalid
+  // */
+  //@SuppressWarnings("UnusedException")
+  //public static final KeysetHandle readNoSecret(KeysetReader reader)
+  //    throws GeneralSecurityException, IOException {
+  //  try {
+  //    Keyset keyset = reader.read();
+  //    assertNoSecretKeyMaterial(keyset);
+  //    return KeysetHandle.fromKeyset(keyset);
+  //  } catch (InvalidProtocolBufferException e) {
+  //    // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
+  //    throw new GeneralSecurityException("invalid keyset");
+  //  }
+  //}
 
-  /**
-   * Tries to create a {@link KeysetHandle} from a serialized keyset which contains no secret key
-   * material.
-   *
-   * <p>This can be used to load public keysets or envelope encryption keysets. Users that need to
-   * load cleartext keysets can use {@link CleartextKeysetHandle}.
-   *
-   * @return a new {@link KeysetHandle} from {@code serialized} that is a serialized {@link Keyset}
-   * @throws GeneralSecurityException if the keyset is invalid
-   * @deprecated Use {@code TinkProtoKeysetFormat.parseKeysetWithoutSecret(serialized)} instead.
-   */
-  @SuppressWarnings("UnusedException")
-  @Deprecated /* Deprecation under consideration */
-  public static final KeysetHandle readNoSecret(final byte[] serialized)
-      throws GeneralSecurityException {
-    try {
-      Keyset keyset = Keyset.parseFrom(serialized, ExtensionRegistryLite.getEmptyRegistry());
-      assertNoSecretKeyMaterial(keyset);
-      return KeysetHandle.fromKeyset(keyset);
-    } catch (InvalidProtocolBufferException e) {
-      // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
-      throw new GeneralSecurityException("invalid keyset");
-    }
-  }
+  ///**
+  // * Tries to create a {@link KeysetHandle} from a serialized keyset which contains no secret key
+  // * material.
+  // *
+  // * <p>This can be used to load public keysets or envelope encryption keysets. Users that need to
+  // * load cleartext keysets can use {@link CleartextKeysetHandle}.
+  // *
+  // * @return a new {@link KeysetHandle} from {@code serialized} that is a serialized {@link Keyset}
+  // * @throws GeneralSecurityException if the keyset is invalid
+  // * @deprecated Use {@code TinkProtoKeysetFormat.parseKeysetWithoutSecret(serialized)} instead.
+  // */
+  //@SuppressWarnings("UnusedException")
+  //@Deprecated /* Deprecation under consideration */
+  //public static final KeysetHandle readNoSecret(final byte[] serialized)
+  //    throws GeneralSecurityException {
+  //  try {
+  //    Keyset keyset = Keyset.parseFrom(serialized, ExtensionRegistryLite.getEmptyRegistry());
+  //    assertNoSecretKeyMaterial(keyset);
+  //    return KeysetHandle.fromKeyset(keyset);
+  //  } catch (InvalidProtocolBufferException e) {
+  //    // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
+  //    throw new GeneralSecurityException("invalid keyset");
+  //  }
+  //}
 
-  /** Serializes, encrypts with {@code masterKey} and writes the keyset to {@code outputStream}. */
-  public void write(KeysetWriter keysetWriter, Aead masterKey)
-      throws GeneralSecurityException, IOException {
-    writeWithAssociatedData(keysetWriter, masterKey, new byte[0]);
-  }
+  ///** Serializes, encrypts with {@code masterKey} and writes the keyset to {@code outputStream}. */
+  //public void write(KeysetWriter keysetWriter, Aead masterKey)
+  //    throws GeneralSecurityException, IOException {
+  //  writeWithAssociatedData(keysetWriter, masterKey, new byte[0]);
+  //}
 
-  /**
-   * Serializes, encrypts with {@code masterKey} and writes the keyset to {@code outputStream} using
-   * the provided associated data.
-   */
-  public void writeWithAssociatedData(
-      KeysetWriter keysetWriter, Aead masterKey, byte[] associatedData)
-      throws GeneralSecurityException, IOException {
-    EncryptedKeyset encryptedKeyset = encrypt(keyset, masterKey, associatedData);
-    keysetWriter.write(encryptedKeyset);
-    return;
-  }
+  ///**
+  // * Serializes, encrypts with {@code masterKey} and writes the keyset to {@code outputStream} using
+  // * the provided associated data.
+  // */
+  //public void writeWithAssociatedData(
+  //    KeysetWriter keysetWriter, Aead masterKey, byte[] associatedData)
+  //    throws GeneralSecurityException, IOException {
+  //  EncryptedKeyset encryptedKeyset = encrypt(keyset, masterKey, associatedData);
+  //  keysetWriter.write(encryptedKeyset);
+  //  return;
+  //}
 
-  /**
-   * Tries to write to {@code writer} this keyset which must not contain any secret key material.
-   *
-   * <p>This can be used to persist public keysets or envelope encryption keysets. Users that need
-   * to persist cleartext keysets can use {@link CleartextKeysetHandle}.
-   *
-   * @throws GeneralSecurityException if the keyset contains any secret key material
-   */
-  public void writeNoSecret(KeysetWriter writer) throws GeneralSecurityException, IOException {
-    assertNoSecretKeyMaterial(keyset);
-    writer.write(keyset);
-    return;
-  }
+  ///**
+  // * Tries to write to {@code writer} this keyset which must not contain any secret key material.
+  // *
+  // * <p>This can be used to persist public keysets or envelope encryption keysets. Users that need
+  // * to persist cleartext keysets can use {@link CleartextKeysetHandle}.
+  // *
+  // * @throws GeneralSecurityException if the keyset contains any secret key material
+  // */
+  //public void writeNoSecret(KeysetWriter writer) throws GeneralSecurityException, IOException {
+  //  assertNoSecretKeyMaterial(keyset);
+  //  writer.write(keyset);
+  //  return;
+  //}
 
-  /** Encrypts the keyset with the {@link Aead} master key. */
-  @SuppressWarnings("UnusedException")
-  private static EncryptedKeyset encrypt(Keyset keyset, Aead masterKey, byte[] associatedData)
-      throws GeneralSecurityException {
-    byte[] encryptedKeyset = masterKey.encrypt(keyset.toByteArray(), associatedData);
-    // Check if we can decrypt, to detect errors
-    try {
-      final Keyset keyset2 =
-          Keyset.parseFrom(
-              masterKey.decrypt(encryptedKeyset, associatedData),
-              ExtensionRegistryLite.getEmptyRegistry());
-      if (!keyset2.equals(keyset)) {
-        throw new GeneralSecurityException("cannot encrypt keyset");
-      }
-    } catch (InvalidProtocolBufferException e) {
-      // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
-      throw new GeneralSecurityException("invalid keyset, corrupted key material");
-    }
-    return EncryptedKeyset.newBuilder()
-        .setEncryptedKeyset(ByteString.copyFrom(encryptedKeyset))
-        .setKeysetInfo(Util.getKeysetInfo(keyset))
-        .build();
-  }
+  ///** Encrypts the keyset with the {@link Aead} master key. */
+  //@SuppressWarnings("UnusedException")
+  //private static EncryptedKeyset encrypt(Keyset keyset, Aead masterKey, byte[] associatedData)
+  //    throws GeneralSecurityException {
+  //  byte[] encryptedKeyset = masterKey.encrypt(keyset.toByteArray(), associatedData);
+  //  // Check if we can decrypt, to detect errors
+  //  try {
+  //    final Keyset keyset2 =
+  //        Keyset.parseFrom(
+  //            masterKey.decrypt(encryptedKeyset, associatedData),
+  //            ExtensionRegistryLite.getEmptyRegistry());
+  //    if (!keyset2.equals(keyset)) {
+  //      throw new GeneralSecurityException("cannot encrypt keyset");
+  //    }
+  //  } catch (InvalidProtocolBufferException e) {
+  //    // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
+  //    throw new GeneralSecurityException("invalid keyset, corrupted key material");
+  //  }
+  //  return EncryptedKeyset.newBuilder()
+  //      .setEncryptedKeyset(ByteString.copyFrom(encryptedKeyset))
+  //      .setKeysetInfo(Util.getKeysetInfo(keyset))
+  //      .build();
+  //}
 
-  /** Decrypts the encrypted keyset with the {@link Aead} master key. */
-  @SuppressWarnings("UnusedException")
-  private static Keyset decrypt(
-      EncryptedKeyset encryptedKeyset, Aead masterKey, byte[] associatedData)
-      throws GeneralSecurityException {
-    try {
-      Keyset keyset =
-          Keyset.parseFrom(
-              masterKey.decrypt(encryptedKeyset.getEncryptedKeyset().toByteArray(), associatedData),
-              ExtensionRegistryLite.getEmptyRegistry());
-      // check emptiness here too, in case the encrypted keys unwrapped to nothing?
-      assertEnoughKeyMaterial(keyset);
-      return keyset;
-    } catch (InvalidProtocolBufferException e) {
-      // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
-      throw new GeneralSecurityException("invalid keyset, corrupted key material");
-    }
-  }
+  ///** Decrypts the encrypted keyset with the {@link Aead} master key. */
+  //@SuppressWarnings("UnusedException")
+  //private static Keyset decrypt(
+  //    EncryptedKeyset encryptedKeyset, Aead masterKey, byte[] associatedData)
+  //    throws GeneralSecurityException {
+  //  try {
+  //    Keyset keyset =
+  //        Keyset.parseFrom(
+  //            masterKey.decrypt(encryptedKeyset.getEncryptedKeyset().toByteArray(), associatedData),
+  //            ExtensionRegistryLite.getEmptyRegistry());
+  //    // check emptiness here too, in case the encrypted keys unwrapped to nothing?
+  //    assertEnoughKeyMaterial(keyset);
+  //    return keyset;
+  //  } catch (InvalidProtocolBufferException e) {
+  //    // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
+  //    throw new GeneralSecurityException("invalid keyset, corrupted key material");
+  //  }
+  //}
 
   /**
    * If the managed keyset contains private keys, returns a {@link KeysetHandle} of the public keys.
@@ -1019,7 +1011,7 @@ public final class KeysetHandle {
       Class<P> classObject, Class<B> inputPrimitiveClassObject) throws GeneralSecurityException {
     Util.validateKeyset(keyset);
     PrimitiveSet.Builder<B> builder = PrimitiveSet.newBuilder(inputPrimitiveClassObject);
-    builder.setAnnotations(annotations);
+    //builder.setAnnotations(annotations);
     for (int i = 0; i < size(); ++i) {
       Keyset.Key protoKey = keyset.getKey(i);
       if (protoKey.getStatus().equals(KeyStatusType.ENABLED)) {

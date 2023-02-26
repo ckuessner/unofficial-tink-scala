@@ -23,11 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.CleartextKeysetHandle;
-import com.google.crypto.tink.InsecureSecretKeyAccess;
 import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.PrimitiveSet;
-import com.google.crypto.tink.Registry;
-import com.google.crypto.tink.TinkProtoKeysetFormat;
 import com.google.crypto.tink.hybrid.HybridKeyTemplates;
 import com.google.crypto.tink.proto.EcPointFormat;
 import com.google.crypto.tink.proto.EcdsaParams;
@@ -81,23 +78,23 @@ public final class TestUtil {
     }
   }
 
-  // This GCP KMS CryptoKey is restricted to the service account in {@code SERVICE_ACCOUNT_FILE}.
-  public static final String GCP_KMS_TEST_KEY_URI =
-      String.format(
-          "gcp-kms://projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s",
-          "tink-test-infrastructure", "global", "unit-and-integration-testing", "aead-key");
+  //// This GCP KMS CryptoKey is restricted to the service account in {@code SERVICE_ACCOUNT_FILE}.
+  //public static final String GCP_KMS_TEST_KEY_URI =
+  //    String.format(
+  //        "gcp-kms://projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s",
+  //        "tink-test-infrastructure", "global", "unit-and-integration-testing", "aead-key");
 
-  // This is a credential of a service account that is granted access to
-  // {@code RESTRICTED_CRYPTO_KEY_URI}.
-  public static final String SERVICE_ACCOUNT_FILE = "testdata/gcp/credential.json";
+  //// This is a credential of a service account that is granted access to
+  //// {@code RESTRICTED_CRYPTO_KEY_URI}.
+  //public static final String SERVICE_ACCOUNT_FILE = "testdata/gcp/credential.json";
 
-  // This AWS KMS CryptoKey is restricted to Google use only and {@code AWS_CREDS}.
-  public static final String AWS_KMS_TEST_KEY_URI =
-      "aws-kms://arn:aws:kms:us-east-2:235739564943:key/3ee50705-5a82-4f5b-9753-05c4f473922f";
+  //// This AWS KMS CryptoKey is restricted to Google use only and {@code AWS_CREDS}.
+  //public static final String AWS_KMS_TEST_KEY_URI =
+  //    "aws-kms://arn:aws:kms:us-east-2:235739564943:key/3ee50705-5a82-4f5b-9753-05c4f473922f";
 
-  // This is a credential for the AWS service account with granted access to
-  // {@code AWS_KMS_TEST_KEY_URI}.
-  public static final String AWS_CREDS = "testdata/aws/credentials.cred";
+  //// This is a credential for the AWS service account with granted access to
+  //// {@code AWS_KMS_TEST_KEY_URI}.
+  //public static final String AWS_CREDS = "testdata/aws/credentials.cred";
 
   /** A dummy Aead-implementation that just throws exception. */
   public static class DummyAead implements Aead {
@@ -148,10 +145,10 @@ public final class TestUtil {
     return CleartextKeysetHandle.getKeyset(handle);
   }
 
-  /** @return a keyset handle from a {@code keyset}. */
-  public static KeysetHandle createKeysetHandle(Keyset keyset) throws Exception {
-    return TinkProtoKeysetFormat.parseKeyset(keyset.toByteArray(), InsecureSecretKeyAccess.get());
-  }
+  ///** @return a keyset handle from a {@code keyset}. */
+  //public static KeysetHandle createKeysetHandle(Keyset keyset) throws Exception {
+  //  return TinkProtoKeysetFormat.parseKeyset(keyset.toByteArray(), InsecureSecretKeyAccess.get());
+  //}
 
   /** @return a keyset from a list of keys. The first key is primary. */
   public static Keyset createKeyset(Key primary, Key... keys) throws Exception {
