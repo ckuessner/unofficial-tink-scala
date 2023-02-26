@@ -89,8 +89,8 @@ public final class Registry {
   private static final ConcurrentMap<String, Boolean> newKeyAllowedMap =
       new ConcurrentHashMap<>(); // typeUrl -> newKeyAllowed mapping
 
-  private static final ConcurrentMap<String, Catalogue<?>> catalogueMap =
-      new ConcurrentHashMap<>(); //  name -> catalogue mapping
+  //private static final ConcurrentMap<String, Catalogue<?>> catalogueMap =
+  //    new ConcurrentHashMap<>(); //  name -> catalogue mapping
 
   private static final ConcurrentMap<String, KeyTemplate> keyTemplateMap =
       new ConcurrentHashMap<>(); // name -> KeyTemplate mapping
@@ -145,79 +145,79 @@ public final class Registry {
     MutablePrimitiveRegistry.resetGlobalInstanceTestOnly();
     keyDeriverMap.clear();
     newKeyAllowedMap.clear();
-    catalogueMap.clear();
+    //catalogueMap.clear();
     keyTemplateMap.clear();
   }
 
-  /**
-   * Tries to add a catalogue, to enable custom configuration of key types and key managers.
-   *
-   * <p>Adding a custom catalogue should be a one-time operaton. There is an existing catalogue,
-   * throw exception if {@code catalogue} and the existing catalogue aren't instances of the same
-   * class, and do nothing if they are.
-   *
-   * @throws GeneralSecurityException if there's an existing catalogue and it is not an instance of
-   *     the same class as {@code catalogue}
-   * @deprecated Catalogues are no longer supported.
-   */
-  @Deprecated
-  public static synchronized void addCatalogue(
-      String catalogueName, Catalogue<?> catalogue) throws GeneralSecurityException {
-    if (catalogueName == null) {
-      throw new IllegalArgumentException("catalogueName must be non-null.");
-    }
-    if (catalogue == null) {
-      throw new IllegalArgumentException("catalogue must be non-null.");
-    }
-    if (catalogueMap.containsKey(catalogueName.toLowerCase(Locale.US))) {
-      Catalogue<?> existing = catalogueMap.get(catalogueName.toLowerCase(Locale.US));
-      if (!catalogue.getClass().getName().equals(existing.getClass().getName())) {
-        logger.warning(
-            "Attempted overwrite of a catalogueName catalogue for name " + catalogueName);
-        throw new GeneralSecurityException(
-            "catalogue for name " + catalogueName + " has been already registered");
-      }
-    }
-    catalogueMap.put(catalogueName.toLowerCase(Locale.US), catalogue);
-  }
+  ///**
+  // * Tries to add a catalogue, to enable custom configuration of key types and key managers.
+  // *
+  // * <p>Adding a custom catalogue should be a one-time operaton. There is an existing catalogue,
+  // * throw exception if {@code catalogue} and the existing catalogue aren't instances of the same
+  // * class, and do nothing if they are.
+  // *
+  // * @throws GeneralSecurityException if there's an existing catalogue and it is not an instance of
+  // *     the same class as {@code catalogue}
+  // * @deprecated Catalogues are no longer supported.
+  // */
+  //@Deprecated
+  //public static synchronized void addCatalogue(
+  //    String catalogueName, Catalogue<?> catalogue) throws GeneralSecurityException {
+  //  if (catalogueName == null) {
+  //    throw new IllegalArgumentException("catalogueName must be non-null.");
+  //  }
+  //  if (catalogue == null) {
+  //    throw new IllegalArgumentException("catalogue must be non-null.");
+  //  }
+  //  if (catalogueMap.containsKey(catalogueName.toLowerCase(Locale.US))) {
+  //    Catalogue<?> existing = catalogueMap.get(catalogueName.toLowerCase(Locale.US));
+  //    if (!catalogue.getClass().getName().equals(existing.getClass().getName())) {
+  //      logger.warning(
+  //          "Attempted overwrite of a catalogueName catalogue for name " + catalogueName);
+  //      throw new GeneralSecurityException(
+  //          "catalogue for name " + catalogueName + " has been already registered");
+  //    }
+  //  }
+  //  catalogueMap.put(catalogueName.toLowerCase(Locale.US), catalogue);
+  //}
 
-  /**
-   * Tries to get a catalogue associated with {@code catalogueName}.
-   *
-   * @deprecated Catalogues are no longer supported.
-   * @throws GeneralSecurityException if no catalogue is found
-   */
-  @Deprecated
-  public static Catalogue<?> getCatalogue(String catalogueName)
-      throws GeneralSecurityException {
-    if (catalogueName == null) {
-      throw new IllegalArgumentException("catalogueName must be non-null.");
-    }
-    Catalogue<?> catalogue = catalogueMap.get(catalogueName.toLowerCase(Locale.US));
-    if (catalogue == null) {
-      String error = String.format("no catalogue found for %s. ", catalogueName);
-      if (catalogueName.toLowerCase(Locale.US).startsWith("tinkaead")) {
-        error += "Maybe call AeadConfig.register().";
-      }
-      if (catalogueName.toLowerCase(Locale.US).startsWith("tinkdeterministicaead")) {
-        error += "Maybe call DeterministicAeadConfig.register().";
-      } else if (catalogueName.toLowerCase(Locale.US).startsWith("tinkstreamingaead")) {
-        error += "Maybe call StreamingAeadConfig.register().";
-      } else if (catalogueName.toLowerCase(Locale.US).startsWith("tinkhybriddecrypt")
-          || catalogueName.toLowerCase(Locale.US).startsWith("tinkhybridencrypt")) {
-        error += "Maybe call HybridConfig.register().";
-      } else if (catalogueName.toLowerCase(Locale.US).startsWith("tinkmac")) {
-        error += "Maybe call MacConfig.register().";
-      } else if (catalogueName.toLowerCase(Locale.US).startsWith("tinkpublickeysign")
-          || catalogueName.toLowerCase(Locale.US).startsWith("tinkpublickeyverify")) {
-        error += "Maybe call SignatureConfig.register().";
-      } else if (catalogueName.toLowerCase(Locale.US).startsWith("tink")) {
-        error += "Maybe call TinkConfig.register().";
-      }
-      throw new GeneralSecurityException(error);
-    }
-    return catalogue;
-  }
+  ///**
+  // * Tries to get a catalogue associated with {@code catalogueName}.
+  // *
+  // * @deprecated Catalogues are no longer supported.
+  // * @throws GeneralSecurityException if no catalogue is found
+  // */
+  //@Deprecated
+  //public static Catalogue<?> getCatalogue(String catalogueName)
+  //    throws GeneralSecurityException {
+  //  if (catalogueName == null) {
+  //    throw new IllegalArgumentException("catalogueName must be non-null.");
+  //  }
+  //  Catalogue<?> catalogue = catalogueMap.get(catalogueName.toLowerCase(Locale.US));
+  //  if (catalogue == null) {
+  //    String error = String.format("no catalogue found for %s. ", catalogueName);
+  //    if (catalogueName.toLowerCase(Locale.US).startsWith("tinkaead")) {
+  //      error += "Maybe call AeadConfig.register().";
+  //    }
+  //    if (catalogueName.toLowerCase(Locale.US).startsWith("tinkdeterministicaead")) {
+  //      error += "Maybe call DeterministicAeadConfig.register().";
+  //    } else if (catalogueName.toLowerCase(Locale.US).startsWith("tinkstreamingaead")) {
+  //      error += "Maybe call StreamingAeadConfig.register().";
+  //    } else if (catalogueName.toLowerCase(Locale.US).startsWith("tinkhybriddecrypt")
+  //        || catalogueName.toLowerCase(Locale.US).startsWith("tinkhybridencrypt")) {
+  //      error += "Maybe call HybridConfig.register().";
+  //    } else if (catalogueName.toLowerCase(Locale.US).startsWith("tinkmac")) {
+  //      error += "Maybe call MacConfig.register().";
+  //    } else if (catalogueName.toLowerCase(Locale.US).startsWith("tinkpublickeysign")
+  //        || catalogueName.toLowerCase(Locale.US).startsWith("tinkpublickeyverify")) {
+  //      error += "Maybe call SignatureConfig.register().";
+  //    } else if (catalogueName.toLowerCase(Locale.US).startsWith("tink")) {
+  //      error += "Maybe call TinkConfig.register().";
+  //    }
+  //    throw new GeneralSecurityException(error);
+  //  }
+  //  return catalogue;
+  //}
 
   /**
    * Tries to register {@code manager} for {@code manager.getKeyType()}. Users can generate new keys

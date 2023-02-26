@@ -40,21 +40,21 @@ import java.security.GeneralSecurityException;
  * @since 1.0.0
  */
 public final class Config {
-  /** Returns a {@link KeyTypeEntry} for Tink key types with the specified properties. */
-  public static KeyTypeEntry getTinkKeyTypeEntry(
-      String catalogueName,
-      String primitiveName,
-      String keyProtoName,
-      int keyManagerVersion,
-      boolean newKeyAllowed) {
-    return KeyTypeEntry.newBuilder()
-        .setPrimitiveName(primitiveName)
-        .setTypeUrl("type.googleapis.com/google.crypto.tink." + keyProtoName)
-        .setKeyManagerVersion(keyManagerVersion)
-        .setNewKeyAllowed(newKeyAllowed)
-        .setCatalogueName(catalogueName)
-        .build();
-  }
+  ///** Returns a {@link KeyTypeEntry} for Tink key types with the specified properties. */
+  //public static KeyTypeEntry getTinkKeyTypeEntry(
+  //    String catalogueName,
+  //    String primitiveName,
+  //    String keyProtoName,
+  //    int keyManagerVersion,
+  //    boolean newKeyAllowed) {
+  //  return KeyTypeEntry.newBuilder()
+  //      .setPrimitiveName(primitiveName)
+  //      .setTypeUrl("type.googleapis.com/google.crypto.tink." + keyProtoName)
+  //      .setKeyManagerVersion(keyManagerVersion)
+  //      .setNewKeyAllowed(newKeyAllowed)
+  //      .setCatalogueName(catalogueName)
+  //      .build();
+  //}
 
   /**
    * Tries to register key managers according to the specification in {@code config}.
@@ -81,24 +81,24 @@ public final class Config {
    */
   public static void registerKeyType(KeyTypeEntry entry) throws GeneralSecurityException {
     validate(entry);
-    // Catalogues are no longer supported; we simply return on those catalogues which have been
-    // removed, as the key managers will be registered already.
-    if (entry.getCatalogueName().equals("TinkAead")
-        || entry.getCatalogueName().equals("TinkMac")
-        || entry.getCatalogueName().equals("TinkHybridDecrypt")
-        || entry.getCatalogueName().equals("TinkHybridEncrypt")
-        || entry.getCatalogueName().equals("TinkPublicKeySign")
-        || entry.getCatalogueName().equals("TinkPublicKeyVerify")
-        || entry.getCatalogueName().equals("TinkStreamingAead")
-        || entry.getCatalogueName().equals("TinkDeterministicAead")) {
-      return;
-    }
-    Catalogue<?> catalogue = Registry.getCatalogue(entry.getCatalogueName());
+    //// Catalogues are no longer supported; we simply return on those catalogues which have been
+    //// removed, as the key managers will be registered already.
+    //if (entry.getCatalogueName().equals("TinkAead")
+    //    || entry.getCatalogueName().equals("TinkMac")
+    //    || entry.getCatalogueName().equals("TinkHybridDecrypt")
+    //    || entry.getCatalogueName().equals("TinkHybridEncrypt")
+    //    || entry.getCatalogueName().equals("TinkPublicKeySign")
+    //    || entry.getCatalogueName().equals("TinkPublicKeyVerify")
+    //    || entry.getCatalogueName().equals("TinkStreamingAead")
+    //    || entry.getCatalogueName().equals("TinkDeterministicAead")) {
+    //  return;
+    //}
+    //Catalogue<?> catalogue = Registry.getCatalogue(entry.getCatalogueName());
     Registry.registerPrimitiveWrapper(catalogue.getPrimitiveWrapper());
-    KeyManager<?> keyManager =
-        catalogue.getKeyManager(
-            entry.getTypeUrl(), entry.getPrimitiveName(), entry.getKeyManagerVersion());
-    Registry.registerKeyManager(keyManager, entry.getNewKeyAllowed());
+    //KeyManager<?> keyManager =
+    //    catalogue.getKeyManager(
+    //        entry.getTypeUrl(), entry.getPrimitiveName(), entry.getKeyManagerVersion());
+    //Registry.registerKeyManager(keyManager, entry.getNewKeyAllowed());
   }
 
   private static void validate(KeyTypeEntry entry) throws GeneralSecurityException {
