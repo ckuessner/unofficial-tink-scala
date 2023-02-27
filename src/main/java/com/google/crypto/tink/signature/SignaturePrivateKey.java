@@ -20,8 +20,6 @@ import com.google.crypto.tink.Key;
 import com.google.crypto.tink.PrivateKey;
 import com.google.crypto.tink.annotations.Alpha;
 import com.google.crypto.tink.util.Bytes;
-import com.google.errorprone.annotations.Immutable;
-import javax.annotation.Nullable;
 
 /**
  * A {@link SignaturePrivateKey} represents a digital signature primitive, which consists of a sign
@@ -29,7 +27,7 @@ import javax.annotation.Nullable;
  *
  * <p>The verify function is only available indirectly, with {@link #getPublicKey}.
  */
-@Immutable
+//@Immutable
 @Alpha
 public abstract class SignaturePrivateKey extends Key implements PrivateKey {
   /**
@@ -49,7 +47,7 @@ public abstract class SignaturePrivateKey extends Key implements PrivateKey {
   }
 
   @Override
-  @Nullable
+  //@Nullable
   public Integer getIdRequirementOrNull() {
     return getPublicKey().getIdRequirementOrNull();
   }

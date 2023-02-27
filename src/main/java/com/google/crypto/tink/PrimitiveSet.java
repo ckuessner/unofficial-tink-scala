@@ -20,7 +20,6 @@ import com.google.crypto.tink.proto.KeyStatusType;
 import com.google.crypto.tink.proto.Keyset;
 import com.google.crypto.tink.proto.OutputPrefixType;
 import com.google.crypto.tink.subtle.Hex;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import javax.annotation.Nullable;
 
 /**
  * A container class for a set of primitives -- implementations of cryptographic primitives offered
@@ -57,8 +55,8 @@ public final class PrimitiveSet<P> {
    */
   public static final class Entry<P> {
     // If set, this is a primitive of a key.
-    @Nullable private final P fullPrimitive;
-    @Nullable private final P primitive;
+    /*@Nullable*/ private final P fullPrimitive;
+    /*@Nullable*/ private final P primitive;
     // Identifies the primitive within the set.
     // It is the ciphertext prefix of the corresponding key.
     private final byte[] identifier;
@@ -72,8 +70,8 @@ public final class PrimitiveSet<P> {
     private final Key key;
 
     Entry(
-        @Nullable P fullPrimitive,
-        @Nullable P primitive,
+        /*@Nullable*/ P fullPrimitive,
+        /*@Nullable*/ P primitive,
         final byte[] identifier,
         KeyStatusType status,
         OutputPrefixType outputPrefixType,
@@ -98,7 +96,7 @@ public final class PrimitiveSet<P> {
      * primitive is contained in the primitive (most likely through the new Key interface), as
      * opposed to the {@code primitive} field (see {@link #getPrimitive} for details).
      */
-    @Nullable
+    ///*@Nullable*/
     public P getFullPrimitive() {
       return this.fullPrimitive;
     }
@@ -110,7 +108,7 @@ public final class PrimitiveSet<P> {
      * PublicKeyVerify}, {@code DeterministicAead}, {@code HybridEncrypt}, and {@code HybridDecrypt}
      * this is a primitive which <b>ignores</b> the output prefix and assumes "RAW".
      */
-    @Nullable
+    ///*@Nullable*/
     public P getPrimitive() {
       return this.primitive;
     }
@@ -123,7 +121,7 @@ public final class PrimitiveSet<P> {
       return outputPrefixType;
     }
 
-    @Nullable
+    ///*@Nullable*/
     public final byte[] getIdentifier() {
       if (identifier == null) {
         return null;
@@ -144,7 +142,7 @@ public final class PrimitiveSet<P> {
       return key;
     }
 
-    @Nullable
+    ///*@Nullable*/
     public Parameters getParameters() {
       if (key == null) {
         return null;
@@ -154,12 +152,12 @@ public final class PrimitiveSet<P> {
   }
 
   //private static <P> Entry<P> addEntryToMap(
-  //    @Nullable P fullPrimitive,
-  //    @Nullable P primitive,
+  //    /*@Nullable*/ P fullPrimitive,
+  //    /*@Nullable*/ P primitive,
   //    Keyset.Key key,
   //    ConcurrentMap<Prefix, List<Entry<P>>> primitives)
   //    throws GeneralSecurityException {
-  //  @Nullable Integer idRequirement = key.getKeyId();
+  //  /*@Nullable*/ Integer idRequirement = key.getKeyId();
   //  if (key.getOutputPrefixType() == OutputPrefixType.RAW) {
   //    idRequirement = null;
   //  }
@@ -198,7 +196,7 @@ public final class PrimitiveSet<P> {
   //}
 
   /** Returns the entry with the primary primitive. */
-  @Nullable
+  ///*@Nullable*/
   public Entry<P> getPrimary() {
     return primary;
   }
@@ -365,10 +363,10 @@ public final class PrimitiveSet<P> {
     private Entry<P> primary;
     //private MonitoringAnnotations annotations;
 
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     private Builder<P> addPrimitive(
-        @Nullable final P fullPrimitive,
-        @Nullable final P primitive,
+        /*@Nullable*/ final P fullPrimitive,
+        /*@Nullable*/ final P primitive,
         Keyset.Key key,
         boolean asPrimary)
         throws GeneralSecurityException {
@@ -393,7 +391,7 @@ public final class PrimitiveSet<P> {
     }
 
     /* Adds a non-primary primitive.*/
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     public Builder<P> addPrimitive(final P primitive, Keyset.Key key)
         throws GeneralSecurityException {
       return addPrimitive(null, primitive, key, false);
@@ -403,15 +401,15 @@ public final class PrimitiveSet<P> {
      * Adds the primary primitive. This or addPrimaryFullPrimitiveAndOptionalPrimitive should be
      * called exactly once per PrimitiveSet.
      */
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     public Builder<P> addPrimaryPrimitive(final P primitive, Keyset.Key key)
         throws GeneralSecurityException {
       return addPrimitive(null, primitive, key, true);
     }
 
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     public Builder<P> addFullPrimitiveAndOptionalPrimitive(
-        @Nullable final P fullPrimitive, @Nullable final P primitive, Keyset.Key key)
+        /*@Nullable*/ final P fullPrimitive, /*@Nullable*/ final P primitive, Keyset.Key key)
         throws GeneralSecurityException {
       return addPrimitive(fullPrimitive, primitive, key, false);
     }
@@ -420,9 +418,9 @@ public final class PrimitiveSet<P> {
      * Adds the primary primitive and full primitive. This or addPrimaryPrimitive should be called
      * exactly once per PrimitiveSet.
      */
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     public Builder<P> addPrimaryFullPrimitiveAndOptionalPrimitive(
-        @Nullable final P fullPrimitive, @Nullable final P primitive, Keyset.Key key)
+        /*@Nullable*/ final P fullPrimitive, /*@Nullable*/ final P primitive, Keyset.Key key)
         throws GeneralSecurityException {
       return addPrimitive(fullPrimitive, primitive, key, true);
     }

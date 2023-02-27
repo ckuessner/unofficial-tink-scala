@@ -20,7 +20,6 @@ import com.google.crypto.tink.Key;
 import com.google.crypto.tink.SecretKeyAccess;
 import com.google.crypto.tink.util.Bytes;
 import java.security.GeneralSecurityException;
-import javax.annotation.Nullable;
 
 /**
  * Parses {@code Serialization} objects into {@code Key} objects of a certain kind.
@@ -36,7 +35,7 @@ public abstract class KeyParser<SerializationT extends Serialization> {
    * should not use this directly; see the explanation in {@link #create}.
    */
   public interface KeyParsingFunction<SerializationT extends Serialization> {
-    Key parseKey(SerializationT serialization, @Nullable SecretKeyAccess access)
+    Key parseKey(SerializationT serialization, /*@Nullable*/ SecretKeyAccess access)
         throws GeneralSecurityException;
   }
 
@@ -54,7 +53,7 @@ public abstract class KeyParser<SerializationT extends Serialization> {
    * <p>This function is usually called with a Serialization matching the result of {@link
    * getObjectIdentifier}. However, implementations should check that this is the case.
    */
-  public abstract Key parseKey(SerializationT serialization, @Nullable SecretKeyAccess access)
+  public abstract Key parseKey(SerializationT serialization, /*@Nullable*/ SecretKeyAccess access)
       throws GeneralSecurityException;
 
   /**
@@ -108,7 +107,7 @@ public abstract class KeyParser<SerializationT extends Serialization> {
       Class<SerializationT> serializationClass) {
     return new KeyParser<SerializationT>(objectIdentifier, serializationClass) {
       @Override
-      public Key parseKey(SerializationT serialization, @Nullable SecretKeyAccess access)
+      public Key parseKey(SerializationT serialization, /*@Nullable*/ SecretKeyAccess access)
           throws GeneralSecurityException {
         return function.parseKey(serialization, access);
       }

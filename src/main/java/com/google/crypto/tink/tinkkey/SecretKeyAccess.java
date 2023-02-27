@@ -15,8 +15,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.google.crypto.tink.tinkkey;
 
-import com.google.errorprone.annotations.Immutable;
-
 /**
  * A class used to generate {@code KeyAccess} instances granting secret access.
  *
@@ -25,7 +23,7 @@ import com.google.errorprone.annotations.Immutable;
  *
  * @deprecated Use {@link com.google.crypto.tink.InsecureSecretKeyAccess} instead.
  */
-@Immutable
+//@Immutable
 @Deprecated /* Deprecation under consideration */
 public final class SecretKeyAccess {
 

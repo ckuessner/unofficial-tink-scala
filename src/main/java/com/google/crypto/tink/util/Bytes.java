@@ -17,7 +17,6 @@
 package com.google.crypto.tink.util;
 
 import com.google.crypto.tink.subtle.Hex;
-import com.google.errorprone.annotations.Immutable;
 import java.util.Arrays;
 
 /**
@@ -28,7 +27,7 @@ import java.util.Arrays;
  *
  * @since 1.0.0
  */
-@Immutable
+//@Immutable
 public final class Bytes {
   /**
    * @param data the byte array to be wrapped.

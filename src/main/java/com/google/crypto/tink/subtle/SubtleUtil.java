@@ -23,7 +23,6 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
-import javax.annotation.Nullable;
 
 /** Helper methods. */
 public final class SubtleUtil {

@@ -17,8 +17,6 @@
 package com.google.crypto.tink;
 
 import com.google.crypto.tink.annotations.Alpha;
-import com.google.errorprone.annotations.Immutable;
-import javax.annotation.Nullable;
 
 /**
  * Represents a cryptographic object.
@@ -34,7 +32,7 @@ import javax.annotation.Nullable;
  * needed to <em>represent</em> the function. This allows key objects to be used in contexts where
  * dependencies need to be kept at a minimum.
  */
-@Immutable
+//@Immutable
 @Alpha
 public abstract class Key {
   /**
@@ -54,7 +52,7 @@ public abstract class Key {
    * string {@code 0x01<id>}, where the ID is encoded in big endian (see the documentation of the
    * key type for details), in which case the key requires a certain ID.
    */
-  @Nullable
+  //@Nullable
   public abstract Integer getIdRequirementOrNull();
 
   /**

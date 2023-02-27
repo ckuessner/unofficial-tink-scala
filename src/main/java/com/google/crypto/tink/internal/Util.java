@@ -20,7 +20,6 @@ import com.google.crypto.tink.util.Bytes;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.Objects;
-import javax.annotation.Nullable;
 
 /** Helper functions used throughout Tink, for Tink internal use only. */
 public final class Util {
@@ -83,7 +82,7 @@ public final class Util {
   }
 
   /** Returns the current Android API level as integer or null if we do not run on Android. */
-  @Nullable
+  //@Nullable
   public static Integer getAndroidApiLevel() {
     if (!isAndroid()) {
       return null;

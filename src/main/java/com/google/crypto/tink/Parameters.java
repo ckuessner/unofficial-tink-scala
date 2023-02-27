@@ -17,7 +17,6 @@
 package com.google.crypto.tink;
 
 import com.google.crypto.tink.annotations.Alpha;
-import com.google.errorprone.annotations.Immutable;
 
 /**
  * Represents a cryptographic function without the actual key material.
@@ -25,7 +24,7 @@ import com.google.errorprone.annotations.Immutable;
  * <p>In Tink, a Key represents a set of cryptographic functions. The Parameters class contains all
  * the information about the function which is not randomly chosen with each instance.
  */
-@Immutable
+//@Immutable
 @Alpha
 public abstract class Parameters {
   /**

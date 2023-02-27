@@ -19,7 +19,6 @@ import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.KeyTemplate.OutputPrefixType;
 import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.tinkkey.TinkKey;
-import com.google.errorprone.annotations.Immutable;
 
 /**
  * Wraps the proto {@code KeyData} as an implementation of a {@code TinkKey}. The underlying {@code
@@ -27,7 +26,7 @@ import com.google.errorprone.annotations.Immutable;
  *
  * <p>ProtoKey is not intended for use outside of the Tink project.
  */
-@Immutable
+//@Immutable
 public final class ProtoKey implements TinkKey {
   private final KeyData keyData;
   private final boolean hasSecret;

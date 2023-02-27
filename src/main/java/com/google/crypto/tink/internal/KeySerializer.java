@@ -19,7 +19,6 @@ package com.google.crypto.tink.internal;
 import com.google.crypto.tink.Key;
 import com.google.crypto.tink.SecretKeyAccess;
 import java.security.GeneralSecurityException;
-import javax.annotation.Nullable;
 
 /**
  * Serializes {@code Key} objects into {@code Serialization} objects of a certain kind.
@@ -36,7 +35,7 @@ public abstract class KeySerializer<KeyT extends Key, SerializationT extends Ser
    */
   public interface KeySerializationFunction<
       KeyT extends Key, SerializationT extends Serialization> {
-    SerializationT serializeKey(KeyT key, @Nullable SecretKeyAccess access)
+    SerializationT serializeKey(KeyT key, /*@Nullable*/ SecretKeyAccess access)
         throws GeneralSecurityException;
   }
 
@@ -48,7 +47,7 @@ public abstract class KeySerializer<KeyT extends Key, SerializationT extends Ser
     this.serializationClass = serializationClass;
   }
 
-  public abstract SerializationT serializeKey(KeyT key, @Nullable SecretKeyAccess access)
+  public abstract SerializationT serializeKey(KeyT key, /*@Nullable*/ SecretKeyAccess access)
       throws GeneralSecurityException;
 
   public Class<KeyT> getKeyClass() {
@@ -91,7 +90,7 @@ public abstract class KeySerializer<KeyT extends Key, SerializationT extends Ser
           Class<SerializationT> serializationClass) {
     return new KeySerializer<KeyT, SerializationT>(keyClass, serializationClass) {
       @Override
-      public SerializationT serializeKey(KeyT key, @Nullable SecretKeyAccess access)
+      public SerializationT serializeKey(KeyT key, /*@Nullable*/ SecretKeyAccess access)
           throws GeneralSecurityException {
         return function.serializeKey(key, access);
       }

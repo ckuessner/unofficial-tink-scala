@@ -21,12 +21,9 @@ import com.google.crypto.tink.Key;
 import com.google.crypto.tink.annotations.Alpha;
 import com.google.crypto.tink.util.Bytes;
 import com.google.crypto.tink.util.SecretBytes;
-import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.RestrictedApi;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.util.Objects;
-import javax.annotation.Nullable;
 
 /**
  * Represents the Aead XChaCha20-Poly1305 proposed in the RFC draft at
@@ -37,18 +34,18 @@ import javax.annotation.Nullable;
  * XChaCha20Poly1305Parameters.Variant}.
  */
 @Alpha
-@Immutable
+//@Immutable
 public final class XChaCha20Poly1305Key extends AeadKey {
   private final XChaCha20Poly1305Parameters parameters;
   private final SecretBytes keyBytes;
   private final Bytes outputPrefix;
-  @Nullable private final Integer idRequirement;
+  /*@Nullable*/ private final Integer idRequirement;
 
   private XChaCha20Poly1305Key(
       XChaCha20Poly1305Parameters parameters,
       SecretBytes keyBytes,
       Bytes outputPrefix,
-      @Nullable Integer idRequirement) {
+      /*@Nullable*/ Integer idRequirement) {
     this.parameters = parameters;
     this.keyBytes = keyBytes;
     this.outputPrefix = outputPrefix;
@@ -56,7 +53,7 @@ public final class XChaCha20Poly1305Key extends AeadKey {
   }
 
   private static Bytes getOutputPrefix(
-      XChaCha20Poly1305Parameters parameters, @Nullable Integer idRequirement) {
+      XChaCha20Poly1305Parameters parameters, /*@Nullable*/ Integer idRequirement) {
     if (parameters.getVariant() == XChaCha20Poly1305Parameters.Variant.NO_PREFIX) {
       return Bytes.copyFrom(new byte[] {});
     }
@@ -74,26 +71,26 @@ public final class XChaCha20Poly1305Key extends AeadKey {
     return outputPrefix;
   }
 
-  @RestrictedApi(
-      explanation = "Accessing parts of keys can produce unexpected incompatibilities, annotate the function with @AccessesPartialKey",
-      link = "https://developers.google.com/tink/design/access_control#accessing_partial_keys",
-      allowedOnPath = ".*Test\\.java",
-      allowlistAnnotations = {AccessesPartialKey.class})
+  //@RestrictedApi(
+  //    explanation = "Accessing parts of keys can produce unexpected incompatibilities, annotate the function with @AccessesPartialKey",
+  //    link = "https://developers.google.com/tink/design/access_control#accessing_partial_keys",
+  //    allowedOnPath = ".*Test\\.java",
+  //    allowlistAnnotations = {AccessesPartialKey.class})
   @AccessesPartialKey
   public static XChaCha20Poly1305Key create(SecretBytes secretBytes)
       throws GeneralSecurityException {
     return create(XChaCha20Poly1305Parameters.Variant.NO_PREFIX, secretBytes, null);
   }
 
-  @RestrictedApi(
-      explanation = "Accessing parts of keys can produce unexpected incompatibilities, annotate the function with @AccessesPartialKey",
-      link = "https://developers.google.com/tink/design/access_control#accessing_partial_keys",
-      allowedOnPath = ".*Test\\.java",
-      allowlistAnnotations = {AccessesPartialKey.class})
+  //@RestrictedApi(
+  //    explanation = "Accessing parts of keys can produce unexpected incompatibilities, annotate the function with @AccessesPartialKey",
+  //    link = "https://developers.google.com/tink/design/access_control#accessing_partial_keys",
+  //    allowedOnPath = ".*Test\\.java",
+  //    allowlistAnnotations = {AccessesPartialKey.class})
   public static XChaCha20Poly1305Key create(
       XChaCha20Poly1305Parameters.Variant variant,
       SecretBytes secretBytes,
-      @Nullable Integer idRequirement)
+      /*@Nullable*/ Integer idRequirement)
       throws GeneralSecurityException {
     if (variant != XChaCha20Poly1305Parameters.Variant.NO_PREFIX && idRequirement == null) {
       throw new GeneralSecurityException(
@@ -113,11 +110,11 @@ public final class XChaCha20Poly1305Key extends AeadKey {
         parameters, secretBytes, getOutputPrefix(parameters, idRequirement), idRequirement);
   }
 
-  @RestrictedApi(
-      explanation = "Accessing parts of keys can produce unexpected incompatibilities, annotate the function with @AccessesPartialKey",
-      link = "https://developers.google.com/tink/design/access_control#accessing_partial_keys",
-      allowedOnPath = ".*Test\\.java",
-      allowlistAnnotations = {AccessesPartialKey.class})
+  //@RestrictedApi(
+  //    explanation = "Accessing parts of keys can produce unexpected incompatibilities, annotate the function with @AccessesPartialKey",
+  //    link = "https://developers.google.com/tink/design/access_control#accessing_partial_keys",
+  //    allowedOnPath = ".*Test\\.java",
+  //    allowlistAnnotations = {AccessesPartialKey.class})
   public SecretBytes getKeyBytes() {
     return keyBytes;
   }
@@ -128,7 +125,7 @@ public final class XChaCha20Poly1305Key extends AeadKey {
   }
 
   @Override
-  @Nullable
+  //@Nullable
   public Integer getIdRequirementOrNull() {
     return idRequirement;
   }

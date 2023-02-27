@@ -21,7 +21,6 @@ import com.google.crypto.tink.Registry;
 import com.google.crypto.tink.internal.Util;
 import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.tinkkey.internal.ProtoKey;
-import com.google.errorprone.annotations.Immutable;
 import java.security.GeneralSecurityException;
 
 /**
@@ -31,7 +30,7 @@ import java.security.GeneralSecurityException;
  *
  * @deprecated Use {@link com.google.crypto.tink.Key} instead.
  */
-@Immutable
+//@Immutable
 @Deprecated /* Deprecation under consideration */
 public class KeyHandle {
 

@@ -17,7 +17,6 @@
 package com.google.crypto.tink.internal;
 
 import com.google.crypto.tink.util.Bytes;
-import com.google.errorprone.annotations.Immutable;
 
 /**
  * Represents either a serialized {@code Key} or a serialized {@code Parameters} object.
@@ -29,7 +28,7 @@ import com.google.errorprone.annotations.Immutable;
  * <p>This class should eventually be in Tinks public API -- however, it might still change before
  * that.
  */
-@Immutable
+//@Immutable
 public interface Serialization {
   /**
    * Identifies which parsing method to use in the registry.

@@ -15,7 +15,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.google.crypto.tink.tinkkey;
 
-import com.google.errorprone.annotations.Immutable;
 
 /**
  * An access token for {@code TinkKey}. Access to Tink keys is governed by {@code KeyHandle}. A
@@ -25,7 +24,7 @@ import com.google.errorprone.annotations.Immutable;
  *
  * @deprecated Use {@link com.google.crypto.tink.SecretKeyAccess} instead.
  */
-@Immutable
+//@Immutable
 @Deprecated /* Deprecation under consideration */
 public final class KeyAccess {
 

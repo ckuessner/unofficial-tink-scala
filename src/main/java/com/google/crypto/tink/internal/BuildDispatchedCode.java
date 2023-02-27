@@ -16,8 +16,6 @@
 
 package com.google.crypto.tink.internal;
 
-import javax.annotation.Nullable;
-
 /**
  * Static utility functions which need to be compiled with different code in Android and Java.
  *
@@ -29,7 +27,7 @@ final class BuildDispatchedCode {
   private BuildDispatchedCode() {}
 
   /** Returns the Android API level or null if in Java. */
-  @Nullable
+  //@Nullable
   public static Integer getApiLevel() {
     return null;
   }

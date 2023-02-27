@@ -21,10 +21,8 @@ import static com.google.crypto.tink.internal.Util.toBytesFromPrintableAscii;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.proto.OutputPrefixType;
 import com.google.crypto.tink.util.Bytes;
-import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.ByteString;
 import java.security.GeneralSecurityException;
-import javax.annotation.Nullable;
 
 /**
  * * Represents a {@code Key} object serialized with binary protobuf Serialization.
@@ -32,21 +30,21 @@ import javax.annotation.Nullable;
  * <p>{@code ProtoKeySerialization} objects fully describe a {@code Key} object, but tailored for
  * protocol buffer serialization.
  */
-@Immutable
+//@Immutable
 public final class ProtoKeySerialization implements Serialization {
   private final String typeUrl;
   private final Bytes objectIdentifier;
   private final ByteString value;
   private final KeyMaterialType keyMaterialType;
   private final OutputPrefixType outputPrefixType;
-  @Nullable private final Integer idRequirement;
+  /*@Nullable*/ private final Integer idRequirement;
 
   private ProtoKeySerialization(
       String typeUrl,
       ByteString value,
       KeyMaterialType keyMaterialType,
       OutputPrefixType outputPrefixType,
-      @Nullable Integer idRequirement) {
+      /*@Nullable*/ Integer idRequirement) {
     this.typeUrl = typeUrl;
     this.objectIdentifier = toBytesFromPrintableAscii(typeUrl);
     this.value = value;
@@ -60,7 +58,7 @@ public final class ProtoKeySerialization implements Serialization {
       ByteString value,
       KeyMaterialType keyMaterialType,
       OutputPrefixType outputPrefixType,
-      @Nullable Integer idRequirement)
+      /*@Nullable*/ Integer idRequirement)
       throws GeneralSecurityException {
     if (outputPrefixType == OutputPrefixType.RAW) {
       if (idRequirement != null) {
@@ -102,7 +100,7 @@ public final class ProtoKeySerialization implements Serialization {
    * The id requirement of this key. Guaranteed to be null if getOutputPrefixType == RAW, otherwise
    * non-null, and equal to the ID this key has to have.
    */
-  @Nullable
+  /*@Nullable*/
   public Integer getIdRequirementOrNull() {
     return idRequirement;
   }

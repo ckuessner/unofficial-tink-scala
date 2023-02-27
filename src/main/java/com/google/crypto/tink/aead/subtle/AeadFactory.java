@@ -17,11 +17,10 @@
 package com.google.crypto.tink.aead.subtle;
 
 import com.google.crypto.tink.Aead;
-import com.google.errorprone.annotations.Immutable;
 import java.security.GeneralSecurityException;
 
 /** Provides AEAD instances with a specific raw key. */
-@Immutable
+//@Immutable
 public interface AeadFactory {
   /** Returns the size of the AEAD key in bytes. */
   public int getKeySizeInBytes();

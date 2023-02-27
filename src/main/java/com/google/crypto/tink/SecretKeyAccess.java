@@ -17,11 +17,7 @@
 package com.google.crypto.tink;
 
 import com.google.crypto.tink.annotations.Alpha;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
-import com.google.errorprone.annotations.Immutable;
 import java.security.GeneralSecurityException;
-import javax.annotation.Nullable;
 
 /**
  * Represents access to secret key material.
@@ -43,9 +39,9 @@ import javax.annotation.Nullable;
  * Users who want to call {@code getKeyMaterial} then need to get a {@code SecretKeyAccess} object
  * via {@code InsecureSecretKeyAccess.get()}.
  */
-@CheckReturnValue
+//@CheckReturnValue
 @Alpha
-@Immutable
+//@Immutable
 public final class SecretKeyAccess {
   private SecretKeyAccess() {}
 
@@ -67,8 +63,8 @@ public final class SecretKeyAccess {
    * always requires a non-null object. In this case, using it with null warrants should usually
    * throw a null pointer exception (and one does not want to use {@code requireAccess}).
    */
-  @CanIgnoreReturnValue
-  public static SecretKeyAccess requireAccess(@Nullable SecretKeyAccess access)
+  //@CanIgnoreReturnValue
+  public static SecretKeyAccess requireAccess(/*@Nullable*/ SecretKeyAccess access)
       throws GeneralSecurityException {
     if (access == null) {
       throw new GeneralSecurityException("SecretKeyAccess is required");

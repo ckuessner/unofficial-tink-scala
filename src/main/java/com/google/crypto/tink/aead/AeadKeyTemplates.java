@@ -17,8 +17,6 @@
 package com.google.crypto.tink.aead;
 
 import com.google.crypto.tink.proto.HashType;
-import com.google.crypto.tink.proto.HmacKeyFormat;
-import com.google.crypto.tink.proto.HmacParams;
 import com.google.crypto.tink.proto.KeyTemplate;
 import com.google.crypto.tink.proto.OutputPrefixType;
 

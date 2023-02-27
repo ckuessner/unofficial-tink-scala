@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink.config;
 
-import com.google.crypto.tink.hybrid.HybridConfig;
 import com.google.crypto.tink.proto.RegistryConfig;
 import com.google.crypto.tink.signature.SignatureConfig;
 import java.security.GeneralSecurityException;

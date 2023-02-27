@@ -16,11 +16,10 @@
 
 package com.google.crypto.tink;
 
-import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.ByteString;
 
 /** A KeyTemplate specifies how to generate keys of a particular type. */
-@Immutable
+//@Immutable
 public final class KeyTemplate {
   private final com.google.crypto.tink.proto.KeyTemplate kt;
 

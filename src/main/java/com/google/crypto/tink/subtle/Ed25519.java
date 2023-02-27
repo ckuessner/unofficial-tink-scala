@@ -24,7 +24,6 @@ import static com.google.crypto.tink.subtle.Ed25519Constants.SQRTM1;
 import static com.google.crypto.tink.subtle.Field25519.FIELD_LEN;
 import static com.google.crypto.tink.subtle.Field25519.LIMB_CNT;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -102,7 +101,7 @@ final class Ed25519 {
     /**
      * ge_p1p1_to_p2.c
      */
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     static XYZ fromPartialXYZT(XYZ out, PartialXYZT in) {
       Field25519.mult(out.x, in.xyz.x, in.t);
       Field25519.mult(out.y, in.xyz.y, in.xyz.z);
@@ -189,7 +188,7 @@ final class Ed25519 {
     /**
      * ge_p1p1_to_p2.c
      */
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     private static XYZT fromPartialXYZT(XYZT out, PartialXYZT in) {
       Field25519.mult(out.xyz.x, in.xyz.x, in.t);
       Field25519.mult(out.xyz.y, in.xyz.y, in.xyz.z);

@@ -19,7 +19,6 @@ package com.google.crypto.tink.internal;
 import com.google.crypto.tink.Key;
 import com.google.crypto.tink.PrimitiveSet;
 import com.google.crypto.tink.PrimitiveWrapper;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +56,7 @@ public class PrimitiveRegistry {
      * has already been registered, this checks if they are the same. If they are, the call is
      * ignored, otherwise an exception is thrown.
      */
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     public <KeyT extends Key, PrimitiveT> Builder registerPrimitiveConstructor(
         PrimitiveConstructor<KeyT, PrimitiveT> primitiveConstructor)
         throws GeneralSecurityException {
@@ -82,7 +81,7 @@ public class PrimitiveRegistry {
       return this;
     }
 
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     public <InputPrimitiveT, WrapperPrimitiveT> Builder registerPrimitiveWrapper(
         PrimitiveWrapper<InputPrimitiveT, WrapperPrimitiveT> wrapper)
         throws GeneralSecurityException {

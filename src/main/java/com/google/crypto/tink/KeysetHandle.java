@@ -26,8 +26,6 @@ import com.google.crypto.tink.tinkkey.KeyAccess;
 import com.google.crypto.tink.tinkkey.KeyHandle;
 import com.google.crypto.tink.tinkkey.internal.InternalKeyHandle;
 import com.google.crypto.tink.tinkkey.internal.ProtoKey;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -38,7 +36,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 /**
  * A KeysetHandle provides abstracted access to {@link Keyset}, to limit the exposure of actual
@@ -123,14 +120,14 @@ public final class KeysetHandle {
       private KeyStatus keyStatus = KeyStatus.ENABLED;
 
       // Exactly one of key and parameters will be non-null (set in the constructor).
-      @Nullable private final Key key;
-      @Nullable private final Parameters parameters;
+      /*@Nullable*/ private final Key key;
+      /*@Nullable*/ private final Parameters parameters;
       // strategy must be non-null when the keyset is built.
       private KeyIdStrategy strategy = null;
 
       // The Builder which this Entry is part of. Each entry can be part of only one builder.
       // When constructing a new entry, it is not part of any builder.
-      @Nullable private KeysetHandle.Builder builder = null;
+      /*@Nullable*/ private KeysetHandle.Builder builder = null;
 
       private Entry(Key key) {
         this.key = key;
@@ -149,7 +146,7 @@ public final class KeysetHandle {
        * been added to a builder, otherwise they will marked as non-primary once this entry is added
        * to a builder.
        */
-      @CanIgnoreReturnValue
+      //@CanIgnoreReturnValue
       public Entry makePrimary() {
         if (builder != null) {
           builder.clearPrimary();
@@ -164,7 +161,7 @@ public final class KeysetHandle {
       }
 
       /** Sets the status of this entry. */
-      @CanIgnoreReturnValue
+      //@CanIgnoreReturnValue
       public Entry setStatus(KeyStatus status) {
         keyStatus = status;
         return this;
@@ -176,7 +173,7 @@ public final class KeysetHandle {
       }
 
       /** Tells Tink to assign a fixed id when this keyset is built. */
-      @CanIgnoreReturnValue
+      //@CanIgnoreReturnValue
       public Entry withFixedId(int id) {
         this.strategy = KeyIdStrategy.fixedId(id);
         return this;
@@ -191,7 +188,7 @@ public final class KeysetHandle {
        * <p>If an entry is marked as {@code withRandomId}, all subsequent entries also need to be
        * marked with {@code withRandomId}, or else calling {@code build()} will fail.
        */
-      @CanIgnoreReturnValue
+      //@CanIgnoreReturnValue
       public Entry withRandomId() {
         this.strategy = KeyIdStrategy.randomId();
         return this;
@@ -207,7 +204,7 @@ public final class KeysetHandle {
     }
 
     /** Adds an entry to a keyset */
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     public KeysetHandle.Builder addEntry(KeysetHandle.Builder.Entry entry) {
       if (entry.builder != null) {
         throw new IllegalStateException("Entry has already been added to a KeysetHandle.Builder");
@@ -240,7 +237,7 @@ public final class KeysetHandle {
      *
      * @deprecated Use {@link #deleteAt} or {@link #getAt} instead.
      */
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     @Deprecated
     public Builder.Entry removeAt(int i) {
       return entries.remove(i);
@@ -250,7 +247,7 @@ public final class KeysetHandle {
      * Deletes the entry at index {@code i}. Shifts any subsequent entries to the left (subtracts
      * one from their indices).
      */
-    @CanIgnoreReturnValue
+    //@CanIgnoreReturnValue
     public KeysetHandle.Builder deleteAt(int i) {
       entries.remove(i);
       return this;
@@ -399,7 +396,7 @@ public final class KeysetHandle {
    * Tink still accepts keysets which have none. This will be changed in the future.
    */
   @Alpha
-  @Immutable
+  //@Immutable
   public static final class Entry {
     private Entry(Key key, KeyStatus keyStatus, int id, boolean isPrimary) {
       this.key = key;
@@ -540,7 +537,7 @@ public final class KeysetHandle {
    */
   public static KeysetHandle.Builder.Entry importKey(Key key) {
     KeysetHandle.Builder.Entry importedEntry = new KeysetHandle.Builder.Entry(key);
-    @Nullable Integer requirement = key.getIdRequirementOrNull();
+    /*@Nullable*/ Integer requirement = key.getIdRequirementOrNull();
     if (requirement != null) {
       importedEntry.withFixedId(requirement);
     }
@@ -1015,8 +1012,8 @@ public final class KeysetHandle {
     for (int i = 0; i < size(); ++i) {
       Keyset.Key protoKey = keyset.getKey(i);
       if (protoKey.getStatus().equals(KeyStatusType.ENABLED)) {
-        @Nullable B primitive = getLegacyPrimitiveOrNull(protoKey, inputPrimitiveClassObject);
-        @Nullable B fullPrimitive = null;
+        /*@Nullable*/ B primitive = getLegacyPrimitiveOrNull(protoKey, inputPrimitiveClassObject);
+        /*@Nullable*/ B fullPrimitive = null;
         // Entries.get(i) may be null (if the status is invalid in the proto, or parsing failed.
         if (entries.get(i) != null) {
           fullPrimitive =
@@ -1065,7 +1062,7 @@ public final class KeysetHandle {
     throw new GeneralSecurityException("No primary key found in keyset.");
   }
 
-  @Nullable
+  //@Nullable
   private static <B> B getLegacyPrimitiveOrNull(Keyset.Key key, Class<B> inputPrimitiveClassObject)
       throws GeneralSecurityException {
     try {
@@ -1081,7 +1078,7 @@ public final class KeysetHandle {
     }
   }
 
-  @Nullable
+  //@Nullable
   private <B> B getFullPrimitiveOrNull(Key key, Class<B> inputPrimitiveClassObject)
       throws GeneralSecurityException {
     try {

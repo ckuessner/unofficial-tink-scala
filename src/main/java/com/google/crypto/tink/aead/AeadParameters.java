@@ -17,8 +17,8 @@
 package com.google.crypto.tink.aead;
 
 import com.google.crypto.tink.Parameters;
-import com.google.errorprone.annotations.Immutable;
+//import com.google.errorprone.annotations.Immutable;
 
 /** Represents a description of a {@link AeadKey} */
-@Immutable
+//@Immutable
 public abstract class AeadParameters extends Parameters {}

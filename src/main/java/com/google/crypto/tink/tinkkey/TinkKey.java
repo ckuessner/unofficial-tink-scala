@@ -16,7 +16,6 @@
 package com.google.crypto.tink.tinkkey;
 
 import com.google.crypto.tink.KeyTemplate;
-import com.google.errorprone.annotations.Immutable;
 
 /**
  * {@code TinkKey} represents how Tink views individual keys. In contrast, {@code KeysetHandle} only
@@ -28,7 +27,7 @@ import com.google.errorprone.annotations.Immutable;
  *
  * @deprecated Use {@link com.google.crypto.tink.Key} instead.
  */
-@Immutable
+//@Immutable
 @Deprecated /* Deprecation under consideration */
 public interface TinkKey {
   /** Returns true if the key contains secret key material, and false otherwise. */

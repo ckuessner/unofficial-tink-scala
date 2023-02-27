@@ -36,7 +36,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.security.GeneralSecurityException;
-import javax.annotation.Nullable;
 
 /**
  * Methods to serialize and parse {@link ChaCha20Poly1305Key} objects and {@link
@@ -119,7 +118,7 @@ final class ChaCha20Poly1305ProtoSerialization {
   }
 
   private static ProtoKeySerialization serializeKey(
-      ChaCha20Poly1305Key key, @Nullable SecretKeyAccess access) throws GeneralSecurityException {
+      ChaCha20Poly1305Key key, /*@Nullable*/ SecretKeyAccess access) throws GeneralSecurityException {
     return ProtoKeySerialization.create(
         TYPE_URL,
         com.google.crypto.tink.proto.ChaCha20Poly1305Key.newBuilder()
@@ -156,7 +155,7 @@ final class ChaCha20Poly1305ProtoSerialization {
 
   @SuppressWarnings("UnusedException")
   private static ChaCha20Poly1305Key parseKey(
-      ProtoKeySerialization serialization, @Nullable SecretKeyAccess access)
+      ProtoKeySerialization serialization, /*@Nullable*/ SecretKeyAccess access)
       throws GeneralSecurityException {
     if (!serialization.getTypeUrl().equals(TYPE_URL)) {
       throw new IllegalArgumentException(

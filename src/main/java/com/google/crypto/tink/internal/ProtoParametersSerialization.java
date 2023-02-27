@@ -21,7 +21,6 @@ import static com.google.crypto.tink.internal.Util.toBytesFromPrintableAscii;
 import com.google.crypto.tink.proto.KeyTemplate;
 import com.google.crypto.tink.proto.OutputPrefixType;
 import com.google.crypto.tink.util.Bytes;
-import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.MessageLite;
 
 /**
@@ -30,7 +29,7 @@ import com.google.protobuf.MessageLite;
  * <p>{@code ProtoParametersSerialization} objects fully describe a {@code Parameters} object, but
  * tailored for protocol buffer serialization.
  */
-@Immutable
+//@Immutable
 public final class ProtoParametersSerialization implements Serialization {
   private final Bytes objectIdentifier;
   private final KeyTemplate keyTemplate;
