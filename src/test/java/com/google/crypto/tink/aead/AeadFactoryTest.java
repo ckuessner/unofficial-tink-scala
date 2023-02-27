@@ -35,7 +35,7 @@ public class AeadFactoryTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    AeadConfig.register();
+    //AeadConfig.register();
   }
 
   @Test

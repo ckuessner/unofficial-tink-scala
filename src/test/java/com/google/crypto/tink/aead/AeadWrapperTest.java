@@ -54,7 +54,7 @@ public class AeadWrapperTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    AeadConfig.register();
+    //AeadConfig.register();
 
     int aesKeySize = 16;
     int hmacKeySize = 20;
