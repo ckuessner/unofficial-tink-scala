@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink.aead;
 
-import com.google.errorprone.annotations.Immutable;
 import java.util.Objects;
 
 /** Describes the parameters of an {@link ChaChaPoly1305Key}. */
@@ -27,7 +26,7 @@ public final class ChaCha20Poly1305Parameters extends AeadParameters {
    * format) or CRUNCHY (prefix the ciphertext with 0x00 followed by a 4-byte key id in big endian
    * format)
    */
-  @Immutable
+  //@Immutable
   public static final class Variant {
     public static final Variant TINK = new Variant("TINK");
     public static final Variant CRUNCHY = new Variant("CRUNCHY");

@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink.signature;
 
-import com.google.crypto.tink.Config;
 import java.security.GeneralSecurityException;
 
 /**

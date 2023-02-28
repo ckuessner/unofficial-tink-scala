@@ -43,7 +43,6 @@ import com.google.crypto.tink.proto.HmacParams;
 import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.proto.KeyStatusType;
 import com.google.crypto.tink.proto.KeyTemplate;
-import com.google.crypto.tink.proto.KeyTypeEntry;
 import com.google.crypto.tink.proto.Keyset;
 import com.google.crypto.tink.proto.Keyset.Key;
 import com.google.crypto.tink.proto.KeysetInfo;
@@ -674,19 +673,19 @@ public final class TestUtil {
   }
 
   /** Verifies that the given entry has the specified contents. */
-  public static void verifyConfigEntry(
-      KeyTypeEntry entry,
-      String catalogueName,
-      String primitiveName,
-      String typeUrl,
-      Boolean newKeyAllowed,
-      int keyManagerVersion) {
-    assertEquals(catalogueName, entry.getCatalogueName());
-    assertEquals(primitiveName, entry.getPrimitiveName());
-    assertEquals(typeUrl, entry.getTypeUrl());
-    assertEquals(newKeyAllowed, entry.getNewKeyAllowed());
-    assertEquals(keyManagerVersion, entry.getKeyManagerVersion());
-  }
+  //public static void verifyConfigEntry(
+  //    KeyTypeEntry entry,
+  //    String catalogueName,
+  //    String primitiveName,
+  //    String typeUrl,
+  //    Boolean newKeyAllowed,
+  //    int keyManagerVersion) {
+  //  assertEquals(catalogueName, entry.getCatalogueName());
+  //  assertEquals(primitiveName, entry.getPrimitiveName());
+  //  assertEquals(typeUrl, entry.getTypeUrl());
+  //  assertEquals(newKeyAllowed, entry.getNewKeyAllowed());
+  //  assertEquals(keyManagerVersion, entry.getKeyManagerVersion());
+  //}
 
   /** Convert an array of long to an array of int. */
   public static int[] twoCompInt(long[] a) {
