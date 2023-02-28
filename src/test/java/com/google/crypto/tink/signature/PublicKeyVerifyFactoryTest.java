@@ -33,10 +33,10 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class PublicKeyVerifyFactoryTest {
 
-  @BeforeClass
-  public static void setUp() throws Exception {
-    SignatureConfig.register();
-  }
+  //@BeforeClass
+  //public static void setUp() throws Exception {
+  //  SignatureConfig.register();
+  //}
 
   @Test
   @SuppressWarnings("deprecation") // This is a test that the deprecated function works.
