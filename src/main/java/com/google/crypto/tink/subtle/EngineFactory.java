@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink.subtle;
 
-import com.google.crypto.tink.config.internal.TinkFipsUtil;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
@@ -190,13 +189,13 @@ public final class EngineFactory<T_WRAPPER extends EngineWrapper<JcePrimitiveT>,
   }
 
   public EngineFactory(T_WRAPPER instanceBuilder) {
-    if (TinkFipsUtil.useOnlyFips()) {
-      policy = new FipsPolicy<>(instanceBuilder);
-    } else if (SubtleUtil.isAndroid()) {
-      policy = new AndroidPolicy<>(instanceBuilder);
-    } else {
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  policy = new FipsPolicy<>(instanceBuilder);
+    //} else if (SubtleUtil.isAndroid()) {
+    //  policy = new AndroidPolicy<>(instanceBuilder);
+    //} else {
       policy = new DefaultPolicy<>(instanceBuilder);
-    }
+    //}
   }
 
   public JcePrimitiveT getInstance(String algorithm) throws GeneralSecurityException {

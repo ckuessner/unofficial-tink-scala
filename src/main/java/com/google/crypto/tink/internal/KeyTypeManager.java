@@ -18,7 +18,6 @@ package com.google.crypto.tink.internal;
 
 import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.annotations.Alpha;
-import com.google.crypto.tink.config.internal.TinkFipsUtil;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -105,10 +104,6 @@ public abstract class KeyTypeManager<KeyProtoT extends MessageLite> {
   /** Returns the {@link KeyMaterialType} for this proto. */
   public abstract KeyMaterialType keyMaterialType();
 
-  /** Returns the FIPS compatibility of this KeyTypeManager. */
-  public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
-    return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_NOT_FIPS;
-  };
 
   /**
    * Parses a serialized key proto.

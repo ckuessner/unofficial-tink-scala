@@ -19,7 +19,6 @@ package com.google.crypto.tink.subtle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
-import com.google.crypto.tink.config.TinkFips;
 import com.google.crypto.tink.testing.WycheproofTestUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -37,7 +36,7 @@ import org.junit.runners.JUnit4;
 public final class Ed25519VerifyTest {
   @Test
   public void testVerificationWithPublicKeyLengthDifferentFrom32Byte() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     assertThrows(
         IllegalArgumentException.class,
@@ -61,7 +60,7 @@ public final class Ed25519VerifyTest {
 
   @Test
   public void testVerificationWithWycheproofVectors() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     JsonObject json =
         WycheproofTestUtil.readJson("../wycheproof/testvectors/eddsa_test.json");
@@ -98,10 +97,10 @@ public final class Ed25519VerifyTest {
     assertEquals(0, errors);
   }
 
-  @Test
-  public void testFailIfFipsModuleNotAvailable() throws Exception {
-    Assume.assumeTrue(TinkFips.useOnlyFips());
+  //@Test
+  //public void testFailIfFipsModuleNotAvailable() throws Exception {
+  //  Assume.assumeTrue(TinkFips.useOnlyFips());
 
-    assertThrows(RuntimeException.class, () -> new Ed25519Verify(new byte[32]));
-  }
+  //  assertThrows(RuntimeException.class, () -> new Ed25519Verify(new byte[32]));
+  //}
 }

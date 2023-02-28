@@ -23,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 
 import com.google.crypto.tink.Aead;
-import com.google.crypto.tink.config.TinkFips;
 import com.google.crypto.tink.testing.TestUtil;
 import com.google.crypto.tink.testing.TestUtil.BytesMutation;
 import com.google.crypto.tink.testing.WycheproofTestUtil;
@@ -51,7 +50,7 @@ public class ChaCha20Poly1305Test {
   @Test
   public void testSnufflePoly1305ThrowsIllegalArgExpWhenKeyLenIsGreaterThan32()
       throws InvalidKeyException {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     InvalidKeyException e =
         assertThrows(InvalidKeyException.class, () -> createInstance(new byte[KEY_SIZE + 1]));
@@ -61,7 +60,7 @@ public class ChaCha20Poly1305Test {
   @Test
   public void testSnufflePoly1305ThrowsIllegalArgExpWhenKeyLenIsLessThan32()
       throws InvalidKeyException {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     InvalidKeyException e =
         assertThrows(InvalidKeyException.class, () -> createInstance(new byte[KEY_SIZE - 1]));
@@ -71,7 +70,7 @@ public class ChaCha20Poly1305Test {
   @Test
   public void testDecryptThrowsGeneralSecurityExpWhenCiphertextIsTooShort()
       throws GeneralSecurityException {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     Aead cipher = createInstance(new byte[KEY_SIZE]);
     GeneralSecurityException e =
@@ -82,7 +81,7 @@ public class ChaCha20Poly1305Test {
 
   @Test
   public void testEncryptDecrypt() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     Aead aead = createInstance(Random.randBytes(KEY_SIZE));
     for (int i = 0; i < 100; i++) {
@@ -97,7 +96,7 @@ public class ChaCha20Poly1305Test {
   @Test
   /** BC had a bug, where GCM failed for messages of size > 8192 */
   public void testLongMessages() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
     Assume.assumeFalse(TestUtil.isAndroid()); // Doesn't work on Android
 
     int dataSize = 16;
@@ -115,7 +114,7 @@ public class ChaCha20Poly1305Test {
 
   @Test
   public void testModifyCiphertext() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     byte[] key = Random.randBytes(KEY_SIZE);
     Aead aead = createInstance(key);
@@ -151,7 +150,7 @@ public class ChaCha20Poly1305Test {
 
   @Test
   public void testNullPlaintextOrCiphertext() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     Aead aead = createInstance(Random.randBytes(KEY_SIZE));
     byte[] aad = new byte[] {1, 2, 3};
@@ -179,7 +178,7 @@ public class ChaCha20Poly1305Test {
 
   @Test
   public void testEmptyAssociatedData() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     byte[] aad = new byte[0];
     Aead aead = createInstance(Random.randBytes(KEY_SIZE));
@@ -220,7 +219,7 @@ public class ChaCha20Poly1305Test {
    */
   @Test
   public void testRandomNonce() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     byte[] key = Random.randBytes(KEY_SIZE);
     Aead aead = createInstance(key);
@@ -239,7 +238,7 @@ public class ChaCha20Poly1305Test {
 
   @Test
   public void testWycheproofVectors() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     JsonObject json =
         WycheproofTestUtil.readJson(
@@ -295,11 +294,11 @@ public class ChaCha20Poly1305Test {
     assertEquals(0, errors);
   }
 
-  @Test
-  public void testFailIfFipsModuleNotAvailable() throws Exception {
-    Assume.assumeTrue(TinkFips.useOnlyFips());
+  //@Test
+  //public void testFailIfFipsModuleNotAvailable() throws Exception {
+  //  Assume.assumeTrue(TinkFips.useOnlyFips());
 
-    byte[] key = Random.randBytes(32);
-    assertThrows(GeneralSecurityException.class, () -> new ChaCha20Poly1305(key));
-  }
+  //  byte[] key = Random.randBytes(32);
+  //  assertThrows(GeneralSecurityException.class, () -> new ChaCha20Poly1305(key));
+  //}
 }

@@ -21,7 +21,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
-import com.google.crypto.tink.config.TinkFips;
 import com.google.crypto.tink.subtle.Bytes;
 import com.google.crypto.tink.subtle.Hex;
 import com.google.crypto.tink.subtle.Random;
@@ -55,7 +54,7 @@ public class InsecureNonceChaCha20Poly1305Test {
   @Test
   public void testSnufflePoly1305ThrowsInvalidAlgorithmParameterExpWhenKeyLenIsGreaterThan32()
       throws InvalidKeyException {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     InvalidKeyException e =
         assertThrows(
@@ -67,7 +66,7 @@ public class InsecureNonceChaCha20Poly1305Test {
   @Test
   public void testSnufflePoly1305ThrowsInvalidAlgorithmParameterExpWhenKeyLenIsLessThan32()
       throws InvalidKeyException {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     InvalidKeyException e =
         assertThrows(
@@ -78,7 +77,7 @@ public class InsecureNonceChaCha20Poly1305Test {
   @Test
   public void testDecryptThrowsGeneralSecurityExpWhenCiphertextIsTooShort()
       throws GeneralSecurityException {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     InsecureNonceChaCha20Poly1305 cipher =
         createInstance(new byte[KEY_SIZE_IN_BYTES]);
@@ -93,7 +92,7 @@ public class InsecureNonceChaCha20Poly1305Test {
 
   @Test
   public void testEncryptDecrypt() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     InsecureNonceChaCha20Poly1305 cipher =
         createInstance(Random.randBytes(KEY_SIZE_IN_BYTES));
@@ -110,7 +109,7 @@ public class InsecureNonceChaCha20Poly1305Test {
   /** BC had a bug, where GCM failed for messages of size > 8192 */
   @Test
   public void testLongMessages() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
     Assume.assumeFalse(TestUtil.isAndroid()); // Doesn't work on Android
 
     int dataSize = 16;
@@ -129,7 +128,7 @@ public class InsecureNonceChaCha20Poly1305Test {
 
   @Test
   public void testModifyCiphertext() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     byte[] key = Random.randBytes(KEY_SIZE_IN_BYTES);
     InsecureNonceChaCha20Poly1305 cipher = createInstance(key);
@@ -166,7 +165,7 @@ public class InsecureNonceChaCha20Poly1305Test {
 
   @Test
   public void testNullPlaintextOrCiphertext() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     InsecureNonceChaCha20Poly1305 cipher =
         createInstance(Random.randBytes(KEY_SIZE_IN_BYTES));
@@ -196,7 +195,7 @@ public class InsecureNonceChaCha20Poly1305Test {
 
   @Test
   public void testEmptyAssociatedData() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     byte[] aad = new byte[0];
     InsecureNonceChaCha20Poly1305 cipher =
@@ -239,7 +238,7 @@ public class InsecureNonceChaCha20Poly1305Test {
    */
   @Test
   public void testNonce() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     byte[] key = Random.randBytes(KEY_SIZE_IN_BYTES);
     InsecureNonceChaCha20Poly1305 cipher = createInstance(key);
@@ -259,7 +258,7 @@ public class InsecureNonceChaCha20Poly1305Test {
 
   @Test
   public void testWycheproofVectors() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     JsonObject json =
         WycheproofTestUtil.readJson(
@@ -325,13 +324,13 @@ public class InsecureNonceChaCha20Poly1305Test {
     assertEquals(0, errors);
   }
 
-  @Test
-  public void testFailIfFipsModuleNotAvailable() throws Exception {
-    Assume.assumeTrue(TinkFips.useOnlyFips());
+  //@Test
+  //public void testFailIfFipsModuleNotAvailable() throws Exception {
+  //  Assume.assumeTrue(TinkFips.useOnlyFips());
 
-    byte[] key = Random.randBytes(32);
-    assertThrows(
-        GeneralSecurityException.class,
-        () -> new InsecureNonceChaCha20Poly1305(key));
-  }
+  //  byte[] key = Random.randBytes(32);
+  //  assertThrows(
+  //      GeneralSecurityException.class,
+  //      () -> new InsecureNonceChaCha20Poly1305(key));
+  //}
 }

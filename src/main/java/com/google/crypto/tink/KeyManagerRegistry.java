@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink;
 
-import com.google.crypto.tink.config.internal.TinkFipsUtil;
 import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.internal.PrivateKeyTypeManager;
 import com.google.crypto.tink.proto.KeyData;
@@ -284,20 +283,11 @@ final class KeyManagerRegistry {
    */
   synchronized <P> void registerKeyManager(final KeyManager<P> manager)
       throws GeneralSecurityException {
-    if (!TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_NOT_FIPS.isCompatible()) {
-      throw new GeneralSecurityException("Registering key managers is not supported in FIPS mode");
-    }
     registerKeyManagerContainer(createContainerFor(manager), /* forceOverwrite= */ false);
   }
 
-  synchronized <KeyProtoT extends MessageLite> void registerKeyManager(
+  synchronized <KeyProtoT extends KeyProto> void registerKeyManager(
       final KeyTypeManager<KeyProtoT> manager) throws GeneralSecurityException {
-    if (!manager.fipsStatus().isCompatible()) {
-      throw new GeneralSecurityException(
-          "failed to register key manager "
-              + manager.getClass()
-              + " as it is not FIPS compatible.");
-    }
     registerKeyManagerContainer(createContainerFor(manager), /* forceOverwrite= */ false);
   }
 
@@ -315,23 +305,6 @@ final class KeyManagerRegistry {
           final PrivateKeyTypeManager<KeyProtoT, PublicKeyProtoT> privateKeyTypeManager,
           final KeyTypeManager<PublicKeyProtoT> publicKeyTypeManager)
           throws GeneralSecurityException {
-    TinkFipsUtil.AlgorithmFipsCompatibility fipsStatusPrivateKey =
-        privateKeyTypeManager.fipsStatus();
-    TinkFipsUtil.AlgorithmFipsCompatibility fipsStatusPublicKey = publicKeyTypeManager.fipsStatus();
-
-    if (!fipsStatusPrivateKey.isCompatible()) {
-      throw new GeneralSecurityException(
-          "failed to register key manager "
-              + privateKeyTypeManager.getClass()
-              + " as it is not FIPS compatible.");
-    }
-
-    if (!fipsStatusPublicKey.isCompatible()) {
-      throw new GeneralSecurityException(
-          "failed to register key manager "
-              + publicKeyTypeManager.getClass()
-              + " as it is not FIPS compatible.");
-    }
 
     String privateTypeUrl = privateKeyTypeManager.getKeyType();
     String publicTypeUrl = publicKeyTypeManager.getKeyType();

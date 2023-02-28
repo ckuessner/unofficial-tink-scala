@@ -19,7 +19,6 @@ package com.google.crypto.tink.aead.internal;
 import static com.google.crypto.tink.aead.internal.Poly1305.MAC_KEY_SIZE_IN_BYTES;
 import static com.google.crypto.tink.aead.internal.Poly1305.MAC_TAG_SIZE_IN_BYTES;
 
-import com.google.crypto.tink.config.internal.TinkFipsUtil;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.GeneralSecurityException;
@@ -34,18 +33,11 @@ import javax.crypto.AEADBadTagException;
  * tag} and only decrypts the same format.
  */
 abstract class InsecureNonceChaCha20Poly1305Base {
-  public static final TinkFipsUtil.AlgorithmFipsCompatibility FIPS =
-      TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_NOT_FIPS;
-
   private final InsecureNonceChaCha20Base chacha20;
   private final InsecureNonceChaCha20Base macKeyChaCha20;
 
   public InsecureNonceChaCha20Poly1305Base(final byte[] key)
       throws GeneralSecurityException {
-    if (!FIPS.isCompatible()) {
-      throw new GeneralSecurityException("Can not use ChaCha20Poly1305 in FIPS-mode.");
-    }
-
     this.chacha20 = newChaCha20Instance(key, 1);
     this.macKeyChaCha20 = newChaCha20Instance(key, 0);
   }

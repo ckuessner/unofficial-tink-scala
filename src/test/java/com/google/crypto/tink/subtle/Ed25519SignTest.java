@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
-import com.google.crypto.tink.config.TinkFips;
 import com.google.crypto.tink.testing.TestUtil;
 import com.google.crypto.tink.testing.WycheproofTestUtil;
 import com.google.gson.JsonArray;
@@ -42,7 +41,7 @@ public final class Ed25519SignTest {
 
   @Test
   public void testSigningOneKeyWithMultipleMessages() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPair();
     Ed25519Sign signer = new Ed25519Sign(keyPair.getPrivateKey());
@@ -66,7 +65,7 @@ public final class Ed25519SignTest {
 
   @Test
   public void testSigningOneKeyWithTheSameMessage() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPair();
     Ed25519Sign signer = new Ed25519Sign(keyPair.getPrivateKey());
@@ -94,7 +93,7 @@ public final class Ed25519SignTest {
 
   @Test
   public void testSignWithPrivateKeyLengthDifferentFrom32Byte() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     assertThrows(
         IllegalArgumentException.class,
@@ -110,7 +109,7 @@ public final class Ed25519SignTest {
 
   @Test
   public void testSigningWithMultipleRandomKeysAndMessages() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     for (int i = 0; i < 100; i++) {
       Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPair();
@@ -142,7 +141,7 @@ public final class Ed25519SignTest {
 
   @Test
   public void testSigningWithWycheproofVectors() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     JsonObject json =
         WycheproofTestUtil.readJson("../wycheproof/testvectors/eddsa_test.json");
@@ -175,18 +174,18 @@ public final class Ed25519SignTest {
 
   @Test
   public void testKeyPairFromSeedTooShort() throws Exception {
-    Assume.assumeFalse(TinkFips.useOnlyFips());
+    //Assume.assumeFalse(TinkFips.useOnlyFips());
 
     byte[] keyMaterial = Random.randBytes(10);
     assertThrows(
         IllegalArgumentException.class, () -> Ed25519Sign.KeyPair.newKeyPairFromSeed(keyMaterial));
   }
 
-  @Test
-  public void testFailIfFipsModuleNotAvailable() throws Exception {
-    Assume.assumeTrue(TinkFips.useOnlyFips());
+  //@Test
+  //public void testFailIfFipsModuleNotAvailable() throws Exception {
+  //  Assume.assumeTrue(TinkFips.useOnlyFips());
 
-    byte[] key = Random.randBytes(32);
-    assertThrows(GeneralSecurityException.class, () -> new Ed25519Sign(key));
-  }
+  //  byte[] key = Random.randBytes(32);
+  //  assertThrows(GeneralSecurityException.class, () -> new Ed25519Sign(key));
+  //}
 }

@@ -16,7 +16,6 @@
 
 package com.google.crypto.tink;
 
-import com.google.crypto.tink.config.internal.TinkFipsUtil;
 import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.internal.MutablePrimitiveRegistry;
 import com.google.crypto.tink.internal.PrivateKeyTypeManager;
@@ -805,22 +804,15 @@ public final class Registry {
     return keyManagerRegistry.get().parseKeyData(keyData);
   }
 
-  /**
-   * Tries to enable the FIPS restrictions if the Registry is empty.
-   *
-   * @throws GeneralSecurityException if any key manager has already been registered.
-   */
-  public static synchronized void restrictToFipsIfEmpty() throws GeneralSecurityException {
-    // If we are already using FIPS mode, do nothing.
-    if (TinkFipsUtil.useOnlyFips()) {
-      return;
-    }
-    if (keyManagerRegistry.get().isEmpty()) {
-      TinkFipsUtil.setFipsRestricted();
-      return;
-    }
-    throw new GeneralSecurityException("Could not enable FIPS mode as Registry is not empty.");
-  }
+  ///**
+  // * Returns the key proto in the keyData if a corresponding key type manager was registered.
+  // * Returns null if the key type was registered with a {@link KeyManager} (and not a {@link
+  // * KeyTypeManager}).
+  // */
+  //static MessageLite parseKeyData(KeyData keyData)
+  //    throws GeneralSecurityException, InvalidProtocolBufferException {
+  //  return keyManagerRegistry.get().parseKeyData(keyData);
+  //}
 
   private Registry() {}
 }

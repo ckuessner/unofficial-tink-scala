@@ -21,7 +21,6 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
-import com.google.crypto.tink.config.internal.TinkFipsUtil;
 import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.internal.PrimitiveFactory;
 import com.google.crypto.tink.internal.PrivateKeyTypeManager;
@@ -143,12 +142,12 @@ public final class KeyManagerRegistryTest {
       return AesGcmKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
     }
 
-    /* We set the key manager FIPS compatible per default, such that all tests which use key
-     * managers can also be run if Tink.useOnlyFips() == true.*/
-    @Override
-    public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
-      return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_REQUIRES_BORINGCRYPTO;
-    }
+    ///* We set the key manager FIPS compatible per default, such that all tests which use key
+    // * managers can also be run if Tink.useOnlyFips() == true.*/
+    //@Override
+    //public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
+    //  return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_REQUIRES_BORINGCRYPTO;
+    //}
   }
 
   @Test
@@ -164,7 +163,7 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testRegisterKeyManager_works() throws Exception {
-    assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
+    //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
     KeyManagerRegistry registry = new KeyManagerRegistry();
     TestKeyManager manager = new TestKeyManager("customTypeUrl");
     registry.registerKeyManager(manager);
@@ -175,7 +174,7 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testRegisterKeyManager_twice_works() throws Exception {
-    assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
+    //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
     KeyManagerRegistry registry = new KeyManagerRegistry();
     TestKeyManager manager1 = new TestKeyManager("customTypeUrl");
     TestKeyManager manager2 = new TestKeyManager("customTypeUrl");
@@ -188,7 +187,7 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testRegisterKeyManager_differentManagersSameKeyType_fails() throws Exception {
-    assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
+    //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerKeyManager(new TestKeyManager("customTypeUrl"));
     // Adding {} at the end makes this an anonymous subclass, hence a different class, so this
@@ -200,7 +199,7 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testRegisterKeyManager_twoKeyTypes_works() throws Exception {
-    assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
+    //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
     KeyManagerRegistry registry = new KeyManagerRegistry();
     TestKeyManager manager1 = new TestKeyManager("customTypeUrl1");
     TestKeyManager manager2 = new TestKeyManager("customTypeUrl2");
@@ -214,11 +213,11 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testRegisterKeyTypeManager_works() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     KeyTypeManager<AesGcmKey> manager = new TestKeyTypeManager("customTypeUrl1");
@@ -230,11 +229,11 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testRegisterKeyTypeManager_twice_works() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     KeyTypeManager<AesGcmKey> manager1 = new TestKeyTypeManager("customTypeUrl1");
@@ -245,7 +244,7 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testRegisterKeyManagerAndKeyTypeManager_fails() throws Exception {
-    assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
+    //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
     // After a registered KeyTypeManager, the KeyManager registering fails.
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerKeyManager(new TestKeyTypeManager("customTypeUrl1"));
@@ -263,7 +262,7 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testTypeUrlExists() throws Exception {
-    assumeFalse("Unable to test with KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
+    //assumeFalse("Unable to test with KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
     KeyManagerRegistry registry = new KeyManagerRegistry();
     TestKeyManager manager1 = new TestKeyManager("customTypeUrl1");
     TestKeyManager manager2 = new TestKeyManager("customTypeUrl2");
@@ -276,11 +275,11 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testTypeUrlExists_keyTypeManagers() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     TestKeyTypeManager manager1 = new TestKeyTypeManager("customTypeUrl1");
@@ -294,7 +293,7 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testGetKeyManager_works() throws Exception {
-    assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
+    //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
     KeyManagerRegistry registry = new KeyManagerRegistry();
     KeyManager<?> registered = new TestKeyManager("typeUrl");
     registry.registerKeyManager(registered);
@@ -310,11 +309,11 @@ public final class KeyManagerRegistryTest {
   // do not support this.
   @Test
   public void testParseKeyData_keyTypeManager_works() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerKeyManager(new TestKeyTypeManager("typeUrl"));
@@ -330,7 +329,7 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testParseKeyData_keyManager_returnsNull() throws Exception {
-    assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
+    //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerKeyManager(new TestKeyManager("typeUrl"));
     AesGcmKey key = AesGcmKey.newBuilder().setVersion(13).build();
@@ -382,12 +381,12 @@ public final class KeyManagerRegistryTest {
       return Ed25519PublicKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
     }
 
-    /* We set the key manager FIPS compatible per default, such that all tests which use key
-     * managers can also be run if Tink.useOnlyFips() == true.*/
-    @Override
-    public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
-      return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_REQUIRES_BORINGCRYPTO;
-    }
+    ///* We set the key manager FIPS compatible per default, such that all tests which use key
+    // * managers can also be run if Tink.useOnlyFips() == true.*/
+    //@Override
+    //public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
+    //  return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_REQUIRES_BORINGCRYPTO;
+    //}
   }
 
   private static class TestPrivateKeyTypeManager
@@ -427,21 +426,21 @@ public final class KeyManagerRegistryTest {
       return privateKey.getPublicKey();
     }
 
-    /* We set the key manager FIPS compatible per default, such that all tests which use key
-     * managers can also be run if Tink.useOnlyFips() == true.*/
-    @Override
-    public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
-      return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_REQUIRES_BORINGCRYPTO;
-    }
+    ///* We set the key manager FIPS compatible per default, such that all tests which use key
+    // * managers can also be run if Tink.useOnlyFips() == true.*/
+    //@Override
+    //public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
+    //  return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_REQUIRES_BORINGCRYPTO;
+    //}
   }
 
   @Test
   public void testRegisterAsymmetricKeyManager_works() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerAsymmetricKeyManagers(
         new TestPrivateKeyTypeManager("privateTypeUrl"),
@@ -453,11 +452,11 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testRegisterAsymmetricKeyManagerTwice_works() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerAsymmetricKeyManagers(
@@ -473,11 +472,11 @@ public final class KeyManagerRegistryTest {
   @Test
   public void testRegisterDifferentAsymmetricKeyManagerForTheSameKeyTypeUrl_throws()
       throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerAsymmetricKeyManagers(
@@ -502,11 +501,11 @@ public final class KeyManagerRegistryTest {
   @Test
   public void testRegisterAsymmetricKeyManager_thenSymmetricDifferentType_throws()
       throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerAsymmetricKeyManagers(
@@ -519,11 +518,11 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testAsymmetricKeyManagers_getPublicKey_works() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     TestPrivateKeyTypeManager privateKeyTypeManager =
@@ -553,11 +552,11 @@ public final class KeyManagerRegistryTest {
    */
   @Test
   public void testAsymmetricKeyManagers_getPublicKey_validationIsInvoked_throws() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     TestPrivateKeyTypeManager privateKeyTypeManager =
@@ -579,11 +578,11 @@ public final class KeyManagerRegistryTest {
 
   @Test
   public void testAsymmetricKeyManagers_doubleRegistration_classChange_throws() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     TestPrivateKeyTypeManager privateKeyTypeManager =
@@ -601,11 +600,11 @@ public final class KeyManagerRegistryTest {
   /** One is allowed to sometimes register asymmetric key managers without their counterpart. */
   @Test
   public void testAsymmetricKeyManagers_registerOnceWithThenWithout_works() throws Exception {
-    if (TinkFipsUtil.useOnlyFips()) {
-      assumeTrue(
-          "If FIPS is required, we can only register managers if the fips module is available",
-          TinkFipsUtil.fipsModuleAvailable());
-    }
+    //if (TinkFipsUtil.useOnlyFips()) {
+    //  assumeTrue(
+    //      "If FIPS is required, we can only register managers if the fips module is available",
+    //      TinkFipsUtil.fipsModuleAvailable());
+    //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     TestPrivateKeyTypeManager privateKeyTypeManager =
@@ -634,71 +633,71 @@ public final class KeyManagerRegistryTest {
     assertThat(parsedPublicKey).isEqualTo(publicKey);
   }
 
-  @Test
-  public void testFips_registerNonFipsKeyTypeManagerFails() throws Exception {
-    assumeTrue(TinkFipsUtil.fipsModuleAvailable());
-    KeyManagerRegistry registry = new KeyManagerRegistry();
-    Registry.restrictToFipsIfEmpty();
+  //@Test
+  //public void testFips_registerNonFipsKeyTypeManagerFails() throws Exception {
+  //  //assumeTrue(TinkFipsUtil.fipsModuleAvailable());
+  //  KeyManagerRegistry registry = new KeyManagerRegistry();
+  //  Registry.restrictToFipsIfEmpty();
 
-    assertThrows(
-        GeneralSecurityException.class,
-        () ->
-            registry.registerKeyManager(
-                new TestKeyTypeManager("typeUrl") {
-                  @Override
-                  public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
-                    return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_NOT_FIPS;
-                  }
-                }));
-  }
+  //  assertThrows(
+  //      GeneralSecurityException.class,
+  //      () ->
+  //          registry.registerKeyManager(
+  //              new TestKeyTypeManager("typeUrl") {
+  //                @Override
+  //                public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
+  //                  return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_NOT_FIPS;
+  //                }
+  //              }));
+  //}
 
-  @Test
-  public void testFips_registerFipsKeyTypeManagerSucceeds() throws Exception {
-    assumeTrue(TinkFipsUtil.fipsModuleAvailable());
-    KeyManagerRegistry registry = new KeyManagerRegistry();
-    Registry.restrictToFipsIfEmpty();
+  //@Test
+  //public void testFips_registerFipsKeyTypeManagerSucceeds() throws Exception {
+  //  assumeTrue(TinkFipsUtil.fipsModuleAvailable());
+  //  KeyManagerRegistry registry = new KeyManagerRegistry();
+  //  Registry.restrictToFipsIfEmpty();
 
-    registry.registerKeyManager(new TestKeyTypeManager("typeUrl"));
-  }
+  //  registry.registerKeyManager(new TestKeyTypeManager("typeUrl"));
+  //}
 
-  @Test
-  public void testFips_registerNonFipsKeyTypeManagerAsymmetricFails() throws Exception {
-    assumeTrue(TinkFipsUtil.fipsModuleAvailable());
-    KeyManagerRegistry registry = new KeyManagerRegistry();
-    Registry.restrictToFipsIfEmpty();
+  //@Test
+  //public void testFips_registerNonFipsKeyTypeManagerAsymmetricFails() throws Exception {
+  //  assumeTrue(TinkFipsUtil.fipsModuleAvailable());
+  //  KeyManagerRegistry registry = new KeyManagerRegistry();
+  //  Registry.restrictToFipsIfEmpty();
 
-    assertThrows(
-        GeneralSecurityException.class,
-        () ->
-            registry.registerAsymmetricKeyManagers(
-                new TestPrivateKeyTypeManager("privateTypeUrl") {
-                  @Override
-                  public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
-                    return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_NOT_FIPS;
-                  }
-                },
-                new TestPublicKeyTypeManager("publicTypeUrl")));
-    assertThrows(
-        GeneralSecurityException.class,
-        () ->
-            registry.registerAsymmetricKeyManagers(
-                new TestPrivateKeyTypeManager("privateTypeUrl"),
-                new TestPublicKeyTypeManager("publicTypeUrl") {
-                  @Override
-                  public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
-                    return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_NOT_FIPS;
-                  }
-                }));
-  }
+  //  assertThrows(
+  //      GeneralSecurityException.class,
+  //      () ->
+  //          registry.registerAsymmetricKeyManagers(
+  //              new TestPrivateKeyTypeManager("privateTypeUrl") {
+  //                @Override
+  //                public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
+  //                  return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_NOT_FIPS;
+  //                }
+  //              },
+  //              new TestPublicKeyTypeManager("publicTypeUrl")));
+  //  assertThrows(
+  //      GeneralSecurityException.class,
+  //      () ->
+  //          registry.registerAsymmetricKeyManagers(
+  //              new TestPrivateKeyTypeManager("privateTypeUrl"),
+  //              new TestPublicKeyTypeManager("publicTypeUrl") {
+  //                @Override
+  //                public TinkFipsUtil.AlgorithmFipsCompatibility fipsStatus() {
+  //                  return TinkFipsUtil.AlgorithmFipsCompatibility.ALGORITHM_NOT_FIPS;
+  //                }
+  //              }));
+  //}
 
-  @Test
-  public void testFips_registerFipsKeyTypeManagerAsymmetric_works() throws Exception {
-    assumeTrue(TinkFipsUtil.fipsModuleAvailable());
-    KeyManagerRegistry registry = new KeyManagerRegistry();
-    Registry.restrictToFipsIfEmpty();
+  //@Test
+  //public void testFips_registerFipsKeyTypeManagerAsymmetric_works() throws Exception {
+  //  assumeTrue(TinkFipsUtil.fipsModuleAvailable());
+  //  KeyManagerRegistry registry = new KeyManagerRegistry();
+  //  Registry.restrictToFipsIfEmpty();
 
-    registry.registerAsymmetricKeyManagers(
-        new TestPrivateKeyTypeManager("privateTypeUrl"),
-        new TestPublicKeyTypeManager("publicTypeUrl"));
-  }
+  //  registry.registerAsymmetricKeyManagers(
+  //      new TestPrivateKeyTypeManager("privateTypeUrl"),
+  //      new TestPublicKeyTypeManager("publicTypeUrl"));
+  //}
 }
