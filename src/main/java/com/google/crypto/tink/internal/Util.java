@@ -66,29 +66,5 @@ public final class Util {
     return Bytes.copyFrom(result);
   }
 
-  /**
-   * Best-effort checks that this is Android.
-   *
-   * <p>Note: this is more tricky than it seems. For example, using reflection to see if
-   * android.os.Build.SDK_INT exists might fail because proguard might break the
-   * reflection part. Using build dispatching can also fail if there are issues in the build graph
-   * (see cl/510374081).
-   *
-   * @return true if running on Android.
-   */
-  public static boolean isAndroid() {
-    // https://developer.android.com/reference/java/lang/System#getProperties%28%29
-    return Objects.equals(System.getProperty("java.vendor"), "The Android Project");
-  }
-
-  /** Returns the current Android API level as integer or null if we do not run on Android. */
-  //@Nullable
-  public static Integer getAndroidApiLevel() {
-    if (!isAndroid()) {
-      return null;
-    }
-    return BuildDispatchedCode.getApiLevel();
-  }
-
   private Util() {}
 }
