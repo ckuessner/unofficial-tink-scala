@@ -90,11 +90,7 @@ public final class WycheproofTestUtil {
 
   /** Gets JsonObject from file. */
   public static JsonObject readJson(String path) throws Exception {
-    String filePath = path;
-    if (TestUtil.isAndroid()) {
-      // TODO(b/67385998): make this work outside google3.
-      filePath = "/sdcard/googletest/test_runfiles/google3/" + path;
-    }
+    String filePath = path.replace("../wycheproof/testvectors", "./src/test/resources/wycheproof/testvectors/");
     JsonObject result;
     try (FileInputStream fileInputStream = new FileInputStream(new File(filePath))) {
       result =
