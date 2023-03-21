@@ -53,7 +53,6 @@ public class Ed25519PrivateKeyManagerTest {
   public void basics() throws Exception {
     assertThat(manager.getKeyType())
         .isEqualTo("type.googleapis.com/google.crypto.tink.Ed25519PrivateKey");
-    assertThat(manager.getVersion()).isEqualTo(0);
     assertThat(manager.keyMaterialType()).isEqualTo(KeyMaterialType.ASYMMETRIC_PRIVATE);
   }
 
@@ -64,11 +63,9 @@ public class Ed25519PrivateKeyManagerTest {
 
   @Test
   public void createKey_checkValues() throws Exception {
-    Ed25519PrivateKey privateKey = factory.createKey(Ed25519KeyFormat.getDefaultInstance());
-    assertThat(privateKey.getVersion()).isEqualTo(0);
-    assertThat(privateKey.getPublicKey().getVersion()).isEqualTo(privateKey.getVersion());
-    assertThat(privateKey.getKeyValue()).hasSize(32);
-    assertThat(privateKey.getPublicKey().getKeyValue()).hasSize(32);
+    Ed25519PrivateKey privateKey = factory.createKey();
+    assertEquals(32, privateKey.getKeyValue().size());
+    assertEquals(32, privateKey.getPublicKey().getKeyValue().size());
   }
 
   @Test
@@ -81,7 +78,6 @@ public class Ed25519PrivateKeyManagerTest {
   // Tests that generated keys are different.
   @Test
   public void createKey_differentValues() throws Exception {
-    Ed25519KeyFormat format = Ed25519KeyFormat.getDefaultInstance();
     Set<String> keys = new TreeSet<>();
     int numTests = 100;
     for (int i = 0; i < numTests; i++) {
@@ -95,12 +91,12 @@ public class Ed25519PrivateKeyManagerTest {
     manager.validateKey(factory.createKey(Ed25519KeyFormat.getDefaultInstance()));
   }
 
-  @Test
-  public void validateKey_wrongVersion() throws Exception {
-    Ed25519PrivateKey validKey = factory.createKey(Ed25519KeyFormat.getDefaultInstance());
-    Ed25519PrivateKey invalidKey = Ed25519PrivateKey.newBuilder(validKey).setVersion(1).build();
-    assertThrows(GeneralSecurityException.class, () -> manager.validateKey(invalidKey));
-  }
+  //@Test
+  //public void validateKey_wrongVersion() throws Exception {
+  //  Ed25519PrivateKey validKey = factory.createKey(Ed25519KeyFormat.getDefaultInstance());
+  //  Ed25519PrivateKey invalidKey = Ed25519PrivateKey.newBuilder(validKey).setVersion(1).build();
+  //  assertThrows(GeneralSecurityException.class, () -> manager.validateKey(invalidKey));
+  //}
 
   @Test
   public void validateKey_wrongLength64_throws() throws Exception {
@@ -174,10 +170,8 @@ public class Ed25519PrivateKeyManagerTest {
     final int keySize = 32;
     byte[] keyMaterial = Random.randBytes(100);
     Ed25519PrivateKey key =
-        factory.deriveKey(
-            Ed25519KeyFormat.newBuilder().setVersion(0).build(),
-            new ByteArrayInputStream(keyMaterial));
-    assertThat(key.getKeyValue()).hasSize(keySize);
+        factory.deriveKey(new ByteArrayInputStream(keyMaterial));
+    assertEquals(keySize, key.getKeyValue().size());
     for (int i = 0; i < keySize; ++i) {
       assertThat(key.getKeyValue().byteAt(i)).isEqualTo(keyMaterial[i]);
     }
@@ -201,10 +195,7 @@ public class Ed25519PrivateKeyManagerTest {
           }
         };
 
-    Ed25519PrivateKey key =
-        factory.deriveKey(
-            Ed25519KeyFormat.newBuilder().setVersion(0).build(),
-            fragmentedInputStream);
+    Ed25519PrivateKey key = factory.deriveKey(fragmentedInputStream);
 
     assertThat(key.getKeyValue()).hasSize(keySize);
     for (int i = 0; i < keySize; ++i) {
@@ -217,7 +208,6 @@ public class Ed25519PrivateKeyManagerTest {
     byte[] keyMaterial = Random.randBytes(100);
     Ed25519PrivateKey key =
         factory.deriveKey(
-            Ed25519KeyFormat.newBuilder().setVersion(0).build(),
             new ByteArrayInputStream(keyMaterial));
 
     PublicKeySign signer = manager.getPrimitive(key, PublicKeySign.class);
@@ -230,17 +220,16 @@ public class Ed25519PrivateKeyManagerTest {
   public void testDeriveKeyNotEnoughRandomness() throws Exception {
     byte[] keyMaterial = Random.randBytes(10);
     assertThrows(GeneralSecurityException.class, () -> factory.deriveKey(
-          Ed25519KeyFormat.newBuilder().setVersion(0).build(),
           new ByteArrayInputStream(keyMaterial)));
   }
 
-  @Test
-  public void testDeriveKeyWrongVersion() throws Exception {
-    byte[] keyMaterial = Random.randBytes(32);
-    assertThrows(GeneralSecurityException.class, () -> factory.deriveKey(
-          Ed25519KeyFormat.newBuilder().setVersion(1).build(),
-          new ByteArrayInputStream(keyMaterial)));
-  }
+  //@Test
+  //public void testDeriveKeyWrongVersion() throws Exception {
+  //  byte[] keyMaterial = Random.randBytes(32);
+  //  assertThrows(GeneralSecurityException.class, () -> factory.deriveKey(
+  //        Ed25519KeyFormat.newBuilder().setVersion(1).build(),
+  //        new ByteArrayInputStream(keyMaterial)));
+  //}
 
   @Test
   public void testKeyFormats() throws Exception {

@@ -107,11 +107,6 @@ class KeyManagerImpl<PrimitiveT, KeyProtoT extends MessageLite> implements KeyMa
   }
 
   @Override
-  public int getVersion() {
-    return keyTypeManager.getVersion();
-  }
-
-  @Override
   public final KeyData newKeyData(ByteString serializedKeyFormat) throws GeneralSecurityException {
     try {
       KeyProtoT key = keyFactoryHelper().parseValidateCreate(serializedKeyFormat);

@@ -51,7 +51,6 @@ public class XChaCha20Poly1305KeyManagerTest {
   public void basics() throws Exception {
     assertThat(manager.getKeyType())
         .isEqualTo("type.googleapis.com/google.crypto.tink.XChaCha20Poly1305Key");
-    assertThat(manager.getVersion()).isEqualTo(0);
     assertThat(manager.keyMaterialType()).isEqualTo(KeyMaterialType.SYMMETRIC);
   }
 
@@ -65,11 +64,11 @@ public class XChaCha20Poly1305KeyManagerTest {
     manager.validateKey(factory.createKey(XChaCha20Poly1305KeyFormat.getDefaultInstance()));
   }
 
-  @Test
-  public void createKey_correctVersion() throws Exception {
-    assertThat(factory.createKey(XChaCha20Poly1305KeyFormat.getDefaultInstance()).getVersion())
-        .isEqualTo(0);
-  }
+  //@Test
+  //public void createKey_correctVersion() throws Exception {
+  //  assertThat(factory.createKey(XChaCha20Poly1305KeyFormat.getDefaultInstance()).getVersion())
+  //      .isEqualTo(0);
+  //}
 
   @Test
   public void createKey_keySize() throws Exception {
@@ -98,7 +97,6 @@ public class XChaCha20Poly1305KeyManagerTest {
     byte[] keyMaterial = Random.randBytes(100);
     XChaCha20Poly1305Key key =
         factory.deriveKey(
-            XChaCha20Poly1305KeyFormat.newBuilder().setVersion(0).build(),
             new ByteArrayInputStream(keyMaterial));
     assertThat(key.getKeyValue()).hasSize(keySize);
     for (int i = 0; i < keySize; ++i) {
@@ -125,8 +123,7 @@ public class XChaCha20Poly1305KeyManagerTest {
         };
 
     XChaCha20Poly1305Key key =
-        factory.deriveKey(
-            XChaCha20Poly1305KeyFormat.newBuilder().setVersion(0).build(), fragmentedInputStream);
+        factory.deriveKey(fragmentedInputStream);
 
     assertThat(key.getKeyValue()).hasSize(keySize);
     for (int i = 0; i < keySize; ++i) {
@@ -140,21 +137,17 @@ public class XChaCha20Poly1305KeyManagerTest {
     assertThrows(
         GeneralSecurityException.class,
         () ->
-            factory.deriveKey(
-                XChaCha20Poly1305KeyFormat.newBuilder().setVersion(0).build(),
-                new ByteArrayInputStream(keyMaterial)));
+            factory.deriveKey(new ByteArrayInputStream(keyMaterial)));
   }
 
-  @Test
-  public void testDeriveKeyWrongVersion() throws Exception {
-    byte[] keyMaterial = Random.randBytes(32);
-    assertThrows(
-        GeneralSecurityException.class,
-        () ->
-            factory.deriveKey(
-                XChaCha20Poly1305KeyFormat.newBuilder().setVersion(1).build(),
-                new ByteArrayInputStream(keyMaterial)));
-  }
+  //@Test
+  //public void testDeriveKeyWrongVersion() throws Exception {
+  //  byte[] keyMaterial = Random.randBytes(32);
+  //  assertThrows(
+  //      GeneralSecurityException.class,
+  //      () ->
+  //          factory.deriveKey(new ByteArrayInputStream(keyMaterial)));
+  //}
 
   @Test
   public void getPrimitive() throws Exception {

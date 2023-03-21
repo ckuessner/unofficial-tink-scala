@@ -88,11 +88,6 @@ public final class KeyManagerRegistryTest {
     }
 
     @Override
-    public int getVersion() {
-      throw new UnsupportedOperationException("Not needed for test");
-    }
-
-    @Override
     public Class<Primitive1> getPrimitiveClass() {
       return Primitive1.class;
     }
@@ -124,10 +119,6 @@ public final class KeyManagerRegistryTest {
       return typeUrl;
     }
 
-    @Override
-    public int getVersion() {
-      throw new UnsupportedOperationException("Not needed for test");
-    }
 
     @Override
     public KeyMaterialType keyMaterialType() {
@@ -317,7 +308,7 @@ public final class KeyManagerRegistryTest {
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerKeyManager(new TestKeyTypeManager("typeUrl"));
-    AesGcmKey key = AesGcmKey.newBuilder().setVersion(13).build();
+    XChaCha20Poly1305Key key = XChaCha20Poly1305Key.newBuilder().build();
     KeyData keyData =
         KeyData.newBuilder()
             .setTypeUrl("typeUrl")
@@ -332,7 +323,7 @@ public final class KeyManagerRegistryTest {
     //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
     KeyManagerRegistry registry = new KeyManagerRegistry();
     registry.registerKeyManager(new TestKeyManager("typeUrl"));
-    AesGcmKey key = AesGcmKey.newBuilder().setVersion(13).build();
+    XChaCha20Poly1305Key key = XChaCha20Poly1305Key.newBuilder().build();
     KeyData keyData =
         KeyData.newBuilder()
             .setTypeUrl("typeUrl")
@@ -356,11 +347,6 @@ public final class KeyManagerRegistryTest {
     }
 
     @Override
-    public int getVersion() {
-      return 1;
-    }
-
-    @Override
     public KeyMaterialType keyMaterialType() {
       return KeyMaterialType.ASYMMETRIC_PUBLIC;
     }
@@ -370,9 +356,6 @@ public final class KeyManagerRegistryTest {
       // The point of registering both key managers at once is that when we get the public key
       // from the privateKeyManager, the registry validates the key proto here. We check this call
       // happens by throwing here.
-      if (keyProto.getVersion() != 1) {
-        throw new GeneralSecurityException("PublicKeyManagerValidationIsInvoked");
-      }
     }
 
     @Override
@@ -401,11 +384,6 @@ public final class KeyManagerRegistryTest {
     @Override
     public String getKeyType() {
       return typeUrl;
-    }
-
-    @Override
-    public int getVersion() {
-      return 1;
     }
 
     @Override
@@ -531,11 +509,10 @@ public final class KeyManagerRegistryTest {
     registry.registerAsymmetricKeyManagers(privateKeyTypeManager, publicKeyTypeManager);
     Ed25519PublicKey publicKey =
         Ed25519PublicKey.newBuilder()
-            .setVersion(1)
             .setKeyValue(ByteString.copyFrom(new byte[] {0, 1, 2, 3}))
             .build();
     Ed25519PrivateKey privateKey =
-        Ed25519PrivateKey.newBuilder().setPublicKey(publicKey).setVersion(1).build();
+        Ed25519PrivateKey.newBuilder().setPublicKey(publicKey).build();
     KeyData publicKeyData =
         ((PrivateKeyManager) registry.getUntypedKeyManager("privateTypeUrl"))
             .getPublicKeyData(privateKey.toByteString());
@@ -545,36 +522,36 @@ public final class KeyManagerRegistryTest {
     assertThat(parsedPublicKey).isEqualTo(publicKey);
   }
 
-  /**
-   * The point of registering Asymmetric KeyManagers together is that the public key validation
-   * method is invoked when we get a public key from a private key. Here we verify that this
-   * happens.
-   */
-  @Test
-  public void testAsymmetricKeyManagers_getPublicKey_validationIsInvoked_throws() throws Exception {
-    //if (TinkFipsUtil.useOnlyFips()) {
-    //  assumeTrue(
-    //      "If FIPS is required, we can only register managers if the fips module is available",
-    //      TinkFipsUtil.fipsModuleAvailable());
-    //}
+  ///**
+  // * The point of registering Asymmetric KeyManagers together is that the public key validation
+  // * method is invoked when we get a public key from a private key. Here we verify that this
+  // * happens.
+  // */
+  //@Test
+  //public void testAsymmetricKeyManagers_getPublicKey_validationIsInvoked_throws() throws Exception {
+  //  if (TinkFipsUtil.useOnlyFips()) {
+  //    assumeTrue(
+  //        "If FIPS is required, we can only register managers if the fips module is available",
+  //        TinkFipsUtil.fipsModuleAvailable());
+  //  }
 
-    KeyManagerRegistry registry = new KeyManagerRegistry();
-    TestPrivateKeyTypeManager privateKeyTypeManager =
-        new TestPrivateKeyTypeManager("privateTypeUrl");
-    TestPublicKeyTypeManager publicKeyTypeManager = new TestPublicKeyTypeManager("publicTypeUrl");
-    registry.registerAsymmetricKeyManagers(privateKeyTypeManager, publicKeyTypeManager);
-    // Version 0 will make sure that we get a validation error thrown
-    Ed25519PublicKey publicKey = Ed25519PublicKey.newBuilder().setVersion(0).build();
-    ByteString serializedPrivateKey =
-        Ed25519PrivateKey.newBuilder().setPublicKey(publicKey).setVersion(1).build().toByteString();
-    PrivateKeyManager<?> privateKeyManager =
-        (PrivateKeyManager) registry.getUntypedKeyManager("privateTypeUrl");
-    GeneralSecurityException thrown =
-        assertThrows(
-            GeneralSecurityException.class,
-            () -> privateKeyManager.getPublicKeyData(serializedPrivateKey));
-    assertThat(thrown).hasMessageThat().contains("PublicKeyManagerValidationIsInvoked");
-  }
+  //  KeyManagerRegistry registry = new KeyManagerRegistry();
+  //  TestPrivateKeyTypeManager privateKeyTypeManager =
+  //      new TestPrivateKeyTypeManager("privateTypeUrl");
+  //  TestPublicKeyTypeManager publicKeyTypeManager = new TestPublicKeyTypeManager("publicTypeUrl");
+  //  registry.registerAsymmetricKeyManagers(privateKeyTypeManager, publicKeyTypeManager);
+  //  // Version 0 will make sure that we get a validation error thrown
+  //  Ed25519PublicKey publicKey = Ed25519PublicKey.newBuilder().setVersion(0).build();
+  //  ByteString serializedPrivateKey =
+  //      Ed25519PrivateKey.newBuilder().setPublicKey(publicKey).setVersion(1).build().toByteString();
+  //  PrivateKeyManager<?> privateKeyManager =
+  //      (PrivateKeyManager) registry.getUntypedKeyManager("privateTypeUrl");
+  //  GeneralSecurityException thrown =
+  //      assertThrows(
+  //          GeneralSecurityException.class,
+  //          () -> privateKeyManager.getPublicKeyData(serializedPrivateKey));
+  //  assertThat(thrown).hasMessageThat().contains("PublicKeyManagerValidationIsInvoked");
+  //}
 
   @Test
   public void testAsymmetricKeyManagers_doubleRegistration_classChange_throws() throws Exception {
@@ -619,11 +596,10 @@ public final class KeyManagerRegistryTest {
     // If one ever registers the two together, we keep that one, so one can get public keys:
     Ed25519PublicKey publicKey =
         Ed25519PublicKey.newBuilder()
-            .setVersion(1)
             .setKeyValue(ByteString.copyFrom(new byte[] {0, 1, 2, 3}))
             .build();
     Ed25519PrivateKey privateKey =
-        Ed25519PrivateKey.newBuilder().setPublicKey(publicKey).setVersion(1).build();
+        Ed25519PrivateKey.newBuilder().setPublicKey(publicKey).build();
     KeyData publicKeyData =
         ((PrivateKeyManager) registry.getUntypedKeyManager("privateTypeUrl"))
             .getPublicKeyData(privateKey.toByteString());

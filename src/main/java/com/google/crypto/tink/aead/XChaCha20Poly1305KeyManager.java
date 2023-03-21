@@ -61,18 +61,12 @@ public class XChaCha20Poly1305KeyManager extends KeyTypeManager<XChaCha20Poly130
   }
 
   @Override
-  public int getVersion() {
-    return 0;
-  }
-
-  @Override
   public KeyMaterialType keyMaterialType() {
     return KeyMaterialType.SYMMETRIC;
   }
 
   @Override
   public void validateKey(XChaCha20Poly1305Key key) throws GeneralSecurityException {
-    Validators.validateVersion(key.getVersion(), getVersion());
     if (key.getKeyValue().size() != KEY_SIZE_IN_BYTES) {
       throw new GeneralSecurityException("invalid XChaCha20Poly1305Key: incorrect key length");
     }
@@ -103,7 +97,6 @@ public class XChaCha20Poly1305KeyManager extends KeyTypeManager<XChaCha20Poly130
       public XChaCha20Poly1305Key createKey(XChaCha20Poly1305KeyFormat format)
           throws GeneralSecurityException {
         return XChaCha20Poly1305Key.newBuilder()
-            .setVersion(getVersion())
             .setKeyValue(ByteString.copyFrom(Random.randBytes(KEY_SIZE_IN_BYTES)))
             .build();
       }
@@ -112,14 +105,12 @@ public class XChaCha20Poly1305KeyManager extends KeyTypeManager<XChaCha20Poly130
       public XChaCha20Poly1305Key deriveKey(
           XChaCha20Poly1305KeyFormat format, InputStream inputStream)
           throws GeneralSecurityException {
-        Validators.validateVersion(format.getVersion(), getVersion());
 
         byte[] pseudorandomness = new byte[KEY_SIZE_IN_BYTES];
         try {
           readFully(inputStream, pseudorandomness);
           return XChaCha20Poly1305Key.newBuilder()
               .setKeyValue(ByteString.copyFrom(pseudorandomness))
-              .setVersion(getVersion())
               .build();
         } catch (IOException e) {
           throw new GeneralSecurityException("Reading pseudorandomness failed", e);

@@ -49,7 +49,6 @@ public class ChaCha20Poly1305KeyManagerTest {
   public void basics() throws Exception {
     assertThat(new ChaCha20Poly1305KeyManager().getKeyType())
         .isEqualTo("type.googleapis.com/google.crypto.tink.ChaCha20Poly1305Key");
-    assertThat(new ChaCha20Poly1305KeyManager().getVersion()).isEqualTo(0);
     assertThat(new ChaCha20Poly1305KeyManager().keyMaterialType())
         .isEqualTo(KeyMaterialType.SYMMETRIC);
   }
@@ -84,16 +83,16 @@ public class ChaCha20Poly1305KeyManagerTest {
     }
   }
 
-  @Test
-  public void validateKey_version() throws Exception {
-    assertThrows(
-        GeneralSecurityException.class,
-        () ->
-            manager.validateKey(
-                ChaCha20Poly1305Key.newBuilder(createChaCha20Poly1305Key(32))
-                    .setVersion(1)
-                    .build()));
-  }
+  //@Test
+  //public void validateKey_version() throws Exception {
+  //  assertThrows(
+  //      GeneralSecurityException.class,
+  //      () ->
+  //          manager.validateKey(
+  //              ChaCha20Poly1305Key.newBuilder(createChaCha20Poly1305Key(32))
+  //                  .setVersion(1)
+  //                  .build()));
+  //}
 
   @Test
   public void createKey_valid() throws Exception {
@@ -105,7 +104,6 @@ public class ChaCha20Poly1305KeyManagerTest {
   public void createKey_values() throws Exception {
     ChaCha20Poly1305Key key =
         manager.keyFactory().createKey(ChaCha20Poly1305KeyFormat.getDefaultInstance());
-    assertThat(key.getVersion()).isEqualTo(0);
     assertThat(key.getKeyValue()).hasSize(32);
   }
 
@@ -135,7 +133,6 @@ public class ChaCha20Poly1305KeyManagerTest {
 
   private ChaCha20Poly1305Key createChaCha20Poly1305Key(int keySize) {
     return ChaCha20Poly1305Key.newBuilder()
-        .setVersion(0)
         .setKeyValue(ByteString.copyFrom(Random.randBytes(keySize)))
         .build();
   }

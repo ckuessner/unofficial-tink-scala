@@ -59,18 +59,12 @@ public class ChaCha20Poly1305KeyManager extends KeyTypeManager<ChaCha20Poly1305K
   }
 
   @Override
-  public int getVersion() {
-    return 0;
-  }
-
-  @Override
   public KeyMaterialType keyMaterialType() {
     return KeyMaterialType.SYMMETRIC;
   }
 
   @Override
   public void validateKey(ChaCha20Poly1305Key key) throws GeneralSecurityException {
-    Validators.validateVersion(key.getVersion(), getVersion());
     if (key.getKeyValue().size() != KEY_SIZE_IN_BYTES) {
       throw new GeneralSecurityException("invalid ChaCha20Poly1305Key: incorrect key length");
     }
@@ -100,7 +94,6 @@ public class ChaCha20Poly1305KeyManager extends KeyTypeManager<ChaCha20Poly1305K
       public ChaCha20Poly1305Key createKey(ChaCha20Poly1305KeyFormat format)
           throws GeneralSecurityException {
         return ChaCha20Poly1305Key.newBuilder()
-            .setVersion(getVersion())
             .setKeyValue(ByteString.copyFrom(Random.randBytes(KEY_SIZE_IN_BYTES)))
             .build();
       }

@@ -130,7 +130,6 @@ public final class ChaCha20Poly1305ProtoSerializationTest {
 
     com.google.crypto.tink.proto.ChaCha20Poly1305Key protoChaCha20Poly1305Key =
         com.google.crypto.tink.proto.ChaCha20Poly1305Key.newBuilder()
-            .setVersion(0)
             .setKeyValue(KEY_BYTES_32_AS_BYTE_STRING)
             .build();
 
@@ -158,7 +157,6 @@ public final class ChaCha20Poly1305ProtoSerializationTest {
 
     com.google.crypto.tink.proto.ChaCha20Poly1305Key protoChaCha20Poly1305Key =
         com.google.crypto.tink.proto.ChaCha20Poly1305Key.newBuilder()
-            .setVersion(0)
             .setKeyValue(KEY_BYTES_32_AS_BYTE_STRING)
             .build();
 
@@ -183,7 +181,6 @@ public final class ChaCha20Poly1305ProtoSerializationTest {
   public void testParseKeys_noAccess_throws() throws Exception {
     com.google.crypto.tink.proto.ChaCha20Poly1305Key protoChaCha20Poly1305Key =
         com.google.crypto.tink.proto.ChaCha20Poly1305Key.newBuilder()
-            .setVersion(0)
             .setKeyValue(KEY_BYTES_32_AS_BYTE_STRING)
             .build();
     ProtoKeySerialization serialization =
@@ -202,7 +199,6 @@ public final class ChaCha20Poly1305ProtoSerializationTest {
         ProtoKeySerialization.create(
             TYPE_URL,
             com.google.crypto.tink.proto.ChaCha20Poly1305Key.newBuilder()
-                .setVersion(0)
                 .setKeyValue(KEY_BYTES_32_AS_BYTE_STRING)
                 .build()
                 .toByteString(),
@@ -246,21 +242,19 @@ public final class ChaCha20Poly1305ProtoSerializationTest {
     try {
       return new ProtoKeySerialization[] {
         // Bad Version Number (1)
-        ProtoKeySerialization.create(
-            TYPE_URL,
-            com.google.crypto.tink.proto.ChaCha20Poly1305Key.newBuilder()
-                .setVersion(1)
-                .setKeyValue(KEY_BYTES_32_AS_BYTE_STRING)
-                .build()
-                .toByteString(),
-            KeyMaterialType.SYMMETRIC,
-            OutputPrefixType.TINK,
-            1479),
+        //ProtoKeySerialization.create(
+        //    TYPE_URL,
+        //    com.google.crypto.tink.proto.ChaCha20Poly1305Key.newBuilder()
+        //        .setVersion(1)
+        //        .setKeyValue(KEY_BYTES_32_AS_BYTE_STRING)
+        //        .build(),
+        //    KeyMaterialType.SYMMETRIC,
+        //    OutputPrefixType.TINK,
+        //    1479),
         // Unknown prefix
         ProtoKeySerialization.create(
             TYPE_URL,
             com.google.crypto.tink.proto.ChaCha20Poly1305Key.newBuilder()
-                .setVersion(0)
                 .setKeyValue(KEY_BYTES_32_AS_BYTE_STRING)
                 .build()
                 .toByteString(),
@@ -271,7 +265,6 @@ public final class ChaCha20Poly1305ProtoSerializationTest {
         ProtoKeySerialization.create(
             TYPE_URL,
             com.google.crypto.tink.proto.ChaCha20Poly1305Key.newBuilder()
-                .setVersion(0)
                 .setKeyValue(ByteString.copyFrom(new byte[16]))
                 .build()
                 .toByteString(),

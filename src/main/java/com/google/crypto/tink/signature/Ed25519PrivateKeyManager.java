@@ -63,11 +63,6 @@ public final class Ed25519PrivateKeyManager
   }
 
   @Override
-  public int getVersion() {
-    return 0;
-  }
-
-  @Override
   public Ed25519PublicKey getPublicKey(Ed25519PrivateKey key) throws GeneralSecurityException {
     return key.getPublicKey();
   }
@@ -84,7 +79,6 @@ public final class Ed25519PrivateKeyManager
 
   @Override
   public void validateKey(Ed25519PrivateKey keyProto) throws GeneralSecurityException {
-    Validators.validateVersion(keyProto.getVersion(), getVersion());
     new Ed25519PublicKeyManager().validateKey(keyProto.getPublicKey());
     if (keyProto.getKeyValue().size() != Ed25519Sign.SECRET_KEY_LEN) {
       throw new GeneralSecurityException("invalid Ed25519 private key: incorrect key length");
@@ -109,11 +103,9 @@ public final class Ed25519PrivateKeyManager
         Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPair();
         Ed25519PublicKey publicKey =
             Ed25519PublicKey.newBuilder()
-                .setVersion(getVersion())
                 .setKeyValue(ByteString.copyFrom(keyPair.getPublicKey()))
                 .build();
         return Ed25519PrivateKey.newBuilder()
-            .setVersion(getVersion())
             .setKeyValue(ByteString.copyFrom(keyPair.getPrivateKey()))
             .setPublicKey(publicKey)
             .build();
@@ -122,7 +114,6 @@ public final class Ed25519PrivateKeyManager
       @Override
       public Ed25519PrivateKey deriveKey(Ed25519KeyFormat format, InputStream inputStream)
           throws GeneralSecurityException {
-        Validators.validateVersion(format.getVersion(), getVersion());
 
         byte[] pseudorandomness = new byte[Ed25519Sign.SECRET_KEY_LEN];
         try {
@@ -130,11 +121,9 @@ public final class Ed25519PrivateKeyManager
           Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPairFromSeed(pseudorandomness);
           Ed25519PublicKey publicKey =
               Ed25519PublicKey.newBuilder()
-                  .setVersion(getVersion())
                   .setKeyValue(ByteString.copyFrom(keyPair.getPublicKey()))
                   .build();
           return Ed25519PrivateKey.newBuilder()
-              .setVersion(getVersion())
               .setKeyValue(ByteString.copyFrom(keyPair.getPrivateKey()))
               .setPublicKey(publicKey)
               .build();

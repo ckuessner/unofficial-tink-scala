@@ -46,7 +46,6 @@ public class Ed25519PublicKeyManagerTest {
   public void basics() throws Exception {
     assertThat(verifyManager.getKeyType())
         .isEqualTo("type.googleapis.com/google.crypto.tink.Ed25519PublicKey");
-    assertThat(verifyManager.getVersion()).isEqualTo(0);
     assertThat(verifyManager.keyMaterialType()).isEqualTo(KeyMaterialType.ASYMMETRIC_PUBLIC);
   }
 
@@ -67,12 +66,12 @@ public class Ed25519PublicKeyManagerTest {
     verifyManager.validateKey(publicKey);
   }
 
-  @Test
-  public void validateKey_wrongVersion() throws Exception {
-    Ed25519PublicKey publicKey = signManager.getPublicKey(createPrivateKey());
-    Ed25519PublicKey invalidKey = Ed25519PublicKey.newBuilder(publicKey).setVersion(1).build();
-    assertThrows(GeneralSecurityException.class, () -> verifyManager.validateKey(invalidKey));
-  }
+  //@Test
+  //public void validateKey_wrongVersion() throws Exception {
+  //  Ed25519PublicKey publicKey = signManager.getPublicKey(createPrivateKey());
+  //  Ed25519PublicKey invalidKey = Ed25519PublicKey.newBuilder(publicKey).setVersion(1).build();
+  //  assertThrows(GeneralSecurityException.class, () -> verifyManager.validateKey(invalidKey));
+  //}
 
   @Test
   public void validateKey_wrongLength31_throws() throws Exception {

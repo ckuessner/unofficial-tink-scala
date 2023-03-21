@@ -46,11 +46,7 @@ public final class KeyTypeManagerTest {
     @Override
     public String getKeyType() {
       return "type.googleapis.com/google.crypto.tink.AesGcmKey";
-    }
 
-    @Override
-    public int getVersion() {
-      return 1;
     }
 
     @Override

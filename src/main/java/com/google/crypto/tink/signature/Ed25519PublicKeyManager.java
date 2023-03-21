@@ -50,11 +50,6 @@ class Ed25519PublicKeyManager extends KeyTypeManager<Ed25519PublicKey> {
   }
 
   @Override
-  public int getVersion() {
-    return 0;
-  }
-
-  @Override
   public KeyMaterialType keyMaterialType() {
     return KeyMaterialType.ASYMMETRIC_PUBLIC;
   }

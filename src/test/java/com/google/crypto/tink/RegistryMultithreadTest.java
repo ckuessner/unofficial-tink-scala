@@ -88,11 +88,6 @@ public final class RegistryMultithreadTest {
     }
 
     @Override
-    public int getVersion() {
-      throw new UnsupportedOperationException("Not needed for test");
-    }
-
-    @Override
     public Class<Primitive> getPrimitiveClass() {
       return Primitive.class;
     }
@@ -109,11 +104,6 @@ public final class RegistryMultithreadTest {
     @Override
     public String getKeyType() {
       return typeUrl;
-    }
-
-    @Override
-    public int getVersion() {
-      throw new UnsupportedOperationException("Not needed for test");
     }
 
     @Override
@@ -144,11 +134,6 @@ public final class RegistryMultithreadTest {
     }
 
     @Override
-    public int getVersion() {
-      throw new UnsupportedOperationException("Not needed for test");
-    }
-
-    @Override
     public KeyMaterialType keyMaterialType() {
       throw new UnsupportedOperationException("Not needed for test");
     }
@@ -174,11 +159,6 @@ public final class RegistryMultithreadTest {
     @Override
     public String getKeyType() {
       return typeUrl;
-    }
-
-    @Override
-    public int getVersion() {
-      throw new UnsupportedOperationException("Not needed for test");
     }
 
     @Override

@@ -50,11 +50,6 @@ public final class PrivateKeyManagerImplTest {
     }
 
     @Override
-    public int getVersion() {
-      return 1;
-    }
-
-    @Override
     public KeyMaterialType keyMaterialType() {
       return KeyMaterialType.ASYMMETRIC_PUBLIC;
     }
@@ -81,11 +76,6 @@ public final class PrivateKeyManagerImplTest {
     @Override
     public String getKeyType() {
       return "type.googleapis.com/google.crypto.tink.Ed25519PrivateKey";
-    }
-
-    @Override
-    public int getVersion() {
-      return 1;
     }
 
     @Override
