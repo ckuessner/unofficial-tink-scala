@@ -16,12 +16,13 @@
 
 package com.google.crypto.tink.subtle;
 
-import static com.google.crypto.tink.subtle.Poly1305.MAC_KEY_SIZE_IN_BYTES;
-import static com.google.crypto.tink.subtle.Poly1305.MAC_TAG_SIZE_IN_BYTES;
+import static com.google.crypto.tink.aead.internal.Poly1305.MAC_KEY_SIZE_IN_BYTES;
+import static com.google.crypto.tink.aead.internal.Poly1305.MAC_TAG_SIZE_IN_BYTES;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import com.google.common.truth.Truth;
+import com.google.crypto.tink.aead.internal.Poly1305;
 import com.google.crypto.tink.testing.TestUtil;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;

@@ -23,12 +23,14 @@ import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.KeyTemplate.OutputPrefixType;
 import com.google.crypto.tink.KeyTemplates;
 import com.google.crypto.tink.Registry;
+import com.google.crypto.tink.aead.XChaCha20Poly1305KeyManager;
 import com.google.crypto.tink.proto.KeyData;
+import com.google.crypto.tink.proto.XChaCha20Poly1305Key;
 import com.google.crypto.tink.signature.Ed25519PrivateKeyManager;
+import com.google.crypto.tink.subtle.XChaCha20Poly1305;
 import com.google.crypto.tink.tinkkey.internal.ProtoKey;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistryLite;
 import java.security.GeneralSecurityException;
 import java.util.Set;
 import java.util.TreeSet;
@@ -75,7 +77,7 @@ public final class KeyHandleTest {
 
   @Before
   public void setUp() throws Exception {
-    //AesEaxKeyManager.register(/* newKeyAllowed= */ true);
+    XChaCha20Poly1305KeyManager.register(/* newKeyAllowed= */ true);
     Ed25519PrivateKeyManager.registerPair(/* newKeyAllowed= */ true);
   }
 
@@ -88,15 +90,15 @@ public final class KeyHandleTest {
     assertThrows(GeneralSecurityException.class, () -> KeyHandle.createFromKey(key, access));
   }
 
-  //@Test
-  //public void createFromKey_keyDataSymmetric_shouldHaveSecret() throws Exception {
-  //  KeyTemplate kt = KeyTemplates.get("AES128_EAX");
-  //  KeyData kd = Registry.newKeyData(kt);
+  @Test
+  public void createFromKey_keyDataSymmetric_shouldHaveSecret() throws Exception {
+    KeyTemplate kt = KeyTemplates.get("XCHACHA20_POLY1305");
+    KeyData kd = Registry.newKeyData(kt);
 
-  //  KeyHandle kh = KeyHandle.createFromKey(kd, kt.getOutputPrefixType());
+    KeyHandle kh = KeyHandle.createFromKey(kd, kt.getOutputPrefixType());
 
-  //  assertThat(kh.hasSecret()).isTrue();
-  //}
+    assertThat(kh.hasSecret()).isTrue();
+  }
 
   @Test
   public void createFromKey_keyDataAsymmetricPrivate_shouldHaveSecret() throws Exception {
@@ -111,9 +113,7 @@ public final class KeyHandleTest {
   @Test
   public void createFromKey_keyDataUnknown_shouldHaveSecret() throws Exception {
     KeyTemplate kt = KeyTemplates.get("ED25519");
-    KeyData kd =
-        KeyData.newBuilder()
-            .mergeFrom(Registry.newKeyData(kt))
+    KeyData kd = Registry.newKeyData(kt).toBuilder()
             .setKeyMaterialType(KeyData.KeyMaterialType.UNKNOWN_KEYMATERIAL)
             .build();
 
@@ -132,37 +132,37 @@ public final class KeyHandleTest {
     assertThat(kh.hasSecret()).isFalse();
   }
 
-  @Test
-  public void createFromKey_keyDataRemote_shouldNotHaveSecret() throws Exception {
-    KeyTemplate kt = KeyTemplates.get("ED25519");
-    KeyData kd =
-        KeyData.newBuilder()
-            .mergeFrom(Registry.newKeyData(kt))
-            .setKeyMaterialType(KeyData.KeyMaterialType.REMOTE)
-            .build();
-
-    KeyHandle kh = KeyHandle.createFromKey(kd, kt.getOutputPrefixType());
-
-    assertThat(kh.hasSecret()).isFalse();
-  }
-
   //@Test
-  //public void generateNew_shouldWork() throws Exception {
-  //  KeyTemplate template = KeyTemplates.get("AES128_EAX");
+  //public void createFromKey_keyDataRemote_shouldNotHaveSecret() throws Exception {
+  //  KeyTemplate kt = KeyTemplates.get("ED25519");
+  //  KeyData kd =
+  //      KeyData.newBuilder()
+  //          .mergeFrom(Registry.newKeyData(kt))
+  //          .setKeyMaterialType(KeyData.KeyMaterialType.REMOTE)
+  //          .build();
 
-  //  KeyHandle handle = KeyHandle.generateNew(template);
+  //  KeyHandle kh = KeyHandle.createFromKey(kd, kt.getOutputPrefixType());
 
-  //  ProtoKey protoKey = (ProtoKey) handle.getKey(SecretKeyAccess.insecureSecretAccess());
-  //  expect.that(protoKey.getOutputPrefixType()).isEqualTo(KeyTemplate.OutputPrefixType.TINK);
-  //  expect.that(protoKey.hasSecret()).isTrue();
-  //  KeyData keyData = protoKey.getProtoKey();
-  //  expect.that(keyData.getTypeUrl()).isEqualTo(template.getTypeUrl());
-  //  AesEaxKeyFormat aesEaxKeyFormat =
-  //      AesEaxKeyFormat.parseFrom(template.getValue(), ExtensionRegistryLite.getEmptyRegistry());
-  //  AesEaxKey aesEaxKey =
-  //      AesEaxKey.parseFrom(keyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());
-  //  expect.that(aesEaxKey.getKeyValue().size()).isEqualTo(aesEaxKeyFormat.getKeySize());
+  //  assertThat(kh.hasSecret()).isFalse();
   //}
+
+  @Test
+  public void generateNew_shouldWork() throws Exception {
+    KeyTemplate template = KeyTemplates.get("XCHACHA20_POLY1305");
+
+    KeyHandle handle = KeyHandle.generateNew(template);
+
+    ProtoKey protoKey = (ProtoKey) handle.getKey(SecretKeyAccess.insecureSecretAccess());
+    expect.that(protoKey.getOutputPrefixType()).isEqualTo(KeyTemplate.OutputPrefixType.TINK);
+    expect.that(protoKey.hasSecret()).isTrue();
+    KeyData keyData = protoKey.getProtoKey();
+    expect.that(keyData.getTypeUrl()).isEqualTo(template.getTypeUrl());
+    //AesEaxKeyFormat aesEaxKeyFormat =
+    //    AesEaxKeyFormat.parseFrom(template.getValue(), ExtensionRegistryLite.getEmptyRegistry());
+    //AesEaxKey aesEaxKey =
+    //    AesEaxKey.parseFrom(keyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());
+    //expect.that(aesEaxKey.getKeyValue().size()).isEqualTo(aesEaxKeyFormat.getKeySize());
+  }
 
   //@Test
   //public void generateNew_compareWith_createFromKeyViaProtoKey_shouldBeEqual() throws Exception {
@@ -203,10 +203,9 @@ public final class KeyHandleTest {
   @Test
   public void generateNew_unregisteredTypeUrl_shouldThrow() throws Exception {
     String typeUrl = "testNewKeyDataTypeUrl";
-    ByteString keyformat = ByteString.copyFromUtf8("testNewKeyDataKeyFormat");
     com.google.crypto.tink.KeyTemplate keyTemplate =
         com.google.crypto.tink.KeyTemplate.create(
-            typeUrl, keyformat.toByteArray(), OutputPrefixType.TINK);
+            typeUrl, OutputPrefixType.TINK);
 
     assertThrows(GeneralSecurityException.class, () -> KeyHandle.generateNew(keyTemplate));
   }
@@ -272,7 +271,7 @@ public final class KeyHandleTest {
 
     KeyTemplate returnedKeyTemplate = keyHandle.getKeyTemplate();
 
-    assertThat(returnedKeyTemplate.getValue()).isEqualTo(keyTemplate.getValue());
+    assertThat(returnedKeyTemplate).isEqualTo(keyTemplate);
   }
 
   @Test

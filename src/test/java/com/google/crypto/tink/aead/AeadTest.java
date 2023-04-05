@@ -38,7 +38,7 @@ public final class AeadTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    //AeadConfig.register();
+    AeadConfig.register();
     //DeterministicAeadConfig.register(); // Needed for getPrimitiveFromNonAeadKeyset_throws.
   }
 

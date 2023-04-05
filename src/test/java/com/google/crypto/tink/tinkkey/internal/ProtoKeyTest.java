@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThrows;
 import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.KeyTemplates;
 import com.google.crypto.tink.Registry;
+import com.google.crypto.tink.aead.XChaCha20Poly1305KeyManager;
 import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.signature.Ed25519PrivateKeyManager;
 import java.security.GeneralSecurityException;
@@ -35,21 +36,21 @@ public final class ProtoKeyTest {
 
   @Before
   public void setUp() throws GeneralSecurityException {
-    AesEaxKeyManager.register(true);
+    XChaCha20Poly1305KeyManager.register(true);
     Ed25519PrivateKeyManager.registerPair(true);
   }
 
-  //@Test
-  //public void testProtoKey_keyDataSYMMETRIC_shouldHaveSecret() throws GeneralSecurityException {
-  //  KeyTemplate kt = KeyTemplates.get("AES128_EAX");
-  //  KeyData kd = Registry.newKeyData(kt);
+  @Test
+  public void testProtoKey_keyDataSYMMETRIC_shouldHaveSecret() throws GeneralSecurityException {
+    KeyTemplate kt = KeyTemplates.get("XCHACHA20_POLY1305");
+    KeyData kd = Registry.newKeyData(kt);
 
-  //  ProtoKey pk = new ProtoKey(kd, kt.getOutputPrefixType());
+    ProtoKey pk = new ProtoKey(kd, kt.getOutputPrefixType());
 
-  //  assertThat(pk.getProtoKey()).isEqualTo(kd);
-  //  assertThat(pk.getOutputPrefixType()).isEqualTo(kt.getOutputPrefixType());
-  //  assertThat(pk.hasSecret()).isTrue();
-  //}
+    assertThat(pk.getProtoKey()).isEqualTo(kd);
+    assertThat(pk.getOutputPrefixType()).isEqualTo(kt.getOutputPrefixType());
+    assertThat(pk.hasSecret()).isTrue();
+  }
 
   @Test
   public void testProtoKey_keyDataASYMMETRICPRIVATE_shouldHaveSecret()
@@ -67,9 +68,7 @@ public final class ProtoKeyTest {
   @Test
   public void testProtoKey_keyDataUNKNOWN_shouldHaveSecret() throws GeneralSecurityException {
     KeyTemplate kt = KeyTemplates.get("ED25519");
-    KeyData kd =
-        KeyData.newBuilder()
-            .mergeFrom(Registry.newKeyData(kt))
+    KeyData kd = Registry.newKeyData(kt).toBuilder()
             .setKeyMaterialType(KeyData.KeyMaterialType.UNKNOWN_KEYMATERIAL)
             .build();
 
@@ -96,9 +95,7 @@ public final class ProtoKeyTest {
   @Test
   public void testProtoKey_keyDataREMOTE_shouldNotHaveSecret() throws GeneralSecurityException {
     KeyTemplate kt = KeyTemplates.get("ED25519");
-    KeyData kd =
-        KeyData.newBuilder()
-            .mergeFrom(Registry.newKeyData(kt))
+    KeyData kd = Registry.newKeyData(kt).toBuilder()
             .setKeyMaterialType(KeyData.KeyMaterialType.REMOTE)
             .build();
 
@@ -109,12 +106,12 @@ public final class ProtoKeyTest {
     assertThat(pk.hasSecret()).isFalse();
   }
 
-  //@Test
-  //public void testGetKeyTemplate_shouldThrow() throws GeneralSecurityException {
-  //  KeyTemplate kt = AesEaxKeyManager.aes128EaxTemplate();
-  //  KeyData kd = Registry.newKeyData(kt);
-  //  ProtoKey pk = new ProtoKey(kd, kt.getOutputPrefixType());
+  @Test
+  public void testGetKeyTemplate_shouldThrow() throws GeneralSecurityException {
+    KeyTemplate kt = XChaCha20Poly1305KeyManager.xChaCha20Poly1305Template();
+    KeyData kd = Registry.newKeyData(kt);
+    ProtoKey pk = new ProtoKey(kd, kt.getOutputPrefixType());
 
-  //  assertThrows(UnsupportedOperationException.class, pk::getKeyTemplate);
-  //}
+    assertThrows(UnsupportedOperationException.class, pk::getKeyTemplate);
+  }
 }

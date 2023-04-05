@@ -21,40 +21,14 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.google.crypto.tink.Aead;
-import com.google.crypto.tink.CleartextKeysetHandle;
-import com.google.crypto.tink.KeysetHandle;
-import com.google.crypto.tink.PrimitiveSet;
-import com.google.crypto.tink.hybrid.HybridKeyTemplates;
-import com.google.crypto.tink.proto.EcPointFormat;
-import com.google.crypto.tink.proto.EcdsaParams;
-import com.google.crypto.tink.proto.EcdsaPrivateKey;
-import com.google.crypto.tink.proto.EcdsaPublicKey;
-import com.google.crypto.tink.proto.EcdsaSignatureEncoding;
-import com.google.crypto.tink.proto.EciesAeadHkdfParams;
-import com.google.crypto.tink.proto.EciesAeadHkdfPrivateKey;
-import com.google.crypto.tink.proto.EciesAeadHkdfPublicKey;
-import com.google.crypto.tink.proto.EllipticCurveType;
-import com.google.crypto.tink.proto.HkdfPrfKey;
-import com.google.crypto.tink.proto.HkdfPrfParams;
-import com.google.crypto.tink.proto.HmacKey;
-import com.google.crypto.tink.proto.HmacKeyFormat;
-import com.google.crypto.tink.proto.HmacParams;
-import com.google.crypto.tink.proto.KeyData;
-import com.google.crypto.tink.proto.KeyStatusType;
+import com.google.crypto.tink.*;
+import com.google.crypto.tink.proto.*;
 import com.google.crypto.tink.proto.KeyTemplate;
-import com.google.crypto.tink.proto.Keyset;
 import com.google.crypto.tink.proto.Keyset.Key;
-import com.google.crypto.tink.proto.KeysetInfo;
-import com.google.crypto.tink.proto.OutputPrefixType;
-import com.google.crypto.tink.proto.RsaSsaPkcs1Params;
-import com.google.crypto.tink.proto.RsaSsaPkcs1PublicKey;
-import com.google.crypto.tink.proto.RsaSsaPssParams;
-import com.google.crypto.tink.proto.RsaSsaPssPublicKey;
 import com.google.crypto.tink.subtle.Hex;
 import com.google.crypto.tink.subtle.Random;
-import com.google.protobuf.ExtensionRegistryLite;
-import com.google.protobuf.MessageLite;
+import com.google.protobuf.ByteString;
+
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -119,25 +93,25 @@ public final class TestUtil {
   /**
    * @return a {@code PrimitiveSet} from a {@code KeySet}
    */
-  //public static <P> PrimitiveSet<P> createPrimitiveSetWithAnnotations(
-  //    Keyset keyset, @Nullable MonitoringAnnotations annotations, Class<P> inputClass)
-  //    throws GeneralSecurityException {
-  //  PrimitiveSet.Builder<P> builder = PrimitiveSet.newBuilder(inputClass);
-  //  if (annotations != null) {
-  //    builder.setAnnotations(annotations);
-  //  }
-  //  for (Keyset.Key key : keyset.getKeyList()) {
-  //    if (key.getStatus() == KeyStatusType.ENABLED) {
-  //      P primitive = Registry.getPrimitive(key.getKeyData(), inputClass);
-  //      if (key.getKeyId() == keyset.getPrimaryKeyId()) {
-  //        builder.addPrimaryPrimitive(primitive, key);
-  //      } else {
-  //        builder.addPrimitive(primitive, key);
-  //      }
-  //    }
-  //  }
-  //  return builder.build();
-  //}
+  public static <P> PrimitiveSet<P> createPrimitiveSetWithAnnotations(
+      Keyset keyset, /*@Nullable*/ Object ignored, Class<P> inputClass)
+      throws GeneralSecurityException {
+    PrimitiveSet.Builder<P> builder = PrimitiveSet.newBuilder(inputClass);
+    //if (annotations != null) {
+    //  builder.setAnnotations(annotations);
+    //}
+    for (Keyset.Key key : keyset.getKeyList()) {
+      if (key.getStatus() == KeyStatusType.ENABLED) {
+        P primitive = Registry.getPrimitive(key.getKeyData(), inputClass);
+        if (key.getKeyId() == keyset.getPrimaryKeyId()) {
+          builder.addPrimaryPrimitive(primitive, key);
+        } else {
+          builder.addPrimitive(primitive, key);
+        }
+      }
+    }
+    return builder.build();
+  }
 
   /** @return a {@code Keyset} from a {@code handle}. */
   public static Keyset getKeyset(final KeysetHandle handle) {
@@ -198,13 +172,21 @@ public final class TestUtil {
   //}
 
   /** @return a {@code KeyData} from a specified key. */
-  public static KeyData createKeyData(MessageLite key, String typeUrl, KeyData.KeyMaterialType type)
+  public static KeyData createKeyData(KeyProto key, String typeUrl, KeyData.KeyMaterialType type)
       throws Exception {
     return KeyData.newBuilder()
-        .setValue(key.toByteString())
+        .setValue(key)
         .setTypeUrl(typeUrl)
         .setKeyMaterialType(type)
         .build();
+  }
+
+  public static KeyData createXchaCha20Poly1305KeyData(byte[] keyValue) throws Exception {
+    return createKeyData(
+            XChaCha20Poly1305Key.apply(ByteString.copyFrom(keyValue)),
+            "type.googleapis.com/google.crypto.tink.XChaCha20Poly1305Key",
+            com.google.crypto.tink.proto.KeyData.KeyMaterialType.SYMMETRIC
+    );
   }
 
   ///** @return a {@code KeyData} containing a {@code HmacKey}. */
@@ -213,7 +195,7 @@ public final class TestUtil {
   //      createHmacKey(keyValue, tagSize),
   //      MacConfig.HMAC_TYPE_URL,
   //      KeyData.KeyMaterialType.SYMMETRIC);
-  //}
+  //
 
   /** @return a {@code KeyData} containing a {@code HkdfPrfKey}. */
   //public static KeyData createPrfKeyData(byte[] keyValue) throws Exception {
@@ -229,6 +211,13 @@ public final class TestUtil {
   //      .setKeyValue(ByteString.copyFrom(keyValue))
   //      .build();
   //}
+
+  /** @return a {@code XChaCha20Poly1305Key}. */
+  public static XChaCha20Poly1305Key createXChaCha20Poly1305Key(byte[] keyValue) throws Exception {
+    return XChaCha20Poly1305Key.newBuilder()
+        .setKeyValue(ByteString.copyFrom(keyValue))
+        .build();
+  }
 
   ///** @return a {@code KeyData} containing a {@code AesCtrHmacStreamingKey}. */
   //public static KeyData createAesCtrHmacStreamingKeyData(

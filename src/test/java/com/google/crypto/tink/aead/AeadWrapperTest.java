@@ -25,18 +25,19 @@ import com.google.crypto.tink.CleartextKeysetHandle;
 import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.PrimitiveSet;
 import com.google.crypto.tink.Registry;
-import com.google.crypto.tink.proto.AesCtrHmacAeadKey;
 import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.proto.KeyStatusType;
 import com.google.crypto.tink.proto.Keyset;
 import com.google.crypto.tink.proto.Keyset.Key;
 import com.google.crypto.tink.proto.OutputPrefixType;
+import com.google.crypto.tink.proto.XChaCha20Poly1305Key;
 import com.google.crypto.tink.subtle.Bytes;
 import com.google.crypto.tink.subtle.Random;
 import com.google.crypto.tink.testing.TestUtil;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
+import com.google.protobuf.ByteString;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
@@ -49,34 +50,30 @@ import org.junit.runner.RunWith;
 @RunWith(Theories.class)
 public class AeadWrapperTest {
 
-  private static AesCtrHmacAeadKey aesCtrHmacAeadKey;
-  private static AesCtrHmacAeadKey aesCtrHmacAeadKey2;
+  private static XChaCha20Poly1305Key xChaCha20Poly1305Key;
+  private static XChaCha20Poly1305Key xChaCha20Poly1305Key2;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    //AeadConfig.register();
+    AeadConfig.register();
 
-    int aesKeySize = 16;
-    int hmacKeySize = 20;
-    int ivSize = 12;
-    int tagSize = 16;
-    aesCtrHmacAeadKey =
-        AesCtrHmacAeadKey.newBuilder()
-        .setAesCtrKey(TestUtil.createAesCtrKey(Random.randBytes(aesKeySize), ivSize))
-        .setHmacKey(TestUtil.createHmacKey(Random.randBytes(hmacKeySize), tagSize)).build();
-    aesCtrHmacAeadKey2 =
-        AesCtrHmacAeadKey.newBuilder()
-        .setAesCtrKey(TestUtil.createAesCtrKey(Random.randBytes(aesKeySize), ivSize))
-        .setHmacKey(TestUtil.createHmacKey(Random.randBytes(hmacKeySize), tagSize)).build();
+    xChaCha20Poly1305Key =
+        XChaCha20Poly1305Key.newBuilder()
+        .setKeyValue(ByteString.copyFrom(Random.randBytes(32)))
+        .build();
+    xChaCha20Poly1305Key2 =
+        XChaCha20Poly1305Key.newBuilder()
+        .setKeyValue(ByteString.copyFrom(Random.randBytes(32)))
+        .build();
   }
 
   private static Key getKey(
-      AesCtrHmacAeadKey aesCtrHmacAeadKey, int keyId, OutputPrefixType prefixType)
+          XChaCha20Poly1305Key xChaChaPoly1305Key, int keyId, OutputPrefixType prefixType)
       throws Exception {
     return TestUtil.createKey(
         TestUtil.createKeyData(
-            aesCtrHmacAeadKey,
-            "type.googleapis.com/google.crypto.tink.AesCtrHmacAeadKey",
+            xChaChaPoly1305Key,
+            "type.googleapis.com/google.crypto.tink.XChaCha20Poly1305Key",
             KeyData.KeyMaterialType.SYMMETRIC),
         keyId,
         KeyStatusType.ENABLED,
@@ -85,7 +82,7 @@ public class AeadWrapperTest {
 
   @Theory
   public void wrappedRawEncrypt_canBeDecryptedByRawPrimitive() throws Exception {
-    Key key = getKey(aesCtrHmacAeadKey, /*keyId=*/ 0x66AABBCC, OutputPrefixType.RAW);
+    Key key = getKey(xChaCha20Poly1305Key, /*keyId=*/ 0x66AABBCC, OutputPrefixType.RAW);
     Aead rawAead = Registry.getPrimitive(key.getKeyData(), Aead.class);
 
     PrimitiveSet<Aead> primitives =
@@ -103,7 +100,7 @@ public class AeadWrapperTest {
 
   @Theory
   public void wrappedRawDecrypt_decryptsRawCiphertext() throws Exception {
-    Key key = getKey(aesCtrHmacAeadKey, /*keyId=*/ 0x66AABBCC, OutputPrefixType.RAW);
+    Key key = getKey(xChaCha20Poly1305Key, /*keyId=*/ 0x66AABBCC, OutputPrefixType.RAW);
     Aead rawAead = Registry.getPrimitive(key.getKeyData(), Aead.class);
 
     byte[] plaintext = "plaintext".getBytes(UTF_8);
@@ -133,7 +130,7 @@ public class AeadWrapperTest {
 
   @Theory
   public void wrappedNonRawEncrypt_addsPrefixToRawCiphertext() throws Exception {
-    Key key = getKey(aesCtrHmacAeadKey, /*keyId=*/ 0x66AABBCC, OutputPrefixType.TINK);
+    Key key = getKey(xChaCha20Poly1305Key, /*keyId=*/ 0x66AABBCC, OutputPrefixType.TINK);
     Aead rawAead = Registry.getPrimitive(key.getKeyData(), Aead.class);
 
     PrimitiveSet<Aead> primitives =
@@ -155,7 +152,7 @@ public class AeadWrapperTest {
 
   @Theory
   public void wrappedNonRawDecrypt_decryptsRawCiphertextWithPrefix() throws Exception {
-    Key key = getKey(aesCtrHmacAeadKey, /*keyId=*/ 0x66AABBCC, OutputPrefixType.TINK);
+    Key key = getKey(xChaCha20Poly1305Key, /*keyId=*/ 0x66AABBCC, OutputPrefixType.TINK);
     Aead rawAead = Registry.getPrimitive(key.getKeyData(), Aead.class);
 
     PrimitiveSet<Aead> primitives =
@@ -197,7 +194,7 @@ public class AeadWrapperTest {
   @Theory
   public void encrytAndDecrypt_success(
       @FromDataPoints("outputPrefixType") OutputPrefixType prefix) throws Exception {
-    Key key = getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, prefix);
+    Key key = getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, prefix);
     Aead aead =
         new AeadWrapper()
             .wrap(TestUtil.createPrimitiveSet(TestUtil.createKeyset(key), Aead.class));
@@ -217,7 +214,7 @@ public class AeadWrapperTest {
         () -> aead.decrypt("".getBytes(UTF_8), associatedData));
 
     // decrypt with a different key should fail
-    Key otherKey = getKey(aesCtrHmacAeadKey2, /*keyId=*/ 234, prefix);
+    Key otherKey = getKey(xChaCha20Poly1305Key2, /*keyId=*/ 234, prefix);
     Aead otherAead =
         new AeadWrapper()
             .wrap(TestUtil.createPrimitiveSet(TestUtil.createKeyset(otherKey), Aead.class));
@@ -230,8 +227,8 @@ public class AeadWrapperTest {
       @FromDataPoints("outputPrefixType") OutputPrefixType prefix1,
       @FromDataPoints("outputPrefixType") OutputPrefixType prefix2)
       throws Exception {
-    Key key1 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, prefix1);
-    Key key2 = getKey(aesCtrHmacAeadKey2, /*keyId=*/ 234, prefix2);
+    Key key1 = getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, prefix1);
+    Key key2 = getKey(xChaCha20Poly1305Key2, /*keyId=*/ 234, prefix2);
     Aead aead1 =
         new AeadWrapper()
             .wrap(TestUtil.createPrimitiveSet(TestUtil.createKeyset(key1), Aead.class));
@@ -253,8 +250,8 @@ public class AeadWrapperTest {
   @Theory
   public void encryptUsesPrimaryPrimitive()
       throws Exception {
-    Key key1 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, OutputPrefixType.TINK);
-    Key key2 = getKey(aesCtrHmacAeadKey2, /*keyId=*/ 234, OutputPrefixType.TINK);
+    Key key1 = getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, OutputPrefixType.TINK);
+    Key key2 = getKey(xChaCha20Poly1305Key2, /*keyId=*/ 234, OutputPrefixType.TINK);
     Aead aead1 =
         new AeadWrapper()
             .wrap(TestUtil.createPrimitiveSet(TestUtil.createKeyset(key1), Aead.class));
@@ -280,8 +277,8 @@ public class AeadWrapperTest {
   @Theory
   public void decryptFailsIfEncryptedWithOtherKeyEvenIfKeyIdsAreEqual(
       @FromDataPoints("outputPrefixType") OutputPrefixType prefix) throws Exception {
-    Key key1 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, prefix);
-    Key key2 = getKey(aesCtrHmacAeadKey2, /*keyId=*/ 123, prefix);
+    Key key1 = getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, prefix);
+    Key key2 = getKey(xChaCha20Poly1305Key2, /*keyId=*/ 123, prefix);
 
     Aead aead =
         new AeadWrapper()
@@ -306,8 +303,8 @@ public class AeadWrapperTest {
   @Theory
   public void nonRawKeysWithSameKeyMaterialButDifferentKeyIds_decryptFails(
       @FromDataPoints("nonRawOutputPrefixType") OutputPrefixType prefix) throws Exception {
-    Key key1 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, prefix);
-    Key key2 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 234, prefix);
+    Key key1 = getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, prefix);
+    Key key2 = getKey(xChaCha20Poly1305Key, /*keyId=*/ 234, prefix);
 
     Aead aead =
         new AeadWrapper()
@@ -325,8 +322,8 @@ public class AeadWrapperTest {
 
   @Theory
   public void rawKeysWithSameKeyMaterialButDifferentKeyIds_decryptWorks() throws Exception {
-    Key key1 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, OutputPrefixType.RAW);
-    Key key2 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 234, OutputPrefixType.RAW);
+    Key key1 = getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, OutputPrefixType.RAW);
+    Key key2 = getKey(xChaCha20Poly1305Key, /*keyId=*/ 234, OutputPrefixType.RAW);
 
     Aead aead =
         new AeadWrapper()
@@ -343,7 +340,7 @@ public class AeadWrapperTest {
 
   @Theory
   public void noPrimary_decryptWorks() throws Exception {
-    Key key = getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, OutputPrefixType.TINK);
+    Key key = getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, OutputPrefixType.TINK);
     Aead rawAead = Registry.getPrimitive(key.getKeyData(), Aead.class);
 
     Aead wrappedAead = new AeadWrapper().wrap(
@@ -363,7 +360,7 @@ public class AeadWrapperTest {
 
   @Theory
   public void noPrimary_encryptThrowsNullPointerException() throws Exception {
-    Key key = getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, OutputPrefixType.TINK);
+    Key key = getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, OutputPrefixType.TINK);
     Aead rawAead = Registry.getPrimitive(key.getKeyData(), Aead.class);
 
     Aead wrappedAeadWithoutPrimary = new AeadWrapper().wrap(
@@ -384,7 +381,7 @@ public class AeadWrapperTest {
   public void getPrimitiveFromKeysetHandleWithoutPrimary_throws() throws Exception {
     Keyset keysetWithoutPrimary =
         Keyset.newBuilder()
-            .addKey(getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, OutputPrefixType.TINK))
+            .addKey(getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, OutputPrefixType.TINK))
             .build();
     KeysetHandle keysetHandle = CleartextKeysetHandle.fromKeyset(keysetWithoutPrimary);
     assertThrows(
@@ -402,7 +399,7 @@ public class AeadWrapperTest {
   //          .wrap(
   //              TestUtil.createPrimitiveSet(
   //                  TestUtil.createKeyset(
-  //                      getKey(aesCtrHmacAeadKey, /*keyId=*/ 123, OutputPrefixType.TINK)),
+  //                      getKey(xChaCha20Poly1305Key, /*keyId=*/ 123, OutputPrefixType.TINK)),
   //                  Aead.class));
 
   //  byte[] plaintext = "plaintext".getBytes(UTF_8);
@@ -423,8 +420,8 @@ public class AeadWrapperTest {
   //  MutableMonitoringRegistry.globalInstance().clear();
   //  MutableMonitoringRegistry.globalInstance().registerMonitoringClient(fakeMonitoringClient);
 
-  //  Key key1 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 42, OutputPrefixType.TINK);
-  //  Key key2 = getKey(aesCtrHmacAeadKey, /*keyId=*/ 43, OutputPrefixType.RAW);
+  //  Key key1 = getKey(xChaCha20Poly1305Key, /*keyId=*/ 42, OutputPrefixType.TINK);
+  //  Key key2 = getKey(xChaCha20Poly1305Key, /*keyId=*/ 43, OutputPrefixType.RAW);
 
   //  byte[] plaintext = Random.randBytes(20);
   //  byte[] plaintext2 = Random.randBytes(30);
@@ -517,7 +514,7 @@ public class AeadWrapperTest {
   //          .setAnnotations(annotations)
   //          .addPrimaryPrimitive(
   //              new AlwaysFailingAead(),
-  //              getKey(aesCtrHmacAeadKey, /*keyId=*/ 42, OutputPrefixType.TINK))
+  //              getKey(xChaCha20Poly1305Key, /*keyId=*/ 42, OutputPrefixType.TINK))
   //          .build();
   //  Aead aead = new AeadWrapper().wrap(primitives);
 

@@ -16,6 +16,8 @@
 
 package com.google.crypto.tink.internal;
 
+import static com.google.common.truth.Truth.assertWithMessage;
+
 import com.google.crypto.tink.Key;
 import java.util.Arrays;
 import java.util.HashMap;

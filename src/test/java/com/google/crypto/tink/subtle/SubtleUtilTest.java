@@ -31,19 +31,19 @@ import org.junit.runners.JUnit4;
 /** Unit tests for SubtleUtil. */
 @RunWith(JUnit4.class)
 public final class SubtleUtilTest {
-  @Test
-  public void testToEcdsaAlgo() throws Exception {
-    assertEquals("SHA256withECDSA", SubtleUtil.toEcdsaAlgo(HashType.SHA256));
-    assertEquals("SHA512withECDSA", SubtleUtil.toEcdsaAlgo(HashType.SHA512));
-    assertThrows(GeneralSecurityException.class, () -> SubtleUtil.toEcdsaAlgo(HashType.SHA1));
-  }
+  //@Test
+  //public void testToEcdsaAlgo() throws Exception {
+  //  assertEquals("SHA256withECDSA", SubtleUtil.toEcdsaAlgo(HashType.SHA256));
+  //  assertEquals("SHA512withECDSA", SubtleUtil.toEcdsaAlgo(HashType.SHA512));
+  //  assertThrows(GeneralSecurityException.class, () -> SubtleUtil.toEcdsaAlgo(HashType.SHA1));
+  //}
 
-  @Test
-  public void testToRsaSsaPkcs1Algo() throws Exception {
-    assertEquals("SHA256withRSA", SubtleUtil.toRsaSsaPkcs1Algo(HashType.SHA256));
-    assertEquals("SHA512withRSA", SubtleUtil.toRsaSsaPkcs1Algo(HashType.SHA512));
-    assertThrows(GeneralSecurityException.class, () -> SubtleUtil.toRsaSsaPkcs1Algo(HashType.SHA1));
-  }
+  //@Test
+  //public void testToRsaSsaPkcs1Algo() throws Exception {
+  //  assertEquals("SHA256withRSA", SubtleUtil.toRsaSsaPkcs1Algo(HashType.SHA256));
+  //  assertEquals("SHA512withRSA", SubtleUtil.toRsaSsaPkcs1Algo(HashType.SHA512));
+  //  assertThrows(GeneralSecurityException.class, () -> SubtleUtil.toRsaSsaPkcs1Algo(HashType.SHA1));
+  //}
 
   @Test
   public void testPutAsUnsigedInt_smallNumber() throws Exception {

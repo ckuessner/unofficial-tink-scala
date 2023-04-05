@@ -27,13 +27,14 @@ import com.google.crypto.tink.subtle.Random;
 import com.google.crypto.tink.testing.TestUtil;
 import com.google.crypto.tink.testing.TestUtil.BytesMutation;
 import com.google.crypto.tink.testing.WycheproofTestUtil;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.util.Arrays;
 import java.util.HashSet;
 import javax.crypto.AEADBadTagException;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -18,11 +18,9 @@ package com.google.crypto.tink.internal;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
-import com.google.crypto.tink.proto.AesGcmKey;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
+import com.google.crypto.tink.proto.XChaCha20Poly1305Key;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistryLite;
-import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import org.junit.Test;
@@ -35,18 +33,17 @@ public final class KeyTypeManagerTest {
   private static final ByteString TEST_BYTESTRING = ByteString.copyFromUtf8("Some text");
 
   /**
-   * A KeyTypeManager for testing. It accepts AesGcmKeys and produces primitives as with the passed
+   * A KeyTypeManager for testing. It accepts XChaCha20Poly1305Keys and produces primitives as with the passed
    * in factory.
    */
-  public static class TestKeyTypeManager extends KeyTypeManager<AesGcmKey> {
-    public TestKeyTypeManager(PrimitiveFactory<?, AesGcmKey>... factories) {
-      super(AesGcmKey.class, factories);
+  public static class TestKeyTypeManager extends KeyTypeManager<XChaCha20Poly1305Key> {
+    public TestKeyTypeManager(PrimitiveFactory<?, XChaCha20Poly1305Key>... factories) {
+      super(XChaCha20Poly1305Key.class, factories);
     }
 
     @Override
     public String getKeyType() {
-      return "type.googleapis.com/google.crypto.tink.AesGcmKey";
-
+      return "type.googleapis.com/google.crypto.tink.XChaCha20Poly1305Key";
     }
 
     @Override
@@ -55,53 +52,53 @@ public final class KeyTypeManagerTest {
     }
 
     @Override
-    public void validateKey(AesGcmKey keyProto) {}
+    public void validateKey(XChaCha20Poly1305Key keyProto) {}
 
-    @Override
-    public AesGcmKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
-      return AesGcmKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
-    }
+    //@Override
+    //public XChaCha20Poly1305Key parseKey(ByteString byteString) throws InvalidProtocolBufferException {
+    //  return XChaCha20Poly1305Key.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
+    //}
   }
 
   @Test
   public void getPrimitive_works() throws Exception {
-    KeyTypeManager<AesGcmKey> keyManager =
+    KeyTypeManager<XChaCha20Poly1305Key> keyManager =
         new TestKeyTypeManager(
-            new PrimitiveFactory<Primitive1, AesGcmKey>(Primitive1.class) {
+            new PrimitiveFactory<Primitive1, XChaCha20Poly1305Key>(Primitive1.class) {
               @Override
-              public Primitive1 getPrimitive(AesGcmKey key) {
+              public Primitive1 getPrimitive(XChaCha20Poly1305Key key) {
                 return new Primitive1(key.getKeyValue());
               }
             },
-            new PrimitiveFactory<Primitive2, AesGcmKey>(Primitive2.class) {
+            new PrimitiveFactory<Primitive2, XChaCha20Poly1305Key>(Primitive2.class) {
               @Override
-              public Primitive2 getPrimitive(AesGcmKey key) {
+              public Primitive2 getPrimitive(XChaCha20Poly1305Key key) {
                 return new Primitive2(key.getKeyValue().size());
               }
             });
     Primitive1 primitive1 =
         keyManager.getPrimitive(
-            AesGcmKey.newBuilder().setKeyValue(TEST_BYTESTRING).build(), Primitive1.class);
+            XChaCha20Poly1305Key.newBuilder().setKeyValue(TEST_BYTESTRING).build(), Primitive1.class);
     assertThat(primitive1.getKeyValue()).isEqualTo(TEST_BYTESTRING);
     Primitive2 primitive2 =
         keyManager.getPrimitive(
-            AesGcmKey.newBuilder().setKeyValue(TEST_BYTESTRING).build(), Primitive2.class);
+            XChaCha20Poly1305Key.newBuilder().setKeyValue(TEST_BYTESTRING).build(), Primitive2.class);
     assertThat(primitive2.getSize()).isEqualTo(TEST_BYTESTRING.size());
   }
 
   @Test
   public void firstSupportedPrimitiveClass() throws Exception {
-    KeyTypeManager<AesGcmKey> keyManager =
+    KeyTypeManager<XChaCha20Poly1305Key> keyManager =
         new TestKeyTypeManager(
-            new PrimitiveFactory<Primitive1, AesGcmKey>(Primitive1.class) {
+            new PrimitiveFactory<Primitive1, XChaCha20Poly1305Key>(Primitive1.class) {
               @Override
-              public Primitive1 getPrimitive(AesGcmKey key) {
+              public Primitive1 getPrimitive(XChaCha20Poly1305Key key) {
                 return new Primitive1(key.getKeyValue());
               }
             },
-            new PrimitiveFactory<Primitive2, AesGcmKey>(Primitive2.class) {
+            new PrimitiveFactory<Primitive2, XChaCha20Poly1305Key>(Primitive2.class) {
               @Override
-              public Primitive2 getPrimitive(AesGcmKey key) {
+              public Primitive2 getPrimitive(XChaCha20Poly1305Key key) {
                 return new Primitive2(key.getKeyValue().size());
               }
             });
@@ -110,23 +107,23 @@ public final class KeyTypeManagerTest {
 
   @Test
   public void firstSupportedPrimitiveClass_returnsVoid() throws Exception {
-    KeyTypeManager<AesGcmKey> keyManager = new TestKeyTypeManager();
+    KeyTypeManager<XChaCha20Poly1305Key> keyManager = new TestKeyTypeManager();
     assertThat(keyManager.firstSupportedPrimitiveClass()).isEqualTo(Void.class);
   }
 
   @Test
   public void supportedPrimitives_equalsGivenPrimitives() throws Exception {
-    KeyTypeManager<AesGcmKey> keyManager =
+    KeyTypeManager<XChaCha20Poly1305Key> keyManager =
         new TestKeyTypeManager(
-            new PrimitiveFactory<Primitive1, AesGcmKey>(Primitive1.class) {
+            new PrimitiveFactory<Primitive1, XChaCha20Poly1305Key>(Primitive1.class) {
               @Override
-              public Primitive1 getPrimitive(AesGcmKey key) {
+              public Primitive1 getPrimitive(XChaCha20Poly1305Key key) {
                 return new Primitive1(key.getKeyValue());
               }
             },
-            new PrimitiveFactory<Primitive2, AesGcmKey>(Primitive2.class) {
+            new PrimitiveFactory<Primitive2, XChaCha20Poly1305Key>(Primitive2.class) {
               @Override
-              public Primitive2 getPrimitive(AesGcmKey key) {
+              public Primitive2 getPrimitive(XChaCha20Poly1305Key key) {
                 return new Primitive2(key.getKeyValue().size());
               }
             });
@@ -136,29 +133,29 @@ public final class KeyTypeManagerTest {
 
   @Test
   public void supportedPrimitives_canBeEmpty() throws Exception {
-    KeyTypeManager<AesGcmKey> keyManager = new TestKeyTypeManager();
+    KeyTypeManager<XChaCha20Poly1305Key> keyManager = new TestKeyTypeManager();
     assertThat(keyManager.supportedPrimitives()).isEmpty();
   }
 
   @Test
   public void getPrimitive_throwsForUnknownPrimitives() throws Exception {
-    KeyTypeManager<AesGcmKey> keyManager = new TestKeyTypeManager();
+    KeyTypeManager<XChaCha20Poly1305Key> keyManager = new TestKeyTypeManager();
     assertThrows(
         IllegalArgumentException.class,
-        () -> keyManager.getPrimitive(AesGcmKey.getDefaultInstance(), Primitive1.class));
+        () -> keyManager.getPrimitive(XChaCha20Poly1305Key.getDefaultInstance(), Primitive1.class));
   }
 
   @Test
   public void getPrimitive_throwsForVoid() throws Exception {
-    KeyTypeManager<AesGcmKey> keyManager = new TestKeyTypeManager();
+    KeyTypeManager<XChaCha20Poly1305Key> keyManager = new TestKeyTypeManager();
     assertThrows(
         IllegalArgumentException.class,
-        () -> keyManager.getPrimitive(AesGcmKey.getDefaultInstance(), Void.class));
+        () -> keyManager.getPrimitive(XChaCha20Poly1305Key.getDefaultInstance(), Void.class));
   }
 
   @Test
   public void keyFactory_throwsUnsupported() throws Exception {
-    KeyTypeManager<AesGcmKey> keyManager = new TestKeyTypeManager();
+    KeyTypeManager<XChaCha20Poly1305Key> keyManager = new TestKeyTypeManager();
     assertThrows(UnsupportedOperationException.class, () -> keyManager.keyFactory());
   }
 
@@ -168,15 +165,15 @@ public final class KeyTypeManagerTest {
         IllegalArgumentException.class,
         () ->
             new TestKeyTypeManager(
-                new PrimitiveFactory<Primitive1, AesGcmKey>(Primitive1.class) {
+                new PrimitiveFactory<Primitive1, XChaCha20Poly1305Key>(Primitive1.class) {
                   @Override
-                  public Primitive1 getPrimitive(AesGcmKey key) {
+                  public Primitive1 getPrimitive(XChaCha20Poly1305Key key) {
                     return new Primitive1(key.getKeyValue());
                   }
                 },
-                new PrimitiveFactory<Primitive1, AesGcmKey>(Primitive1.class) {
+                new PrimitiveFactory<Primitive1, XChaCha20Poly1305Key>(Primitive1.class) {
                   @Override
-                  public Primitive1 getPrimitive(AesGcmKey key) {
+                  public Primitive1 getPrimitive(XChaCha20Poly1305Key key) {
                     return new Primitive1(key.getKeyValue());
                   }
                 }));

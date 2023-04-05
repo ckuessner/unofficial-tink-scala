@@ -19,6 +19,7 @@ package com.google.crypto.tink;
 import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.proto.KeyStatusType;
 import com.google.crypto.tink.proto.Keyset.Key;
 import com.google.crypto.tink.proto.OutputPrefixType;
@@ -33,7 +34,7 @@ public class CryptoFormatTest {
 
   private Key getKey(OutputPrefixType type, int keyId) throws Exception {
     return TestUtil.createKey(
-        TestUtil.createHmacKeyData("01234567890123456".getBytes(UTF_8), 16),
+        TestUtil.createXchaCha20Poly1305KeyData("01234567890123456789012345678901".getBytes(UTF_8)),
         keyId,
         KeyStatusType.ENABLED,
         type);

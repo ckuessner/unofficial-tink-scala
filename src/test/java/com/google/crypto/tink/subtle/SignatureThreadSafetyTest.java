@@ -229,14 +229,14 @@ public class SignatureThreadSafetyTest {
   //  testSigningDistinctMessages(signer, verifier, false, 64, 5, 20);
   //}
 
-  //@Test
-  //public void testEddsa() throws Exception {
-  //  Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPair();
-  //  Ed25519Sign signer = new Ed25519Sign(keyPair.getPrivateKey());
-  //  Ed25519Verify verifier = new Ed25519Verify(keyPair.getPublicKey());
+  @Test
+  public void testEddsa() throws Exception {
+    Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPair();
+    Ed25519Sign signer = new Ed25519Sign(keyPair.getPrivateKey());
+    Ed25519Verify verifier = new Ed25519Verify(keyPair.getPublicKey());
 
-  //  byte[] msg = Random.randBytes(20);
-  //  testSigningSameMessage(signer, verifier, true, msg, 5, 20);
-  //  testSigningDistinctMessages(signer, verifier, true, 64, 5, 20);
-  //}
+    byte[] msg = Random.randBytes(20);
+    testSigningSameMessage(signer, verifier, true, msg, 5, 20);
+    testSigningDistinctMessages(signer, verifier, true, 64, 5, 20);
+  }
 }
