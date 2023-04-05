@@ -27,6 +27,7 @@ import com.google.crypto.tink.tinkkey.KeyHandle;
 import com.google.crypto.tink.tinkkey.internal.InternalKeyHandle;
 import com.google.crypto.tink.tinkkey.internal.ProtoKey;
 
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,8 +40,7 @@ import java.util.Set;
  * protocol buffers that hold sensitive key material.
  *
  * <p>This class allows reading and writing encrypted keysets. Users that want to read or write can
- * use the restricted API {@link CleartextKeysetHandle}. Users can also load keysets that don't
- * contain any secret key material with {@link NoSecretKeysetHandle}.
+ * use the restricted API {@link CleartextKeysetHandle}.
  *
  * @since 1.0.0
  */
@@ -776,28 +776,28 @@ public final class KeysetHandle {
   //  return KeysetHandle.fromKeyset(decrypt(encryptedKeyset, masterKey, associatedData));
   //}
 
-  ///**
-  // * Tries to create a {@link KeysetHandle} from a keyset, obtained via {@code reader}, which
-  // * contains no secret key material.
-  // *
-  // * <p>This can be used to load public keysets or envelope encryption keysets. Users that need to
-  // * load cleartext keysets can use {@link CleartextKeysetHandle}.
-  // *
-  // * @return a new {@link KeysetHandle} from {@code serialized} that is a serialized {@link Keyset}
-  // * @throws GeneralSecurityException if the keyset is invalid
-  // */
-  //@SuppressWarnings("UnusedException")
-  //public static final KeysetHandle readNoSecret(KeysetReader reader)
-  //    throws GeneralSecurityException, IOException {
-  //  try {
-  //    Keyset keyset = reader.read();
-  //    assertNoSecretKeyMaterial(keyset);
-  //    return KeysetHandle.fromKeyset(keyset);
-  //  } catch (InvalidProtocolBufferException e) {
-  //    // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
-  //    throw new GeneralSecurityException("invalid keyset");
-  //  }
-  //}
+  /**
+   * Tries to create a {@link KeysetHandle} from a keyset, obtained via {@code reader}, which
+   * contains no secret key material.
+   *
+   * <p>This can be used to load public keysets or envelope encryption keysets. Users that need to
+   * load cleartext keysets can use {@link CleartextKeysetHandle}.
+   *
+   * @return a new {@link KeysetHandle} from {@code serialized} that is a serialized {@link Keyset}
+   * @throws GeneralSecurityException if the keyset is invalid
+   */
+  @SuppressWarnings("UnusedException")
+  public static final KeysetHandle readNoSecret(KeysetReader reader)
+      throws GeneralSecurityException, IOException {
+    try {
+      Keyset keyset = reader.read();
+      assertNoSecretKeyMaterial(keyset);
+      return KeysetHandle.fromKeyset(keyset);
+    } catch (Exception e) {
+      // Do not propagate InvalidProtocolBufferException to guarantee no key material is leaked
+      throw new GeneralSecurityException("invalid keyset");
+    }
+  }
 
   ///**
   // * Tries to create a {@link KeysetHandle} from a serialized keyset which contains no secret key
