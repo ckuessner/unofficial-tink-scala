@@ -17,7 +17,9 @@
 package com.google.crypto.tink.internal;
 
 import com.google.crypto.tink.annotations.Alpha;
-import com.google.protobuf.MessageLite;
+import com.google.crypto.tink.proto.KeyProto;
+import com.google.crypto.tink.proto.PublicKeyProto;
+
 import java.security.GeneralSecurityException;
 
 /**
@@ -26,7 +28,7 @@ import java.security.GeneralSecurityException;
  */
 @Alpha
 public abstract class PrivateKeyTypeManager<
-        KeyProtoT extends MessageLite, PublicKeyProtoT extends MessageLite>
+        KeyProtoT extends KeyProto, PublicKeyProtoT extends PublicKeyProto>
     extends KeyTypeManager<KeyProtoT> {
 
   @SafeVarargs // Safe because super() is marked as safe.

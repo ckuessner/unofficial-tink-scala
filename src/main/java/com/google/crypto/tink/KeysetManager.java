@@ -193,18 +193,18 @@ public final class KeysetManager {
     throw new GeneralSecurityException("key not found: " + keyId);
   }
 
-  /**
-   * Sets the key with {@code keyId} as primary.
-   *
-   * @throws GeneralSecurityException if the key is not found or not enabled
-   * @deprecated use {@link setPrimary}
-   */
-  @Deprecated /* Deprecation under consideration */
-  public synchronized KeysetManager promote(int keyId) throws GeneralSecurityException {
-    return setPrimary(keyId);
-  }
+  ///**
+  // * Sets the key with {@code keyId} as primary.
+  // *
+  // * @throws GeneralSecurityException if the key is not found or not enabled
+  // * @deprecated use {@link setPrimary}
+  // */
   //@InlineMe(replacement = "this.setPrimary(keyId)")
   //@CanIgnoreReturnValue
+  //@Deprecated /* Deprecation under consideration */
+  //public synchronized KeysetManager promote(int keyId) throws GeneralSecurityException {
+  //  return setPrimary(keyId);
+  //}
 
   /**
    * Enables the key with {@code keyId}.

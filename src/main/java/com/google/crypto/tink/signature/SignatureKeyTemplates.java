@@ -183,17 +183,17 @@ public final class SignatureKeyTemplates {
   //        EcdsaSignatureEncoding.IEEE_P1363,
   //        OutputPrefixType.TINK);
 
-  ///**
-  // * A {@link KeyTemplate} that generates new instances of {@link
-  // * com.google.crypto.tink.proto.Ed25519PrivateKey}.
-  // *
-  // * @since 1.1.0
-  // */
-  //public static final KeyTemplate ED25519 =
-  //    KeyTemplate.newBuilder()
-  //        .setTypeUrl(new Ed25519PrivateKeyManager().getKeyType())
-  //        .setOutputPrefixType(OutputPrefixType.TINK)
-  //        .build();
+  /**
+   * A {@link KeyTemplate} that generates new instances of {@link
+   * com.google.crypto.tink.proto.Ed25519PrivateKey}.
+   *
+   * @since 1.1.0
+   */
+  public static final KeyTemplate ED25519 =
+      KeyTemplate.newBuilder()
+          .setTypeUrl(new Ed25519PrivateKeyManager().getKeyType())
+          .setOutputPrefixType(OutputPrefixType.TINK)
+          .build();
 
   /**
    * A {@link KeyTemplate} that generates new instances of {@link

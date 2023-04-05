@@ -20,11 +20,13 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import com.google.crypto.tink.Key;
+import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.Parameters;
 import javax.annotation.Nullable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import scala.NotImplementedError;
 
 /** Tests for {@link KeyTester}. */
 @RunWith(JUnit4.class)
@@ -42,6 +44,11 @@ public final class KeyTesterTest {
     }
 
     @Override
+    public KeyTemplate toKeyTemplate() {
+        throw new NotImplementedError();
+    }
+
+      @Override
     public int hashCode() {
       return hashCode;
     }

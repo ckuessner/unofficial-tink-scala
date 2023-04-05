@@ -19,9 +19,9 @@ package com.google.crypto.tink;
 import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.internal.PrivateKeyTypeManager;
 import com.google.crypto.tink.proto.KeyData;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.MessageLite;
+import com.google.crypto.tink.proto.KeyProto;
+import com.google.crypto.tink.proto.PublicKeyProto;
+
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Set;
@@ -89,13 +89,13 @@ final class KeyManagerRegistry {
     Class<?> publicKeyManagerClassOrNull();
 
     /**
-     * Parses a key into a corresponding message lite. Only works if the key type has been
+     * Validates the key. Only works if the key type has been
      * registered with a KeyTypeManager, returns null otherwise.
      *
      * <p>Can throw exceptions if validation fails or if parsing fails.
      */
-    MessageLite parseKey(ByteString serializedKey)
-        throws GeneralSecurityException, InvalidProtocolBufferException;
+    void validateKey(KeyProto keyProto)
+        throws GeneralSecurityException;
   }
 
   private static <P> KeyManagerContainer createContainerFor(KeyManager<P> keyManager) {
@@ -134,14 +134,11 @@ final class KeyManagerRegistry {
       }
 
       @Override
-      public MessageLite parseKey(ByteString serializedKey)
-          throws GeneralSecurityException, InvalidProtocolBufferException {
-        return null;
-      }
+      public void validateKey(KeyProto serializedKey) throws GeneralSecurityException {}
     };
   }
 
-  private static <KeyProtoT extends MessageLite> KeyManagerContainer createContainerFor(
+  private static <KeyProtoT extends KeyProto> KeyManagerContainer createContainerFor(
       KeyTypeManager<KeyProtoT> keyManager) {
     final KeyTypeManager<KeyProtoT> localKeyManager = keyManager;
     return new KeyManagerContainer() {
@@ -177,16 +174,19 @@ final class KeyManagerRegistry {
       }
 
       @Override
-      public MessageLite parseKey(ByteString serializedKey)
-          throws GeneralSecurityException, InvalidProtocolBufferException {
-        KeyProtoT result = localKeyManager.parseKey(serializedKey);
-        localKeyManager.validateKey(result);
-        return result;
+      public void validateKey(KeyProto keyProto) throws GeneralSecurityException {
+        KeyProtoT key;
+        try {
+          key = (KeyProtoT) keyProto;
+        } catch (ClassCastException e) {
+          throw new GeneralSecurityException(e);
+        }
+        localKeyManager.validateKey(key);
       }
     };
   }
 
-  private static <KeyProtoT extends MessageLite, PublicKeyProtoT extends MessageLite>
+  private static <KeyProtoT extends KeyProto, PublicKeyProtoT extends PublicKeyProto>
       KeyManagerContainer createPrivateKeyContainerFor(
           final PrivateKeyTypeManager<KeyProtoT, PublicKeyProtoT> privateKeyTypeManager,
           final KeyTypeManager<PublicKeyProtoT> publicKeyTypeManager) {
@@ -229,11 +229,15 @@ final class KeyManagerRegistry {
       }
 
       @Override
-      public MessageLite parseKey(ByteString serializedKey)
-          throws GeneralSecurityException, InvalidProtocolBufferException {
-        KeyProtoT result = localPrivateKeyManager.parseKey(serializedKey);
-        localPrivateKeyManager.validateKey(result);
-        return result;
+      public void validateKey(KeyProto keyProto)
+          throws GeneralSecurityException {
+        KeyProtoT key;
+        try {
+          key = (KeyProtoT) keyProto;
+        } catch (ClassCastException e) {
+          throw new GeneralSecurityException(e);
+        }
+        localPrivateKeyManager.validateKey(key);
       }
     };
   }
@@ -300,7 +304,7 @@ final class KeyManagerRegistry {
    * <p>A call to registerAsymmetricKeyManager takes precedence over other calls (i.e., if the above
    * association is established once, it will stay established).
    */
-  synchronized <KeyProtoT extends MessageLite, PublicKeyProtoT extends MessageLite>
+  synchronized <KeyProtoT extends KeyProto, PublicKeyProtoT extends PublicKeyProto>
       void registerAsymmetricKeyManagers(
           final PrivateKeyTypeManager<KeyProtoT, PublicKeyProtoT> privateKeyTypeManager,
           final KeyTypeManager<PublicKeyProtoT> publicKeyTypeManager)
@@ -406,17 +410,18 @@ final class KeyManagerRegistry {
     return container.getUntypedKeyManager();
   }
 
-  /**
-   * Parses the key in a keyData to the corresponding proto message, or returns null.
-   *
-   * <p>Parsing happens if the key type was registered with a KeyTypeManager. If a legacy KeyManager
-   * was used, this returns null.
-   */
-  MessageLite parseKeyData(KeyData keyData)
-      throws GeneralSecurityException, InvalidProtocolBufferException {
-    KeyManagerContainer container = getKeyManagerContainerOrThrow(keyData.getTypeUrl());
-    return container.parseKey(keyData.getValue());
-  }
+  ///**
+  // * Parses the key in a keyData to the corresponding proto message, or returns null.
+  // *
+  // * <p>Parsing happens if the key type was registered with a KeyTypeManager. If a legacy KeyManager
+  // * was used, this returns null.
+  // */
+  //KeyProto parseKeyData(KeyData keyData)
+  //    throws GeneralSecurityException {
+  //  KeyManagerContainer container = getKeyManagerContainerOrThrow(keyData.getTypeUrl());
+  //  container.validateKey(keyData.getValue());
+  //  return keyData.getValue();
+  //}
 
   boolean isEmpty() {
     return keyManagerMap.isEmpty();

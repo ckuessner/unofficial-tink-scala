@@ -20,20 +20,17 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.internal.KeyTypeManager;
+import com.google.crypto.tink.proto.KeyProto;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.MessageLite;
 
 /** Helper functions for testing {@link KeyTypeManager} objects. */
 public class KeyTypeManagerTestUtil {
 
-  private static <KeyFormatProtoT extends MessageLite, KeyProtoT extends MessageLite>
+  private static <KeyProtoT extends KeyProto>
       KeyProtoT parseValidateCreateKey(
-          KeyTypeManager.KeyFactory<KeyFormatProtoT, KeyProtoT> factory, KeyTemplate template)
+          KeyTypeManager.KeyFactory<KeyProtoT> factory, KeyTemplate template)
           throws Exception {
-    KeyFormatProtoT format = factory.parseKeyFormat(ByteString.copyFrom(template.getValue()));
-    factory.validateKeyFormat(format);
-    return factory.createKey(format);
+    return factory.createKey();
   }
 
   /**
@@ -41,7 +38,7 @@ public class KeyTypeManagerTestUtil {
    * that it validates, and returns a key if needed.
    */
   @CanIgnoreReturnValue
-  public static <KeyProtoT extends MessageLite> KeyProtoT testKeyTemplateCompatible(
+  public static <KeyProtoT extends KeyProto> KeyProtoT testKeyTemplateCompatible(
       KeyTypeManager<KeyProtoT> manager, KeyTemplate template) throws Exception {
     assertThat(template.getTypeUrl()).isEqualTo(manager.getKeyType());
     return parseValidateCreateKey(manager.keyFactory(), template);

@@ -19,15 +19,9 @@ package com.google.crypto.tink.signature;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.google.crypto.tink.proto.EcdsaKeyFormat;
-import com.google.crypto.tink.proto.EcdsaSignatureEncoding;
-import com.google.crypto.tink.proto.EllipticCurveType;
 import com.google.crypto.tink.proto.HashType;
 import com.google.crypto.tink.proto.KeyTemplate;
 import com.google.crypto.tink.proto.OutputPrefixType;
-import com.google.crypto.tink.proto.RsaSsaPkcs1KeyFormat;
-import com.google.crypto.tink.proto.RsaSsaPssKeyFormat;
-import com.google.protobuf.ExtensionRegistryLite;
 import java.math.BigInteger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -145,7 +139,6 @@ public class SignatureKeyTemplatesTest {
     KeyTemplate template = SignatureKeyTemplates.ED25519;
     assertEquals(new Ed25519PrivateKeyManager().getKeyType(), template.getTypeUrl());
     assertEquals(OutputPrefixType.TINK, template.getOutputPrefixType());
-    assertTrue(template.getValue().isEmpty()); // Empty format.
   }
 
   @Test
@@ -153,7 +146,6 @@ public class SignatureKeyTemplatesTest {
     KeyTemplate template = SignatureKeyTemplates.ED25519WithRawOutput;
     assertEquals(new Ed25519PrivateKeyManager().getKeyType(), template.getTypeUrl());
     assertEquals(OutputPrefixType.RAW, template.getOutputPrefixType());
-    assertTrue(template.getValue().isEmpty()); // Empty format.
   }
 
   //@Test

@@ -18,8 +18,6 @@ package com.google.crypto.tink;
 
 import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.proto.Keyset;
-import com.google.protobuf.ExtensionRegistryLite;
-import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -31,22 +29,22 @@ import java.security.GeneralSecurityException;
  */
 @Deprecated /* Deprecation under consideration */
 public final class NoSecretKeysetHandle {
-  /**
-   * @return a new keyset handle from {@code serialized} which is a serialized {@link Keyset}.
-   * @throws GeneralSecurityException
-   * @deprecated use {@link NoSecretKeysetHandle#read} instead
-   */
-  @Deprecated /* Deprecation under consideration */
-  public static final KeysetHandle parseFrom(final byte[] serialized)
-      throws GeneralSecurityException {
-    try {
-      Keyset keyset = Keyset.parseFrom(serialized, ExtensionRegistryLite.getEmptyRegistry());
-      validate(keyset);
-      return KeysetHandle.fromKeyset(keyset);
-    } catch (InvalidProtocolBufferException e) {
-      throw new GeneralSecurityException("invalid keyset");
-    }
-  }
+  ///**
+  // * @return a new keyset handle from {@code serialized} which is a serialized {@link Keyset}.
+  // * @throws GeneralSecurityException
+  // * @deprecated use {@link NoSecretKeysetHandle#read} instead
+  // */
+  //@Deprecated /* Deprecation under consideration */
+  //public static final KeysetHandle parseFrom(final byte[] serialized)
+  //    throws GeneralSecurityException {
+  //  try {
+  //    Keyset keyset = Keyset.parseFrom(serialized, ExtensionRegistryLite.getEmptyRegistry());
+  //    validate(keyset);
+  //    return KeysetHandle.fromKeyset(keyset);
+  //  } catch (InvalidProtocolBufferException e) {
+  //    throw new GeneralSecurityException("invalid keyset");
+  //  }
+  //}
 
   /**
    * @return a new keyset handle from a keyset obtained from {@code reader}.

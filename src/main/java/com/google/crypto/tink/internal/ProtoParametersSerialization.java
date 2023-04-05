@@ -18,10 +18,16 @@ package com.google.crypto.tink.internal;
 
 import static com.google.crypto.tink.internal.Util.toBytesFromPrintableAscii;
 
+import com.google.crypto.tink.Parameters;
+import com.google.crypto.tink.aead.ChaCha20Poly1305Parameters;
+import com.google.crypto.tink.aead.ChaCha20Poly1305ProtoSerialization;
+import com.google.crypto.tink.aead.XChaCha20Poly1305Parameters;
+import com.google.crypto.tink.aead.XChaCha20Poly1305ProtoSerialization;
 import com.google.crypto.tink.proto.KeyTemplate;
 import com.google.crypto.tink.proto.OutputPrefixType;
 import com.google.crypto.tink.util.Bytes;
-import com.google.protobuf.MessageLite;
+
+import java.security.GeneralSecurityException;
 
 /**
  * Represents a {@code Parameters} object serialized with binary protobuf Serialization.
@@ -39,14 +45,26 @@ public final class ProtoParametersSerialization implements Serialization {
     this.objectIdentifier = toBytesFromPrintableAscii(keyTemplate.getTypeUrl());
   }
 
+  public Parameters toParametersPojo() throws GeneralSecurityException {
+    var outputPrefixType = keyTemplate.getOutputPrefixType();
+    if ("type.googleapis.com/google.crypto.tink.XChaCha20Poly1305Key".equals(keyTemplate.getTypeUrl())) {
+      XChaCha20Poly1305Parameters.Variant variant = XChaCha20Poly1305ProtoSerialization.toVariant(outputPrefixType);
+      return XChaCha20Poly1305Parameters.create(variant);
+    } else if ("type.googleapis.com/google.crypto.tink.ChaCha20Poly1305Key".equals(keyTemplate.getTypeUrl())) {
+      ChaCha20Poly1305Parameters.Variant variant = ChaCha20Poly1305ProtoSerialization.toVariant(outputPrefixType);
+      return ChaCha20Poly1305Parameters.create(variant);
+    } else {
+      throw new GeneralSecurityException("Cannot create parameters POJO for " + keyTemplate.getTypeUrl());
+    }
+  }
+
   /** Creates a new {@code ProtoParametersSerialization} object from the individual parts. */
   public static ProtoParametersSerialization create(
-      String typeUrl, OutputPrefixType outputPrefixType, MessageLite value) {
+      String typeUrl, OutputPrefixType outputPrefixType) {
     return create(
         KeyTemplate.newBuilder()
             .setTypeUrl(typeUrl)
             .setOutputPrefixType(outputPrefixType)
-            .setValue(value.toByteString())
             .build());
   }
 

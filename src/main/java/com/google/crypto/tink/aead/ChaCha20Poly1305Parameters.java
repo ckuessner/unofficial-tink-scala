@@ -16,6 +16,9 @@
 
 package com.google.crypto.tink.aead;
 
+import com.google.crypto.tink.KeyTemplate;
+import com.google.crypto.tink.internal.TinkBugException;
+
 import java.util.Objects;
 
 /** Describes the parameters of an {@link ChaChaPoly1305Key}. */
@@ -42,6 +45,20 @@ public final class ChaCha20Poly1305Parameters extends AeadParameters {
     public String toString() {
       return name;
     }
+  }
+
+  @Override
+  public KeyTemplate toKeyTemplate() {
+    KeyTemplate.OutputPrefixType outputPrefixType;
+    if (Variant.NO_PREFIX == variant) outputPrefixType = KeyTemplate.OutputPrefixType.RAW;
+    else if (Variant.CRUNCHY == variant) outputPrefixType = KeyTemplate.OutputPrefixType.CRUNCHY;
+    else if (Variant.TINK == variant) outputPrefixType = KeyTemplate.OutputPrefixType.TINK;
+    else throw new TinkBugException("Unknown variant in ChaCha20Poly1305Parameters");
+
+    return KeyTemplate.create(
+            "type.googleapis.com/google.crypto.tink.ChaCha20Poly1305Key",
+            outputPrefixType
+    );
   }
 
   public static ChaCha20Poly1305Parameters create() {

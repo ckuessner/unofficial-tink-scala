@@ -1,5 +1,6 @@
 package com.google.crypto.tink.proto
 
+import com.google.crypto.tink.proto.Ed25519PrivateKey.{Builder, newBuilder}
 import com.google.protobuf.ByteString
 
 
@@ -9,6 +10,13 @@ case class Ed25519PrivateKey(keyValue: ByteString, publicKey: Ed25519PublicKey) 
   def getKeyValue: ByteString = keyValue
 
   def getPublicKey: Ed25519PublicKey = publicKey
+
+  def toBuilder: Builder = {
+    val builder = newBuilder
+    builder.publicKey = publicKey
+    builder.keyValue = keyValue
+    builder
+  }
 }
 
 object Ed25519PrivateKey {

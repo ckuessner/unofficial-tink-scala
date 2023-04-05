@@ -19,6 +19,7 @@ package com.google.crypto.tink.internal;
 import static com.google.crypto.tink.internal.Util.toBytesFromPrintableAscii;
 
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
+import com.google.crypto.tink.proto.KeyProto;
 import com.google.crypto.tink.proto.OutputPrefixType;
 import com.google.crypto.tink.util.Bytes;
 import com.google.protobuf.ByteString;
@@ -34,14 +35,14 @@ import java.security.GeneralSecurityException;
 public final class ProtoKeySerialization implements Serialization {
   private final String typeUrl;
   private final Bytes objectIdentifier;
-  private final ByteString value;
+  private final KeyProto value;
   private final KeyMaterialType keyMaterialType;
   private final OutputPrefixType outputPrefixType;
   /*@Nullable*/ private final Integer idRequirement;
 
   private ProtoKeySerialization(
       String typeUrl,
-      ByteString value,
+      KeyProto value,
       KeyMaterialType keyMaterialType,
       OutputPrefixType outputPrefixType,
       /*@Nullable*/ Integer idRequirement) {
@@ -55,7 +56,7 @@ public final class ProtoKeySerialization implements Serialization {
 
   public static ProtoKeySerialization create(
       String typeUrl,
-      ByteString value,
+      KeyProto value,
       KeyMaterialType keyMaterialType,
       OutputPrefixType outputPrefixType,
       /*@Nullable*/ Integer idRequirement)
@@ -76,7 +77,7 @@ public final class ProtoKeySerialization implements Serialization {
   }
 
   /** The contents of the field value in the message com.google.crypto.tink.proto.KeyData. */
-  public ByteString getValue() {
+  public KeyProto getValue() {
     return value;
   }
 

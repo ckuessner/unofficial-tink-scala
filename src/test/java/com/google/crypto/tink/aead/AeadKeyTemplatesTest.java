@@ -21,10 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.crypto.tink.proto.HashType;
 import com.google.crypto.tink.proto.KeyTemplate;
-import com.google.crypto.tink.proto.KmsAeadKeyFormat;
-import com.google.crypto.tink.proto.KmsEnvelopeAeadKeyFormat;
 import com.google.crypto.tink.proto.OutputPrefixType;
-import com.google.protobuf.ExtensionRegistryLite;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -183,7 +180,6 @@ public class AeadKeyTemplatesTest {
     KeyTemplate template = AeadKeyTemplates.CHACHA20_POLY1305;
     assertEquals(new ChaCha20Poly1305KeyManager().getKeyType(), template.getTypeUrl());
     assertEquals(OutputPrefixType.TINK, template.getOutputPrefixType());
-    assertTrue(template.getValue().isEmpty());  // Empty format.
   }
 
   @Test
@@ -191,7 +187,6 @@ public class AeadKeyTemplatesTest {
     KeyTemplate template = AeadKeyTemplates.XCHACHA20_POLY1305;
     assertEquals(new XChaCha20Poly1305KeyManager().getKeyType(), template.getTypeUrl());
     assertEquals(OutputPrefixType.TINK, template.getOutputPrefixType());
-    assertTrue(template.getValue().isEmpty()); // Empty format.
   }
 
   //@Test

@@ -16,8 +16,6 @@
 
 package com.google.crypto.tink;
 
-import com.google.protobuf.ByteString;
-
 /** A KeyTemplate specifies how to generate keys of a particular type. */
 //@Immutable
 public final class KeyTemplate {
@@ -75,12 +73,10 @@ public final class KeyTemplate {
     throw new IllegalArgumentException("Unknown output prefix type");
   }
 
-  public static KeyTemplate create(
-      String typeUrl, byte[] value, OutputPrefixType outputPrefixType) {
+  public static KeyTemplate create(String typeUrl, OutputPrefixType outputPrefixType) {
     return new KeyTemplate(
         com.google.crypto.tink.proto.KeyTemplate.newBuilder()
             .setTypeUrl(typeUrl)
-            .setValue(ByteString.copyFrom(value))
             .setOutputPrefixType(toProto(outputPrefixType))
             .build());
   }
@@ -95,10 +91,6 @@ public final class KeyTemplate {
 
   public String getTypeUrl() {
     return kt.getTypeUrl();
-  }
-
-  public byte[] getValue() {
-    return kt.getValue().toByteArray();
   }
 
   public OutputPrefixType getOutputPrefixType() {

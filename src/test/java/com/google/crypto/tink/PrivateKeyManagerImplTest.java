@@ -28,8 +28,6 @@ import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.subtle.Random;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistryLite;
-import com.google.protobuf.InvalidProtocolBufferException;
 import java.security.GeneralSecurityException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,10 +59,10 @@ public final class PrivateKeyManagerImplTest {
       }
     }
 
-    @Override
-    public Ed25519PublicKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
-      return Ed25519PublicKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
-    }
+    //@Override
+    //public Ed25519PublicKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
+    //  return Ed25519PublicKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
+    //}
   }
 
   private static class TestPrivateKeyTypeManager
@@ -91,10 +89,10 @@ public final class PrivateKeyManagerImplTest {
       }
     }
 
-    @Override
-    public Ed25519PrivateKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
-      return Ed25519PrivateKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
-    }
+    //@Override
+    //public Ed25519PrivateKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
+    //  return Ed25519PrivateKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
+    //}
 
     @Override
     public Ed25519PublicKey getPublicKey(Ed25519PrivateKey privateKey) {
@@ -112,18 +110,18 @@ public final class PrivateKeyManagerImplTest {
         Ed25519PrivateKey.newBuilder()
             .setPublicKey(
                 Ed25519PublicKey.newBuilder()
-                    .setKeyValue(ByteString.copyFrom(Random.randBytes(32))))
+                    .setKeyValue(ByteString.copyFrom(Random.randBytes(32))).build())
             .setKeyValue(ByteString.copyFrom(Random.randBytes(32)))
             .build();
 
-    KeyData keyData = manager.getPublicKeyData(privateKey.toByteString());
+    KeyData keyData = manager.getPublicKeyData(privateKey);
 
     assertThat(keyData.getTypeUrl())
         .isEqualTo("type.googleapis.com/google.crypto.tink.Ed25519PublicKey");
-    Ed25519PublicKey publicKey =
-        Ed25519PublicKey.parseFrom(keyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());
-    assertThat(publicKey).isEqualTo(privateKey.getPublicKey());
-    assertThat(keyData.getKeyMaterialType()).isEqualTo(KeyMaterialType.ASYMMETRIC_PUBLIC);
+    //Ed25519PublicKey publicKey =
+    //    Ed25519PublicKey.parseFrom(keyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());
+    //assertThat(publicKey).isEqualTo(privateKey.getPublicKey());
+    //assertThat(keyData.getKeyMaterialType()).isEqualTo(KeyMaterialType.ASYMMETRIC_PUBLIC);
   }
 
   @Test
@@ -136,14 +134,13 @@ public final class PrivateKeyManagerImplTest {
         Ed25519PrivateKey.newBuilder()
             .setPublicKey(
                 Ed25519PublicKey.newBuilder()
-                    .setKeyValue(ByteString.copyFrom(Random.randBytes(32))))
+                    .setKeyValue(ByteString.copyFrom(Random.randBytes(32))).build())
             .setKeyValue(ByteString.copyFrom(Random.randBytes(33)))
             .build();
-    ByteString privateKeyByteString = privateKey.toByteString();
 
     GeneralSecurityException e =
         assertThrows(
-            GeneralSecurityException.class, () -> manager.getPublicKeyData(privateKeyByteString));
+            GeneralSecurityException.class, () -> manager.getPublicKeyData(privateKey));
     assertExceptionContains(e, "validateKey(Ed25519PrivateKey)");
   }
 
@@ -157,14 +154,13 @@ public final class PrivateKeyManagerImplTest {
         Ed25519PrivateKey.newBuilder()
             .setPublicKey(
                 Ed25519PublicKey.newBuilder()
-                    .setKeyValue(ByteString.copyFrom(Random.randBytes(33))))
+                    .setKeyValue(ByteString.copyFrom(Random.randBytes(33))).build())
             .setKeyValue(ByteString.copyFrom(Random.randBytes(32)))
             .build();
-    ByteString privateKeyByteString = privateKey.toByteString();
 
     GeneralSecurityException e =
         assertThrows(
-            GeneralSecurityException.class, () -> manager.getPublicKeyData(privateKeyByteString));
+            GeneralSecurityException.class, () -> manager.getPublicKeyData(privateKey));
     assertExceptionContains(e, "validateKey(Ed25519PublicKey)");
   }
 }

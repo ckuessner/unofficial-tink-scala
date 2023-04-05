@@ -22,7 +22,6 @@ import static org.junit.Assert.assertThrows;
 import com.google.crypto.tink.PublicKeySign;
 import com.google.crypto.tink.PublicKeyVerify;
 import com.google.crypto.tink.internal.KeyTypeManager;
-import com.google.crypto.tink.proto.Ed25519KeyFormat;
 import com.google.crypto.tink.proto.Ed25519PrivateKey;
 import com.google.crypto.tink.proto.Ed25519PublicKey;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
@@ -37,7 +36,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class Ed25519PublicKeyManagerTest {
   private final Ed25519PrivateKeyManager signManager = new Ed25519PrivateKeyManager();
-  private final KeyTypeManager.KeyFactory<Ed25519KeyFormat, Ed25519PrivateKey> factory =
+  private final KeyTypeManager.KeyFactory<Ed25519PrivateKey> factory =
       signManager.keyFactory();
 
   private final Ed25519PublicKeyManager verifyManager = new Ed25519PublicKeyManager();
@@ -57,7 +56,7 @@ public class Ed25519PublicKeyManagerTest {
   }
 
   private Ed25519PrivateKey createPrivateKey() throws GeneralSecurityException {
-    return factory.createKey(Ed25519KeyFormat.getDefaultInstance());
+    return factory.createKey();
   }
 
   @Test
@@ -76,7 +75,7 @@ public class Ed25519PublicKeyManagerTest {
   @Test
   public void validateKey_wrongLength31_throws() throws Exception {
     Ed25519PublicKey publicKey = signManager.getPublicKey(createPrivateKey());
-    Ed25519PublicKey invalidKey = Ed25519PublicKey.newBuilder(publicKey)
+    Ed25519PublicKey invalidKey = Ed25519PublicKey.newBuilder()
               .setKeyValue(ByteString.copyFrom(Random.randBytes(31)))
               .build();
     assertThrows(GeneralSecurityException.class, () -> verifyManager.validateKey(invalidKey));
@@ -85,7 +84,7 @@ public class Ed25519PublicKeyManagerTest {
   @Test
   public void validateKey_wrongLength64_throws() throws Exception {
     Ed25519PublicKey publicKey = signManager.getPublicKey(createPrivateKey());
-    Ed25519PublicKey invalidKey = Ed25519PublicKey.newBuilder(publicKey)
+    Ed25519PublicKey invalidKey = Ed25519PublicKey.newBuilder()
               .setKeyValue(ByteString.copyFrom(Random.randBytes(64)))
               .build();
     assertThrows(GeneralSecurityException.class, () -> verifyManager.validateKey(invalidKey));

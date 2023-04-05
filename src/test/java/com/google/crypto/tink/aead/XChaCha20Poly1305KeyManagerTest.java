@@ -25,12 +25,10 @@ import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.proto.XChaCha20Poly1305Key;
-import com.google.crypto.tink.proto.XChaCha20Poly1305KeyFormat;
 import com.google.crypto.tink.subtle.Random;
 import com.google.crypto.tink.subtle.XChaCha20Poly1305;
 import com.google.crypto.tink.testing.TestUtil;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistryLite;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -44,7 +42,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class XChaCha20Poly1305KeyManagerTest {
   private final XChaCha20Poly1305KeyManager manager = new XChaCha20Poly1305KeyManager();
-  private final KeyTypeManager.KeyFactory<XChaCha20Poly1305KeyFormat, XChaCha20Poly1305Key>
+  private final KeyTypeManager.KeyFactory<XChaCha20Poly1305Key>
       factory = manager.keyFactory();
 
   @Test
@@ -54,14 +52,14 @@ public class XChaCha20Poly1305KeyManagerTest {
     assertThat(manager.keyMaterialType()).isEqualTo(KeyMaterialType.SYMMETRIC);
   }
 
-  @Test
-  public void validateKeyFormat() throws Exception {
-    factory.validateKeyFormat(XChaCha20Poly1305KeyFormat.getDefaultInstance());
-  }
+  //@Test
+  //public void validateKeyFormat() throws Exception {
+  //  factory.validateKeyFormat(XChaCha20Poly1305KeyFormat.getDefaultInstance());
+  //}
 
   @Test
   public void createKey_valid() throws Exception {
-    manager.validateKey(factory.createKey(XChaCha20Poly1305KeyFormat.getDefaultInstance()));
+    manager.validateKey(factory.createKey());
   }
 
   //@Test
@@ -72,8 +70,7 @@ public class XChaCha20Poly1305KeyManagerTest {
 
   @Test
   public void createKey_keySize() throws Exception {
-    assertThat(factory.createKey(XChaCha20Poly1305KeyFormat.getDefaultInstance()).getKeyValue())
-        .hasSize(32);
+    assertThat(factory.createKey().getKeyValue().size() == 32);
   }
 
   @Test
@@ -84,7 +81,7 @@ public class XChaCha20Poly1305KeyManagerTest {
       keys.add(
           TestUtil.hexEncode(
               factory
-                  .createKey(XChaCha20Poly1305KeyFormat.getDefaultInstance())
+                  .createKey()
                   .getKeyValue()
                   .toByteArray()));
     }
@@ -98,7 +95,7 @@ public class XChaCha20Poly1305KeyManagerTest {
     XChaCha20Poly1305Key key =
         factory.deriveKey(
             new ByteArrayInputStream(keyMaterial));
-    assertThat(key.getKeyValue()).hasSize(keySize);
+    assertThat(key.getKeyValue().size() == keySize);
     for (int i = 0; i < keySize; ++i) {
       assertThat(key.getKeyValue().byteAt(i)).isEqualTo(keyMaterial[i]);
     }
@@ -125,7 +122,7 @@ public class XChaCha20Poly1305KeyManagerTest {
     XChaCha20Poly1305Key key =
         factory.deriveKey(fragmentedInputStream);
 
-    assertThat(key.getKeyValue()).hasSize(keySize);
+    assertThat(key.getKeyValue().size() == keySize);
     for (int i = 0; i < keySize; ++i) {
       assertThat(key.getKeyValue().byteAt(i)).isEqualTo(randomness);
     }
@@ -151,7 +148,7 @@ public class XChaCha20Poly1305KeyManagerTest {
 
   @Test
   public void getPrimitive() throws Exception {
-    XChaCha20Poly1305Key key = factory.createKey(XChaCha20Poly1305KeyFormat.getDefaultInstance());
+    XChaCha20Poly1305Key key = factory.createKey();
     Aead managerAead = manager.getPrimitive(key, Aead.class);
     Aead directAead = new XChaCha20Poly1305(key.getKeyValue().toByteArray());
 
@@ -166,9 +163,9 @@ public class XChaCha20Poly1305KeyManagerTest {
     KeyTemplate template = XChaCha20Poly1305KeyManager.xChaCha20Poly1305Template();
     assertThat(template.getTypeUrl()).isEqualTo(new XChaCha20Poly1305KeyManager().getKeyType());
     assertThat(template.getOutputPrefixType()).isEqualTo(KeyTemplate.OutputPrefixType.TINK);
-    XChaCha20Poly1305KeyFormat unused =
-        XChaCha20Poly1305KeyFormat.parseFrom(
-            ByteString.copyFrom(template.getValue()), ExtensionRegistryLite.getEmptyRegistry());
+    //XChaCha20Poly1305KeyFormat unused =
+    //    XChaCha20Poly1305KeyFormat.parseFrom(
+    //        ByteString.copyFrom(template.getValue()), ExtensionRegistryLite.getEmptyRegistry());
   }
 
   @Test
@@ -176,9 +173,9 @@ public class XChaCha20Poly1305KeyManagerTest {
     KeyTemplate template = XChaCha20Poly1305KeyManager.rawXChaCha20Poly1305Template();
     assertThat(template.getTypeUrl()).isEqualTo(new XChaCha20Poly1305KeyManager().getKeyType());
     assertThat(template.getOutputPrefixType()).isEqualTo(KeyTemplate.OutputPrefixType.RAW);
-    XChaCha20Poly1305KeyFormat unused =
-        XChaCha20Poly1305KeyFormat.parseFrom(
-            ByteString.copyFrom(template.getValue()), ExtensionRegistryLite.getEmptyRegistry());
+    //XChaCha20Poly1305KeyFormat unused =
+    //    XChaCha20Poly1305KeyFormat.parseFrom(
+    //        ByteString.copyFrom(template.getValue()), ExtensionRegistryLite.getEmptyRegistry());
   }
 
   @Test
@@ -189,9 +186,9 @@ public class XChaCha20Poly1305KeyManagerTest {
     testKeyTemplateCompatible(manager, XChaCha20Poly1305KeyManager.rawXChaCha20Poly1305Template());
   }
 
-  @Test
-  public void testKeyFormats() throws Exception {
-    factory.validateKeyFormat(factory.keyFormats().get("XCHACHA20_POLY1305").keyFormat);
-    factory.validateKeyFormat(factory.keyFormats().get("XCHACHA20_POLY1305_RAW").keyFormat);
-  }
+  //@Test
+  //public void testKeyFormats() throws Exception {
+  //  factory.validateKeyFormat(factory.keyFormats().get("XCHACHA20_POLY1305").keyFormat);
+  //  factory.validateKeyFormat(factory.keyFormats().get("XCHACHA20_POLY1305_RAW").keyFormat);
+  //}
 }

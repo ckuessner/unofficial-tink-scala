@@ -17,8 +17,6 @@
 package com.google.crypto.tink;
 
 import com.google.crypto.tink.proto.Keyset;
-import com.google.protobuf.ExtensionRegistryLite;
-import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 

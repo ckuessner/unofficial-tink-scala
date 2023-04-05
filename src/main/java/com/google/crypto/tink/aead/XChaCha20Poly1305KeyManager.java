@@ -23,13 +23,10 @@ import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.internal.PrimitiveFactory;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.proto.XChaCha20Poly1305Key;
-import com.google.crypto.tink.proto.XChaCha20Poly1305KeyFormat;
 import com.google.crypto.tink.subtle.Random;
 import com.google.crypto.tink.subtle.Validators;
 import com.google.crypto.tink.subtle.XChaCha20Poly1305;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistryLite;
-import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -73,28 +70,21 @@ public class XChaCha20Poly1305KeyManager extends KeyTypeManager<XChaCha20Poly130
   }
 
   @Override
-  public XChaCha20Poly1305Key parseKey(ByteString byteString)
-      throws InvalidProtocolBufferException {
-    return XChaCha20Poly1305Key.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
-  }
+  public KeyFactory<XChaCha20Poly1305Key> keyFactory() {
+    return new KeyFactory<XChaCha20Poly1305Key>() {
+      //@Override
+      //public void validateKeyFormat(XChaCha20Poly1305KeyFormat format)
+      //    throws GeneralSecurityException {}
 
-  @Override
-  public KeyFactory<XChaCha20Poly1305KeyFormat, XChaCha20Poly1305Key> keyFactory() {
-    return new KeyFactory<XChaCha20Poly1305KeyFormat, XChaCha20Poly1305Key>(
-        XChaCha20Poly1305KeyFormat.class) {
-      @Override
-      public void validateKeyFormat(XChaCha20Poly1305KeyFormat format)
-          throws GeneralSecurityException {}
-
-      @Override
-      public XChaCha20Poly1305KeyFormat parseKeyFormat(ByteString byteString)
-          throws InvalidProtocolBufferException {
-        return XChaCha20Poly1305KeyFormat.parseFrom(
-            byteString, ExtensionRegistryLite.getEmptyRegistry());
-      }
+      //@Override
+      //public XChaCha20Poly1305KeyFormat parseKeyFormat(ByteString byteString)
+      //    throws InvalidProtocolBufferException {
+      //  return XChaCha20Poly1305KeyFormat.parseFrom(
+      //      byteString, ExtensionRegistryLite.getEmptyRegistry());
+      //}
 
       @Override
-      public XChaCha20Poly1305Key createKey(XChaCha20Poly1305KeyFormat format)
+      public XChaCha20Poly1305Key createKey()
           throws GeneralSecurityException {
         return XChaCha20Poly1305Key.newBuilder()
             .setKeyValue(ByteString.copyFrom(Random.randBytes(KEY_SIZE_IN_BYTES)))
@@ -102,8 +92,7 @@ public class XChaCha20Poly1305KeyManager extends KeyTypeManager<XChaCha20Poly130
       }
 
       @Override
-      public XChaCha20Poly1305Key deriveKey(
-          XChaCha20Poly1305KeyFormat format, InputStream inputStream)
+      public XChaCha20Poly1305Key deriveKey(InputStream inputStream)
           throws GeneralSecurityException {
 
         byte[] pseudorandomness = new byte[KEY_SIZE_IN_BYTES];
@@ -118,18 +107,15 @@ public class XChaCha20Poly1305KeyManager extends KeyTypeManager<XChaCha20Poly130
       }
 
       @Override
-      public Map<String, KeyFactory.KeyFormat<XChaCha20Poly1305KeyFormat>> keyFormats()
+      public Map<String, KeyFactory.KeyFormat<XChaCha20Poly1305Key>> keyFormats()
           throws GeneralSecurityException {
-        Map<String, KeyFactory.KeyFormat<XChaCha20Poly1305KeyFormat>> result = new HashMap<>();
+        Map<String, KeyFactory.KeyFormat<XChaCha20Poly1305Key>> result = new HashMap<>();
         result.put(
             "XCHACHA20_POLY1305",
-            new KeyFactory.KeyFormat<>(
-                XChaCha20Poly1305KeyFormat.getDefaultInstance(),
-                KeyTemplate.OutputPrefixType.TINK));
+            new KeyFactory.KeyFormat<XChaCha20Poly1305Key>(KeyTemplate.OutputPrefixType.TINK));
         result.put(
             "XCHACHA20_POLY1305_RAW",
-            new KeyFactory.KeyFormat<>(
-                XChaCha20Poly1305KeyFormat.getDefaultInstance(), KeyTemplate.OutputPrefixType.RAW));
+            new KeyFactory.KeyFormat<XChaCha20Poly1305Key>(KeyTemplate.OutputPrefixType.RAW));
         return Collections.unmodifiableMap(result);
       }
     };
@@ -137,7 +123,6 @@ public class XChaCha20Poly1305KeyManager extends KeyTypeManager<XChaCha20Poly130
 
   public static void register(boolean newKeyAllowed) throws GeneralSecurityException {
     Registry.registerKeyManager(new XChaCha20Poly1305KeyManager(), newKeyAllowed);
-    XChaCha20Poly1305ProtoSerialization.register();
   }
 
   /**
@@ -146,7 +131,6 @@ public class XChaCha20Poly1305KeyManager extends KeyTypeManager<XChaCha20Poly130
   public static final KeyTemplate xChaCha20Poly1305Template() {
     return KeyTemplate.create(
         new XChaCha20Poly1305KeyManager().getKeyType(),
-        XChaCha20Poly1305KeyFormat.getDefaultInstance().toByteArray(),
         KeyTemplate.OutputPrefixType.TINK);
   }
 
@@ -158,7 +142,6 @@ public class XChaCha20Poly1305KeyManager extends KeyTypeManager<XChaCha20Poly130
   public static final KeyTemplate rawXChaCha20Poly1305Template() {
     return KeyTemplate.create(
         new XChaCha20Poly1305KeyManager().getKeyType(),
-        XChaCha20Poly1305KeyFormat.getDefaultInstance().toByteArray(),
         KeyTemplate.OutputPrefixType.RAW);
   }
 }

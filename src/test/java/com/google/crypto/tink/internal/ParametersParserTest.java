@@ -18,6 +18,7 @@ package com.google.crypto.tink.internal;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.Parameters;
 import com.google.crypto.tink.util.Bytes;
 import com.google.errorprone.annotations.Immutable;
@@ -25,6 +26,7 @@ import java.security.GeneralSecurityException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import scala.NotImplementedError;
 
 /** Tests for {@link ParametersParser}. */
 @RunWith(JUnit4.class)
@@ -35,6 +37,11 @@ public final class ParametersParserTest {
     @Override
     public boolean hasIdRequirement() {
       return false;
+    }
+
+    @Override
+    public KeyTemplate toKeyTemplate() {
+      throw new NotImplementedError();
     }
   }
 

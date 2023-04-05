@@ -37,4 +37,6 @@ public abstract class Parameters {
    * return true here.
    */
   public abstract boolean hasIdRequirement();
+
+  public abstract KeyTemplate toKeyTemplate();
 }

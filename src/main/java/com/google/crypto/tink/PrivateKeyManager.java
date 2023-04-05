@@ -17,7 +17,8 @@
 package com.google.crypto.tink;
 
 import com.google.crypto.tink.proto.KeyData;
-import com.google.protobuf.ByteString;
+import com.google.crypto.tink.proto.KeyProto;
+
 import java.security.GeneralSecurityException;
 
 /**
@@ -32,5 +33,5 @@ public interface PrivateKeyManager<P> extends KeyManager<P> {
    * @return the {@link KeyData} containing the public keys
    * @throws GeneralSecurityException if the specified format is wrong or not supported
    */
-  KeyData getPublicKeyData(ByteString serializedKey) throws GeneralSecurityException;
+  KeyData getPublicKeyData(KeyProto privateKey) throws GeneralSecurityException;
 }

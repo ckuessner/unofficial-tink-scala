@@ -34,7 +34,6 @@ object KeyData {
     }
 
     def setValue(value: KeyProto): Builder = {
-      if (value == null) throw new NullPointerException()
       this.value = value
       this
     }

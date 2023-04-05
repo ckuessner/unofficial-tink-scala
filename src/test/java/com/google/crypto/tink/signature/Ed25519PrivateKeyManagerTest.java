@@ -18,13 +18,13 @@ package com.google.crypto.tink.signature;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.crypto.tink.testing.KeyTypeManagerTestUtil.testKeyTemplateCompatible;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.PublicKeySign;
 import com.google.crypto.tink.PublicKeyVerify;
 import com.google.crypto.tink.internal.KeyTypeManager;
-import com.google.crypto.tink.proto.Ed25519KeyFormat;
 import com.google.crypto.tink.proto.Ed25519PrivateKey;
 import com.google.crypto.tink.proto.Ed25519PublicKey;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
@@ -32,7 +32,6 @@ import com.google.crypto.tink.subtle.Ed25519Verify;
 import com.google.crypto.tink.subtle.Random;
 import com.google.crypto.tink.testing.TestUtil;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistryLite;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -46,7 +45,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class Ed25519PrivateKeyManagerTest {
   private final Ed25519PrivateKeyManager manager = new Ed25519PrivateKeyManager();
-  private final KeyTypeManager.KeyFactory<Ed25519KeyFormat, Ed25519PrivateKey> factory =
+  private final KeyTypeManager.KeyFactory<Ed25519PrivateKey> factory =
       manager.keyFactory();
 
   @Test
@@ -56,10 +55,10 @@ public class Ed25519PrivateKeyManagerTest {
     assertThat(manager.keyMaterialType()).isEqualTo(KeyMaterialType.ASYMMETRIC_PRIVATE);
   }
 
-  @Test
-  public void validateKeyFormat_empty() throws Exception {
-    factory.validateKeyFormat(Ed25519KeyFormat.getDefaultInstance());
-  }
+  //@Test
+  //public void validateKeyFormat_empty() throws Exception {
+  //  factory.validateKeyFormat(Ed25519KeyFormat.getDefaultInstance());
+  //}
 
   @Test
   public void createKey_checkValues() throws Exception {
@@ -81,14 +80,14 @@ public class Ed25519PrivateKeyManagerTest {
     Set<String> keys = new TreeSet<>();
     int numTests = 100;
     for (int i = 0; i < numTests; i++) {
-      keys.add(TestUtil.hexEncode(factory.createKey(format).getKeyValue().toByteArray()));
+      keys.add(TestUtil.hexEncode(factory.createKey().getKeyValue().toByteArray()));
     }
     assertThat(keys).hasSize(numTests);
   }
 
   @Test
   public void createKeyThenValidate() throws Exception {
-    manager.validateKey(factory.createKey(Ed25519KeyFormat.getDefaultInstance()));
+    manager.validateKey(factory.createKey());
   }
 
   //@Test
@@ -100,9 +99,9 @@ public class Ed25519PrivateKeyManagerTest {
 
   @Test
   public void validateKey_wrongLength64_throws() throws Exception {
-    Ed25519PrivateKey validKey = factory.createKey(Ed25519KeyFormat.getDefaultInstance());
+    Ed25519PrivateKey validKey = factory.createKey();
     Ed25519PrivateKey invalidKey =
-        Ed25519PrivateKey.newBuilder(validKey)
+        validKey.toBuilder()
             .setKeyValue(ByteString.copyFrom(Random.randBytes(64)))
             .build();
     assertThrows(GeneralSecurityException.class, () -> manager.validateKey(invalidKey));
@@ -110,12 +109,11 @@ public class Ed25519PrivateKeyManagerTest {
 
   @Test
   public void validateKey_wrongLengthPublicKey64_throws() throws Exception {
-    Ed25519PrivateKey validKey = factory.createKey(Ed25519KeyFormat.getDefaultInstance());
     Ed25519PrivateKey invalidKey =
-        Ed25519PrivateKey.newBuilder(validKey)
+        Ed25519PrivateKey.newBuilder()
             .setPublicKey(
-                Ed25519PublicKey.newBuilder(validKey.getPublicKey())
-                    .setKeyValue(ByteString.copyFrom(Random.randBytes(64))))
+                Ed25519PublicKey.newBuilder()
+                    .setKeyValue(ByteString.copyFrom(Random.randBytes(64))).build())
             .build();
     assertThrows(GeneralSecurityException.class, () -> manager.validateKey(invalidKey));
   }
@@ -123,14 +121,14 @@ public class Ed25519PrivateKeyManagerTest {
   /** Tests that a public key is extracted properly from a private key. */
   @Test
   public void getPublicKey_checkValues() throws Exception {
-    Ed25519PrivateKey privateKey = factory.createKey(Ed25519KeyFormat.getDefaultInstance());
+    Ed25519PrivateKey privateKey = factory.createKey();
     Ed25519PublicKey publicKey = manager.getPublicKey(privateKey);
     assertThat(publicKey).isEqualTo(privateKey.getPublicKey());
   }
 
   @Test
   public void createPrimitive() throws Exception {
-    Ed25519PrivateKey privateKey = factory.createKey(Ed25519KeyFormat.getDefaultInstance());
+    Ed25519PrivateKey privateKey = factory.createKey();
     PublicKeySign signer = manager.getPrimitive(privateKey, PublicKeySign.class);
 
     PublicKeyVerify verifier =
@@ -144,8 +142,6 @@ public class Ed25519PrivateKeyManagerTest {
     KeyTemplate template = Ed25519PrivateKeyManager.ed25519Template();
     assertThat(template.getTypeUrl()).isEqualTo(new Ed25519PrivateKeyManager().getKeyType());
     assertThat(template.getOutputPrefixType()).isEqualTo(KeyTemplate.OutputPrefixType.TINK);
-    Ed25519KeyFormat unused =
-        Ed25519KeyFormat.parseFrom(template.getValue(), ExtensionRegistryLite.getEmptyRegistry());
   }
 
   @Test
@@ -153,8 +149,6 @@ public class Ed25519PrivateKeyManagerTest {
     KeyTemplate template = Ed25519PrivateKeyManager.rawEd25519Template();
     assertThat(template.getTypeUrl()).isEqualTo(new Ed25519PrivateKeyManager().getKeyType());
     assertThat(template.getOutputPrefixType()).isEqualTo(KeyTemplate.OutputPrefixType.RAW);
-    Ed25519KeyFormat unused =
-        Ed25519KeyFormat.parseFrom(template.getValue(), ExtensionRegistryLite.getEmptyRegistry());
   }
 
   @Test
@@ -197,7 +191,7 @@ public class Ed25519PrivateKeyManagerTest {
 
     Ed25519PrivateKey key = factory.deriveKey(fragmentedInputStream);
 
-    assertThat(key.getKeyValue()).hasSize(keySize);
+    assertEquals(keySize, key.getKeyValue().size());
     for (int i = 0; i < keySize; ++i) {
       assertThat(key.getKeyValue().byteAt(i)).isEqualTo(randomness);
     }
@@ -231,10 +225,10 @@ public class Ed25519PrivateKeyManagerTest {
   //        new ByteArrayInputStream(keyMaterial)));
   //}
 
-  @Test
-  public void testKeyFormats() throws Exception {
-    factory.validateKeyFormat(factory.keyFormats().get("ED25519").keyFormat);
-    factory.validateKeyFormat(factory.keyFormats().get("ED25519_RAW").keyFormat);
-    factory.validateKeyFormat(factory.keyFormats().get("ED25519WithRawOutput").keyFormat);
-  }
+  //@Test
+  //public void testKeyFormats() throws Exception {
+  //  factory.validateKeyFormat(factory.keyFormats().get("ED25519").keyFormat);
+  //  factory.validateKeyFormat(factory.keyFormats().get("ED25519_RAW").keyFormat);
+  //  factory.validateKeyFormat(factory.keyFormats().get("ED25519WithRawOutput").keyFormat);
+  //}
 }

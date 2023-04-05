@@ -22,15 +22,12 @@ import com.google.crypto.tink.Registry;
 import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.internal.PrimitiveFactory;
 import com.google.crypto.tink.internal.PrivateKeyTypeManager;
-import com.google.crypto.tink.proto.Ed25519KeyFormat;
 import com.google.crypto.tink.proto.Ed25519PrivateKey;
 import com.google.crypto.tink.proto.Ed25519PublicKey;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.subtle.Ed25519Sign;
 import com.google.crypto.tink.subtle.Validators;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistryLite;
-import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -72,10 +69,10 @@ public final class Ed25519PrivateKeyManager
     return KeyMaterialType.ASYMMETRIC_PRIVATE;
   }
 
-  @Override
-  public Ed25519PrivateKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
-    return Ed25519PrivateKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
-  }
+  //@Override
+  //public Ed25519PrivateKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
+  //  return Ed25519PrivateKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
+  //}
 
   @Override
   public void validateKey(Ed25519PrivateKey keyProto) throws GeneralSecurityException {
@@ -86,20 +83,19 @@ public final class Ed25519PrivateKeyManager
   }
 
   @Override
-  public KeyTypeManager.KeyFactory<Ed25519KeyFormat, Ed25519PrivateKey> keyFactory() {
-    return new KeyTypeManager.KeyFactory<Ed25519KeyFormat, Ed25519PrivateKey>(
-        Ed25519KeyFormat.class) {
-      @Override
-      public void validateKeyFormat(Ed25519KeyFormat format) throws GeneralSecurityException {}
+  public KeyTypeManager.KeyFactory<Ed25519PrivateKey> keyFactory() {
+    return new KeyTypeManager.KeyFactory<Ed25519PrivateKey>() {
+      //@Override
+      //public void validateKeyFormat(Ed25519KeyFormat format) throws GeneralSecurityException {}
+
+      //@Override
+      //public Ed25519KeyFormat parseKeyFormat(ByteString byteString)
+      //    throws InvalidProtocolBufferException {
+      //  return Ed25519KeyFormat.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
+      //}
 
       @Override
-      public Ed25519KeyFormat parseKeyFormat(ByteString byteString)
-          throws InvalidProtocolBufferException {
-        return Ed25519KeyFormat.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
-      }
-
-      @Override
-      public Ed25519PrivateKey createKey(Ed25519KeyFormat format) throws GeneralSecurityException {
+      public Ed25519PrivateKey createKey() throws GeneralSecurityException {
         Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPair();
         Ed25519PublicKey publicKey =
             Ed25519PublicKey.newBuilder()
@@ -112,7 +108,7 @@ public final class Ed25519PrivateKeyManager
       }
 
       @Override
-      public Ed25519PrivateKey deriveKey(Ed25519KeyFormat format, InputStream inputStream)
+      public Ed25519PrivateKey deriveKey(InputStream inputStream)
           throws GeneralSecurityException {
 
         byte[] pseudorandomness = new byte[Ed25519Sign.SECRET_KEY_LEN];
@@ -133,24 +129,14 @@ public final class Ed25519PrivateKeyManager
       }
 
       @Override
-      public Map<String, KeyFactory.KeyFormat<Ed25519KeyFormat>> keyFormats()
-          throws GeneralSecurityException {
-        Map<String, KeyFactory.KeyFormat<Ed25519KeyFormat>> result = new HashMap<>();
+      public Map<String, KeyFactory.KeyFormat<Ed25519PrivateKey>> keyFormats() {
+        Map<String, KeyFactory.KeyFormat<Ed25519PrivateKey>> result = new HashMap<>();
         result.put(
             "ED25519",
-            new KeyFormat<>(
-                Ed25519KeyFormat.getDefaultInstance(), KeyTemplate.OutputPrefixType.TINK));
+            new KeyFormat<>(KeyTemplate.OutputPrefixType.TINK));
         result.put(
             "ED25519_RAW",
-            new KeyFormat<>(
-                Ed25519KeyFormat.getDefaultInstance(), KeyTemplate.OutputPrefixType.RAW));
-        // This is identical to ED25519_RAW.
-        // It is needed to maintain backward compatibility with SignatureKeyTemplates.
-        // TODO(b/185475349): remove this in 2.0.0.
-        result.put(
-            "ED25519WithRawOutput",
-            new KeyFormat<>(
-                Ed25519KeyFormat.getDefaultInstance(), KeyTemplate.OutputPrefixType.RAW));
+            new KeyFormat<>(KeyTemplate.OutputPrefixType.RAW));
         return Collections.unmodifiableMap(result);
       }
     };
@@ -171,7 +157,6 @@ public final class Ed25519PrivateKeyManager
   public static final KeyTemplate ed25519Template() {
     return KeyTemplate.create(
         new Ed25519PrivateKeyManager().getKeyType(),
-        /*value=*/ new byte[0],
         KeyTemplate.OutputPrefixType.TINK);
   }
 
@@ -183,7 +168,6 @@ public final class Ed25519PrivateKeyManager
   public static final KeyTemplate rawEd25519Template() {
     return KeyTemplate.create(
         new Ed25519PrivateKeyManager().getKeyType(),
-        /*value=*/ new byte[0],
         KeyTemplate.OutputPrefixType.RAW);
   }
 }

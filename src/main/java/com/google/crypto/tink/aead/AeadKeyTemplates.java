@@ -155,10 +155,10 @@ public final class AeadKeyTemplates {
           .setOutputPrefixType(OutputPrefixType.TINK)
           .build();
 
-  /**
-   * @return a {@link KeyTemplate} containing a {@link AesGcmKeyFormat} with some specified
-   *     parameters.
-   */
+  ///**
+  // * @return a {@link KeyTemplate} containing a {@link AesGcmKeyFormat} with some specified
+  // *     parameters.
+  // */
   //public static KeyTemplate createAesGcmKeyTemplate(int keySize) {
   //  AesGcmKeyFormat format = AesGcmKeyFormat.newBuilder()
   //      .setKeySize(keySize)

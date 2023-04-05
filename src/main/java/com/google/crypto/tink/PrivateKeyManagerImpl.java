@@ -20,9 +20,10 @@ import com.google.crypto.tink.annotations.Alpha;
 import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.internal.PrivateKeyTypeManager;
 import com.google.crypto.tink.proto.KeyData;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.MessageLite;
+import com.google.crypto.tink.proto.KeyProto;
+import com.google.crypto.tink.proto.PrivateKeyProto;
+import com.google.crypto.tink.proto.PublicKeyProto;
+
 import java.security.GeneralSecurityException;
 
 /**
@@ -35,7 +36,7 @@ import java.security.GeneralSecurityException;
  */
 @Alpha
 class PrivateKeyManagerImpl<
-        PrimitiveT, KeyProtoT extends MessageLite, PublicKeyProtoT extends MessageLite>
+        PrimitiveT, KeyProtoT extends KeyProto, PublicKeyProtoT extends PublicKeyProto>
     extends KeyManagerImpl<PrimitiveT, KeyProtoT> implements PrivateKeyManager<PrimitiveT> {
 
   private final PrivateKeyTypeManager<KeyProtoT, PublicKeyProtoT> privateKeyManager;
@@ -51,19 +52,24 @@ class PrivateKeyManagerImpl<
   }
 
   @Override
-  public KeyData getPublicKeyData(ByteString serializedKey) throws GeneralSecurityException {
+  public KeyData getPublicKeyData(KeyProto keyProto) throws GeneralSecurityException {
+    if (keyProto == null) throw new NullPointerException();
+
+    // TODO: Refactor this
+    KeyProtoT privKeyProto;
     try {
-      KeyProtoT privKeyProto = privateKeyManager.parseKey(serializedKey);
-      privateKeyManager.validateKey(privKeyProto);
-      PublicKeyProtoT publicKeyProto = privateKeyManager.getPublicKey(privKeyProto);
-      publicKeyManager.validateKey(publicKeyProto);
-      return KeyData.newBuilder()
-          .setTypeUrl(publicKeyManager.getKeyType())
-          .setValue(publicKeyProto.toByteString())
-          .setKeyMaterialType(publicKeyManager.keyMaterialType())
-          .build();
-    } catch (InvalidProtocolBufferException e) {
-      throw new GeneralSecurityException("expected serialized proto of type ", e);
+      privKeyProto = (KeyProtoT) keyProto;
+    } catch (ClassCastException e) {
+      throw new GeneralSecurityException("Cannot get a validated public key from a " + keyProto.getClass() + " using a " + getClass());
     }
+
+    privateKeyManager.validateKey(privKeyProto);
+    PublicKeyProtoT publicKeyProto = privateKeyManager.getPublicKey(privKeyProto);
+    publicKeyManager.validateKey(publicKeyProto);
+    return KeyData.newBuilder()
+        .setTypeUrl(publicKeyManager.getKeyType())
+        .setValue(publicKeyProto)
+        .setKeyMaterialType(publicKeyManager.keyMaterialType())
+        .build();
   }
 }

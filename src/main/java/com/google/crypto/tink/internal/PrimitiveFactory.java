@@ -16,11 +16,12 @@
 
 package com.google.crypto.tink.internal;
 
-import com.google.protobuf.MessageLite;
+import com.google.crypto.tink.proto.KeyProto;
+
 import java.security.GeneralSecurityException;
 
 /** A PrimitiveFactory knows how to create primitives from a given key. */
-public abstract class PrimitiveFactory<PrimitiveT, KeyProtoT extends MessageLite> {
+public abstract class PrimitiveFactory<PrimitiveT, KeyProtoT extends KeyProto> {
   private final Class<PrimitiveT> clazz;
 
   public PrimitiveFactory(Class<PrimitiveT> clazz) {

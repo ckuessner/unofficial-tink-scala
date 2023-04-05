@@ -17,8 +17,9 @@
 package com.google.crypto.tink;
 
 import com.google.crypto.tink.proto.KeyData;
+import com.google.crypto.tink.proto.KeyProto;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.MessageLite;
+
 import java.security.GeneralSecurityException;
 
 /**
@@ -37,19 +38,19 @@ import java.security.GeneralSecurityException;
 public interface KeyManager<P> {
   // APIs for primitive development
 
-  /**
-   * Constructs an instance of P for the key given in {@code serializedKey}, which must be a
-   * serialized key protocol buffer handled by this manager.
-   *
-   * <p>For primitives of type {@code Mac}, {@code Aead}, {@code PublicKeySign}, {@code
-   * PublicKeyVerify}, {@code DeterministicAead}, {@code HybridEncrypt}, and {@code HybridDecrypt}
-   * this should be a primitive which <b>ignores</b> the output prefix and assumes "RAW".
-   *
-   * @return the new constructed P
-   * @throws GeneralSecurityException if the key given in {@code serializedKey} is corrupted or not
-   *     supported
-   */
-  P getPrimitive(ByteString serializedKey) throws GeneralSecurityException;
+  ///**
+  // * Constructs an instance of P for the key given in {@code serializedKey}, which must be a
+  // * serialized key protocol buffer handled by this manager.
+  // *
+  // * <p>For primitives of type {@code Mac}, {@code Aead}, {@code PublicKeySign}, {@code
+  // * PublicKeyVerify}, {@code DeterministicAead}, {@code HybridEncrypt}, and {@code HybridDecrypt}
+  // * this should be a primitive which <b>ignores</b> the output prefix and assumes "RAW".
+  // *
+  // * @return the new constructed P
+  // * @throws GeneralSecurityException if the key given in {@code serializedKey} is corrupted or not
+  // *     supported
+  // */
+  //P getPrimitive(ByteString serializedKey) throws GeneralSecurityException;
 
   /**
    * Constructs an instance of P for the key given in {@code key}.
@@ -61,33 +62,29 @@ public interface KeyManager<P> {
    * @return the new constructed P
    * @throws GeneralSecurityException if the key given in {@code key} is corrupted or not supported
    */
-  P getPrimitive(MessageLite key) throws GeneralSecurityException;
+  P getPrimitive(KeyProto key) throws GeneralSecurityException;
+
+  ///**
+  // * Generates a new key according to specification in {@code serializedKeyFormat}, which must be a
+  // * serialized key format protocol buffer handled by this manager.
+  // *
+  // * @return the new generated key
+  // * @throws GeneralSecurityException if the specified format is wrong or not supported
+  // */
+  //MessageLite newKey(ByteString serializedKeyFormat) throws GeneralSecurityException;
 
   /**
-   * Generates a new key according to specification in {@code serializedKeyFormat}, which must be a
-   * serialized key format protocol buffer handled by this manager.
+   * Generates a new key.
    *
    * @return the new generated key
-   * @throws GeneralSecurityException if the specified format is wrong or not supported
    */
-  MessageLite newKey(ByteString serializedKeyFormat) throws GeneralSecurityException;
-
-  /**
-   * Generates a new key according to specification in {@code keyFormat}.
-   *
-   * @return the new generated key
-   * @throws GeneralSecurityException if the specified format is wrong or not supported
-   */
-  MessageLite newKey(MessageLite keyFormat) throws GeneralSecurityException;
+  KeyProto newKey() throws GeneralSecurityException;
 
   /** @return true iff this KeyManager supports key type identified by {@code typeUrl}. */
   boolean doesSupport(String typeUrl);
 
   /** @return the type URL that identifies the key type of keys managed by this KeyManager. */
   String getKeyType();
-
-  /** @return the version number of this KeyManager. */
-  int getVersion();
 
   /**
    * Returns the primitive class object of the P. Should be implemented as {@code return P.class;}
@@ -100,12 +97,12 @@ public interface KeyManager<P> {
   // APIs for Key Management
 
   /**
-   * Generates a new {@code KeyData} according to specification in {@code serializedkeyFormat}.
+   * Generates a new {@code KeyData}.
    *
    * <p>This should be used solely by {@link KeysetManager}.
    *
    * @return the new generated key
    * @throws GeneralSecurityException if the specified format is wrong or not supported
    */
-  KeyData newKeyData(ByteString serializedKeyFormat) throws GeneralSecurityException;
+  KeyData newKeyData() throws GeneralSecurityException;
 }

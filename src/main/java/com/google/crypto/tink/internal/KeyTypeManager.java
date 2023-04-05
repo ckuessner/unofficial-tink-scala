@@ -19,9 +19,8 @@ package com.google.crypto.tink.internal;
 import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.annotations.Alpha;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.MessageLite;
+import com.google.crypto.tink.proto.KeyProto;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -55,7 +54,7 @@ import java.util.Set;
  * that it can be independent of the protobuf library.
  */
 @Alpha
-public abstract class KeyTypeManager<KeyProtoT extends MessageLite> {
+public abstract class KeyTypeManager<KeyProtoT extends KeyProto> {
   private final Class<KeyProtoT> clazz;
 
   private final Map<Class<?>, PrimitiveFactory<?, KeyProtoT>> factories;
@@ -98,19 +97,15 @@ public abstract class KeyTypeManager<KeyProtoT extends MessageLite> {
   /** Returns the type URL that identifies the key type of keys managed by this KeyManager. */
   public abstract String getKeyType();
 
-  /** Returns the version number of this KeyManager. */
-  public abstract int getVersion();
-
   /** Returns the {@link KeyMaterialType} for this proto. */
   public abstract KeyMaterialType keyMaterialType();
 
-
-  /**
-   * Parses a serialized key proto.
-   *
-   * <p>Implement as {@code return KeyProtoT.parseFrom(byteString);}.
-   */
-  public abstract KeyProtoT parseKey(ByteString byteString) throws InvalidProtocolBufferException;
+  ///**
+  // * Parses a serialized key proto.
+  // *
+  // * <p>Implement as {@code return KeyProtoT.parseFrom(byteString);}.
+  // */
+  //public abstract KeyProtoT parseKey(ByteString byteString) throws InvalidProtocolBufferException;
 
   /**
    * Checks if the given {@code keyProto} is a valid key.
@@ -161,53 +156,47 @@ public abstract class KeyTypeManager<KeyProtoT extends MessageLite> {
    * be able to generate keys. In particular, in this case it needs to have some KeyFormat protocol
    * buffer which can be validated, parsed, and from which a key can be generated.
    */
-  public abstract static class KeyFactory<
-      KeyFormatProtoT extends MessageLite, KeyProtoT extends MessageLite> {
-    private final Class<KeyFormatProtoT> clazz;
-    public KeyFactory(Class<KeyFormatProtoT> clazz) {
-      this.clazz = clazz;
-    }
+  public abstract static class KeyFactory<KeyProtoT extends KeyProto> {
+    public KeyFactory() {}
 
     /**
-     * A container that contains key format and other information that form key templates supported
+     * A container that contains key type and other information that form key templates supported
      * by this factory.
      */
-    public static final class KeyFormat<KeyFormatProtoT> {
-      public KeyFormatProtoT keyFormat;
-      public KeyTemplate.OutputPrefixType outputPrefixType;
+    public static final class KeyFormat<KeyProtoT extends KeyProto> {
+      public final KeyTemplate.OutputPrefixType outputPrefixType;
 
-      public KeyFormat(KeyFormatProtoT keyFormat, KeyTemplate.OutputPrefixType outputPrefixType) {
-        this.keyFormat = keyFormat;
+      public KeyFormat(KeyTemplate.OutputPrefixType outputPrefixType) {
         this.outputPrefixType = outputPrefixType;
       }
     }
 
-    /**
-     * Returns the class corresponding to the key format protobuffer.
-     */
-    public final Class<KeyFormatProtoT> getKeyFormatClass() {
-      return clazz;
-    }
+    ///**
+    // * Returns the class corresponding to the key format protobuffer.
+    // */
+    //public final Class<KeyFormatProtoT> getKeyFormatClass() {
+    //  return clazz;
+    //}
 
-    /**
-     * Checks if the given {@code keyFormatProto} is a valid key.
-     *
-     * @throws GeneralSecurityException if the passed {@code keyFormatProto} is not valid in any
-     *     way.
-     */
-    public abstract void validateKeyFormat(KeyFormatProtoT keyFormatProto)
-        throws GeneralSecurityException;
+    ///**
+    // * Checks if the given {@code keyFormatProto} is a valid key.
+    // *
+    // * @throws GeneralSecurityException if the passed {@code keyFormatProto} is not valid in any
+    // *     way.
+    // */
+    //public abstract void validateKeyFormat(KeyFormatProtoT keyFormatProto)
+    //    throws GeneralSecurityException;
 
-    /**
-     * Parses a serialized key proto.
-     *
-     * <p>Implement as {@code return KeyFormatProtoT.parseFrom(byteString);}.
-     */
-    public abstract KeyFormatProtoT parseKeyFormat(ByteString byteString)
-        throws InvalidProtocolBufferException;
+    ///**
+    // * Parses a serialized key proto.
+    // *
+    // * <p>Implement as {@code return KeyFormatProtoT.parseFrom(byteString);}.
+    // */
+    //public abstract KeyFormatProtoT parseKeyFormat(ByteString byteString)
+    //    throws InvalidProtocolBufferException;
 
     /** Creates a new key from a given format. */
-    public abstract KeyProtoT createKey(KeyFormatProtoT keyFormat) throws GeneralSecurityException;
+    public abstract KeyProtoT createKey() throws GeneralSecurityException;
 
     /**
      * Derives a new key from a given format, using the given {@code pseudoRandomness}.
@@ -223,9 +212,9 @@ public abstract class KeyTypeManager<KeyProtoT extends MessageLite> {
      * <p>Not every KeyTypeManager needs to implement this; if not implemented a {@link
      * GeneralSecurityException} will be thrown.
      */
-    public KeyProtoT deriveKey(KeyFormatProtoT keyFormat, InputStream pseudoRandomness)
+    public KeyProtoT deriveKey(InputStream pseudoRandomness)
         throws GeneralSecurityException {
-      throw new GeneralSecurityException("deriveKey not implemented for key of type " + clazz);
+      throw new GeneralSecurityException("deriveKey not implemented by " + this.getClass());
     }
 
     /**
@@ -234,7 +223,7 @@ public abstract class KeyTypeManager<KeyProtoT extends MessageLite> {
      * @throws GeneralSecurityException Key type managers can throw GeneralSecurityException when
      *     their key formats depend on other key formats that were not registered.
      */
-    public Map<String, KeyFormat<KeyFormatProtoT>> keyFormats() throws GeneralSecurityException {
+    public Map<String, KeyFormat<KeyProtoT>> keyFormats() throws GeneralSecurityException {
       return Collections.emptyMap();
     }
 
@@ -270,7 +259,7 @@ public abstract class KeyTypeManager<KeyProtoT extends MessageLite> {
    *
    * @throws UnsupportedOperationException if the manager does not support creating primitives.
    */
-  public KeyFactory<?, KeyProtoT> keyFactory() {
+  public KeyFactory<KeyProtoT> keyFactory() {
     throw new UnsupportedOperationException("Creating keys is not supported.");
   }
 }
