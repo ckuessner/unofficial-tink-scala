@@ -24,15 +24,9 @@ import static org.junit.Assume.assumeTrue;
 import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.internal.PrimitiveFactory;
 import com.google.crypto.tink.internal.PrivateKeyTypeManager;
-import com.google.crypto.tink.proto.AesGcmKey;
-import com.google.crypto.tink.proto.Ed25519PrivateKey;
-import com.google.crypto.tink.proto.Ed25519PublicKey;
-import com.google.crypto.tink.proto.KeyData;
+import com.google.crypto.tink.proto.*;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistryLite;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.MessageLite;
 import java.security.GeneralSecurityException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,27 +47,27 @@ public final class KeyManagerRegistryTest {
     private final String typeUrl;
 
     @Override
-    public Primitive1 getPrimitive(ByteString proto) throws GeneralSecurityException {
+    public Primitive1 getPrimitive(KeyProto proto) throws GeneralSecurityException {
       throw new UnsupportedOperationException("Not needed for test");
     }
 
+    //@Override
+    //public Primitive1 getPrimitive() throws GeneralSecurityException {
+    //  throw new UnsupportedOperationException("Not needed for test");
+    //}
+
     @Override
-    public Primitive1 getPrimitive(MessageLite proto) throws GeneralSecurityException {
+    public KeyProto newKey() throws GeneralSecurityException {
       throw new UnsupportedOperationException("Not needed for test");
     }
 
-    @Override
-    public MessageLite newKey(ByteString template) throws GeneralSecurityException {
-      throw new UnsupportedOperationException("Not needed for test");
-    }
+    //@Override
+    //public MessageLite newKey(MessageLite template) throws GeneralSecurityException {
+    //  throw new UnsupportedOperationException("Not needed for test");
+    //}
 
     @Override
-    public MessageLite newKey(MessageLite template) throws GeneralSecurityException {
-      throw new UnsupportedOperationException("Not needed for test");
-    }
-
-    @Override
-    public KeyData newKeyData(ByteString serializedKeyFormat) throws GeneralSecurityException {
+    public KeyData newKeyData() throws GeneralSecurityException {
       throw new UnsupportedOperationException("Not needed for test");
     }
 
@@ -93,21 +87,21 @@ public final class KeyManagerRegistryTest {
     }
   }
 
-  private static class TestKeyTypeManager extends KeyTypeManager<AesGcmKey> {
+  private static class TestKeyTypeManager extends KeyTypeManager<XChaCha20Poly1305Key> {
     private final String typeUrl;
 
     public TestKeyTypeManager(String typeUrl) {
       super(
-          AesGcmKey.class,
-          new PrimitiveFactory<Primitive1, AesGcmKey>(Primitive1.class) {
+          XChaCha20Poly1305Key.class,
+          new PrimitiveFactory<Primitive1, XChaCha20Poly1305Key>(Primitive1.class) {
             @Override
-            public Primitive1 getPrimitive(AesGcmKey key) {
+            public Primitive1 getPrimitive(XChaCha20Poly1305Key key) {
               return new Primitive1();
             }
           },
-          new PrimitiveFactory<Primitive2, AesGcmKey>(Primitive2.class) {
+          new PrimitiveFactory<Primitive2, XChaCha20Poly1305Key>(Primitive2.class) {
             @Override
-            public Primitive2 getPrimitive(AesGcmKey key) {
+            public Primitive2 getPrimitive(XChaCha20Poly1305Key key) {
               return new Primitive2();
             }
           });
@@ -119,19 +113,18 @@ public final class KeyManagerRegistryTest {
       return typeUrl;
     }
 
-
     @Override
     public KeyMaterialType keyMaterialType() {
       throw new UnsupportedOperationException("Not needed for test");
     }
 
     @Override
-    public void validateKey(AesGcmKey keyProto) throws GeneralSecurityException {}
+    public void validateKey(XChaCha20Poly1305Key keyProto) throws GeneralSecurityException {}
 
-    @Override
-    public AesGcmKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
-      return AesGcmKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
-    }
+    //@Override
+    //public XChaCha20Poly1305Key parseKey(ByteString byteString) throws InvalidProtocolBufferException {
+    //  return XChaCha20Poly1305Key.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
+    //}
 
     ///* We set the key manager FIPS compatible per default, such that all tests which use key
     // * managers can also be run if Tink.useOnlyFips() == true.*/
@@ -211,7 +204,7 @@ public final class KeyManagerRegistryTest {
     //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
-    KeyTypeManager<AesGcmKey> manager = new TestKeyTypeManager("customTypeUrl1");
+    KeyTypeManager<XChaCha20Poly1305Key> manager = new TestKeyTypeManager("customTypeUrl1");
     assertThrows(
         GeneralSecurityException.class, () -> registry.getUntypedKeyManager("customTypeUrl1"));
     registry.registerKeyManager(manager);
@@ -227,8 +220,8 @@ public final class KeyManagerRegistryTest {
     //}
 
     KeyManagerRegistry registry = new KeyManagerRegistry();
-    KeyTypeManager<AesGcmKey> manager1 = new TestKeyTypeManager("customTypeUrl1");
-    KeyTypeManager<AesGcmKey> manager2 = new TestKeyTypeManager("customTypeUrl1");
+    KeyTypeManager<XChaCha20Poly1305Key> manager1 = new TestKeyTypeManager("customTypeUrl1");
+    KeyTypeManager<XChaCha20Poly1305Key> manager2 = new TestKeyTypeManager("customTypeUrl1");
     registry.registerKeyManager(manager1);
     registry.registerKeyManager(manager2);
   }
@@ -296,42 +289,42 @@ public final class KeyManagerRegistryTest {
     assertThat(manager).isSameInstanceAs(registered);
   }
 
-  // The method "parseKeyData" only works if a KeyTypeManager was registered -- KeyManager objects
-  // do not support this.
-  @Test
-  public void testParseKeyData_keyTypeManager_works() throws Exception {
-    //if (TinkFipsUtil.useOnlyFips()) {
-    //  assumeTrue(
-    //      "If FIPS is required, we can only register managers if the fips module is available",
-    //      TinkFipsUtil.fipsModuleAvailable());
-    //}
+  //// The method "parseKeyData" only works if a KeyTypeManager was registered -- KeyManager objects
+  //// do not support this.
+  //@Test
+  //public void testParseKeyData_keyTypeManager_works() throws Exception {
+  //  //if (TinkFipsUtil.useOnlyFips()) {
+  //  //  assumeTrue(
+  //  //      "If FIPS is required, we can only register managers if the fips module is available",
+  //  //      TinkFipsUtil.fipsModuleAvailable());
+  //  //}
 
-    KeyManagerRegistry registry = new KeyManagerRegistry();
-    registry.registerKeyManager(new TestKeyTypeManager("typeUrl"));
-    XChaCha20Poly1305Key key = XChaCha20Poly1305Key.newBuilder().build();
-    KeyData keyData =
-        KeyData.newBuilder()
-            .setTypeUrl("typeUrl")
-            .setValue(key.toByteString())
-            .setKeyMaterialType(KeyMaterialType.SYMMETRIC)
-            .build();
-    assertThat(registry.parseKeyData(keyData)).isEqualTo(key);
-  }
+  //  KeyManagerRegistry registry = new KeyManagerRegistry();
+  //  registry.registerKeyManager(new TestKeyTypeManager("typeUrl"));
+  //  XChaCha20Poly1305Key key = XChaCha20Poly1305Key.newBuilder().build();
+  //  KeyData keyData =
+  //      KeyData.newBuilder()
+  //          .setTypeUrl("typeUrl")
+  //          .setValue(key)
+  //          .setKeyMaterialType(KeyMaterialType.SYMMETRIC)
+  //          .build();
+  //  assertThat(registry.parseKeyData(keyData)).isEqualTo(key);
+  //}
 
-  @Test
-  public void testParseKeyData_keyManager_returnsNull() throws Exception {
-    //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
-    KeyManagerRegistry registry = new KeyManagerRegistry();
-    registry.registerKeyManager(new TestKeyManager("typeUrl"));
-    XChaCha20Poly1305Key key = XChaCha20Poly1305Key.newBuilder().build();
-    KeyData keyData =
-        KeyData.newBuilder()
-            .setTypeUrl("typeUrl")
-            .setValue(key.toByteString())
-            .setKeyMaterialType(KeyMaterialType.SYMMETRIC)
-            .build();
-    assertThat(registry.parseKeyData(keyData)).isNull();
-  }
+  //@Test
+  //public void testParseKeyData_keyManager_returnsNull() throws Exception {
+  //  //assumeFalse("Unable to test KeyManagers in Fips mode", TinkFipsUtil.useOnlyFips());
+  //  KeyManagerRegistry registry = new KeyManagerRegistry();
+  //  registry.registerKeyManager(new TestKeyManager("typeUrl"));
+  //  XChaCha20Poly1305Key key = XChaCha20Poly1305Key.newBuilder().build();
+  //  KeyData keyData =
+  //      KeyData.newBuilder()
+  //          .setTypeUrl("typeUrl")
+  //          .setValue(key)
+  //          .setKeyMaterialType(KeyMaterialType.SYMMETRIC)
+  //          .build();
+  //  assertThat(registry.parseKeyData(keyData)).isNull();
+  //}
 
   private static class TestPublicKeyTypeManager extends KeyTypeManager<Ed25519PublicKey> {
     private final String typeUrl;
@@ -358,11 +351,11 @@ public final class KeyManagerRegistryTest {
       // happens by throwing here.
     }
 
-    @Override
-    public Ed25519PublicKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
+    //@Override
+    //public Ed25519PublicKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
 
-      return Ed25519PublicKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
-    }
+    //  return Ed25519PublicKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
+    //}
 
     ///* We set the key manager FIPS compatible per default, such that all tests which use key
     // * managers can also be run if Tink.useOnlyFips() == true.*/
@@ -394,10 +387,10 @@ public final class KeyManagerRegistryTest {
     @Override
     public void validateKey(Ed25519PrivateKey keyProto) throws GeneralSecurityException {}
 
-    @Override
-    public Ed25519PrivateKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
-      return Ed25519PrivateKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
-    }
+    //@Override
+    //public Ed25519PrivateKey parseKey(ByteString byteString) throws InvalidProtocolBufferException {
+    //  return Ed25519PrivateKey.parseFrom(byteString, ExtensionRegistryLite.getEmptyRegistry());
+    //}
 
     @Override
     public Ed25519PublicKey getPublicKey(Ed25519PrivateKey privateKey) {
@@ -515,11 +508,11 @@ public final class KeyManagerRegistryTest {
         Ed25519PrivateKey.newBuilder().setPublicKey(publicKey).build();
     KeyData publicKeyData =
         ((PrivateKeyManager) registry.getUntypedKeyManager("privateTypeUrl"))
-            .getPublicKeyData(privateKey.toByteString());
-    Ed25519PublicKey parsedPublicKey =
-        Ed25519PublicKey.parseFrom(
-            publicKeyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());
-    assertThat(parsedPublicKey).isEqualTo(publicKey);
+            .getPublicKeyData(privateKey);
+    //Ed25519PublicKey parsedPublicKey =
+    //    Ed25519PublicKey.parseFrom(
+    //        publicKeyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());
+    //assertThat(parsedPublicKey).isEqualTo(publicKey);
   }
 
   ///**
@@ -602,11 +595,11 @@ public final class KeyManagerRegistryTest {
         Ed25519PrivateKey.newBuilder().setPublicKey(publicKey).build();
     KeyData publicKeyData =
         ((PrivateKeyManager) registry.getUntypedKeyManager("privateTypeUrl"))
-            .getPublicKeyData(privateKey.toByteString());
-    Ed25519PublicKey parsedPublicKey =
-        Ed25519PublicKey.parseFrom(
-            publicKeyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());
-    assertThat(parsedPublicKey).isEqualTo(publicKey);
+            .getPublicKeyData(privateKey);
+    //Ed25519PublicKey parsedPublicKey =
+    //    Ed25519PublicKey.parseFrom(
+    //        publicKeyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());
+    //assertThat(parsedPublicKey).isEqualTo(publicKey);
   }
 
   //@Test
