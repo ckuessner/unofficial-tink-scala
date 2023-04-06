@@ -8,7 +8,9 @@ lazy val root = (project in file("."))
     libraryDependencies += "com.github.sbt" % "junit-interface" % "0.13.3" % Test,
     projectDependencies ++= Seq(
       "junit" % "junit" % "4.13.2" % Test,
-      "com.google.truth" % "truth" % "0.44" % Test,
-      "com.google.code.gson" % "gson" % "2.10.1" % Test
+      "com.google.truth" % "truth" % "1.1.3" % Test,
+      "com.google.code.gson" % "gson" % "2.10.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.15" % Test,
+      "org.scalatest" %% "scalatest-flatspec" % "3.2.15" % Test
     )
   )
