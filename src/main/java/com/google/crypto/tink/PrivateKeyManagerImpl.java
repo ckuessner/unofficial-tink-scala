@@ -21,7 +21,6 @@ import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.internal.PrivateKeyTypeManager;
 import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.proto.KeyProto;
-import com.google.crypto.tink.proto.PrivateKeyProto;
 import com.google.crypto.tink.proto.PublicKeyProto;
 
 import java.security.GeneralSecurityException;

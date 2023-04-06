@@ -16,11 +16,8 @@
 
 package com.google.crypto.tink.signature;
 
-import com.google.crypto.tink.proto.HashType;
 import com.google.crypto.tink.proto.KeyTemplate;
 import com.google.crypto.tink.proto.OutputPrefixType;
-import java.math.BigInteger;
-import java.security.spec.RSAKeyGenParameterSpec;
 
 /**
  * Pre-generated {@link KeyTemplate} for {@link com.google.crypto.tink.PublicKeySign} and {@link
