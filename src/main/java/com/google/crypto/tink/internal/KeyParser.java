@@ -34,6 +34,7 @@ public abstract class KeyParser<SerializationT extends Serialization> {
    * <p>This interface exists only so we have a type we can reference in {@link #create}. Users
    * should not use this directly; see the explanation in {@link #create}.
    */
+  @FunctionalInterface
   public interface KeyParsingFunction<SerializationT extends Serialization> {
     Key parseKey(SerializationT serialization, /*@Nullable*/ SecretKeyAccess access)
         throws GeneralSecurityException;

@@ -26,7 +26,6 @@ import com.google.crypto.tink.proto.Ed25519PrivateKey;
 import com.google.crypto.tink.proto.Ed25519PublicKey;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.subtle.Ed25519Sign;
-import com.google.crypto.tink.subtle.Validators;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.io.InputStream;

@@ -22,7 +22,6 @@ import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.proto.KeyProto;
 import com.google.crypto.tink.proto.OutputPrefixType;
 import com.google.crypto.tink.util.Bytes;
-import com.google.protobuf.ByteString;
 import java.security.GeneralSecurityException;
 
 /**

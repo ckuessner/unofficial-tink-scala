@@ -25,6 +25,8 @@ import com.google.crypto.tink.aead.XChaCha20Poly1305Parameters;
 import com.google.crypto.tink.aead.XChaCha20Poly1305ProtoSerialization;
 import com.google.crypto.tink.proto.KeyTemplate;
 import com.google.crypto.tink.proto.OutputPrefixType;
+import com.google.crypto.tink.signature.Ed25519Parameters;
+import com.google.crypto.tink.signature.Ed25519ProtoSerialization;
 import com.google.crypto.tink.util.Bytes;
 
 import java.security.GeneralSecurityException;
@@ -53,6 +55,9 @@ public final class ProtoParametersSerialization implements Serialization {
     } else if ("type.googleapis.com/google.crypto.tink.ChaCha20Poly1305Key".equals(keyTemplate.getTypeUrl())) {
       ChaCha20Poly1305Parameters.Variant variant = ChaCha20Poly1305ProtoSerialization.toVariant(outputPrefixType);
       return ChaCha20Poly1305Parameters.create(variant);
+    } else if ("type.googleapis.com/google.crypto.tink.Ed25519PrivateKey".equals(keyTemplate.typeUrl())) {
+      Ed25519Parameters.Variant variant = Ed25519ProtoSerialization.toVariant(outputPrefixType);
+      return Ed25519Parameters.create(variant);
     } else {
       throw new GeneralSecurityException("Cannot create parameters POJO for " + keyTemplate.getTypeUrl());
     }

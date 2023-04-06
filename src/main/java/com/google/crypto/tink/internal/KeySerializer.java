@@ -33,6 +33,7 @@ public abstract class KeySerializer<KeyT extends Key, SerializationT extends Ser
    * <p>This interface exists only so we have a type we can reference in {@link #create}. Users
    * should not use this directly; see the explanation in {@link #create}.
    */
+  @FunctionalInterface
   public interface KeySerializationFunction<
       KeyT extends Key, SerializationT extends Serialization> {
     SerializationT serializeKey(KeyT key, /*@Nullable*/ SecretKeyAccess access)

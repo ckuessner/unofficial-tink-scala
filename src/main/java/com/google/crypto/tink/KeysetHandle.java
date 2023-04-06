@@ -720,7 +720,7 @@ public final class KeysetHandle {
    *
    * @throws GeneralSecurityException if the key template is invalid.
    */
-  public static final KeysetHandle generateNew(KeyTemplate keyTemplate)
+  public static final KeysetHandle generateNew(com.google.crypto.tink.KeyTemplate keyTemplate)
       throws GeneralSecurityException {
     ProtoParametersSerialization protoParametersSerialization = ProtoParametersSerialization.create(keyTemplate.getProto());
     var parameters = protoParametersSerialization.toParametersPojo();

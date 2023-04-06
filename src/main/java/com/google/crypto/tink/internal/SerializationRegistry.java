@@ -20,6 +20,7 @@ import com.google.crypto.tink.Key;
 import com.google.crypto.tink.SecretKeyAccess;
 import com.google.crypto.tink.aead.ChaCha20Poly1305ProtoSerialization;
 import com.google.crypto.tink.aead.XChaCha20Poly1305ProtoSerialization;
+import com.google.crypto.tink.signature.Ed25519ProtoSerialization;
 import com.google.crypto.tink.util.Bytes;
 import java.security.GeneralSecurityException;
 import java.util.Map;
@@ -41,7 +42,9 @@ public final class SerializationRegistry {
   static {
     keySerializerMap = Stream.of(
             ChaCha20Poly1305ProtoSerialization.KEY_SERIALIZER,
-            XChaCha20Poly1305ProtoSerialization.KEY_SERIALIZER
+            XChaCha20Poly1305ProtoSerialization.KEY_SERIALIZER,
+            Ed25519ProtoSerialization.PRIVATE_KEY_SERIALIZER(),
+            Ed25519ProtoSerialization.PUBLIC_KEY_SERIALIZER()
     ).collect(Collectors.toMap(
             serializer -> new SerializerIndex(serializer.getKeyClass(), serializer.getSerializationClass()),
             Function.identity())
@@ -49,7 +52,9 @@ public final class SerializationRegistry {
 
     keyParserMap = Stream.of(
             ChaCha20Poly1305ProtoSerialization.KEY_PARSER,
-            XChaCha20Poly1305ProtoSerialization.KEY_PARSER
+            XChaCha20Poly1305ProtoSerialization.KEY_PARSER,
+            Ed25519ProtoSerialization.PRIVATE_KEY_PARSER(),
+            Ed25519ProtoSerialization.PUBLIC_KEY_PARSER()
     ).collect(Collectors.toMap(
             parser -> new ParserIndex(parser.getSerializationClass(), parser.getObjectIdentifier()),
             Function.identity())
