@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
-
-import java.security.GeneralSecurityException;
+import java.security.GeneralSecurityException
 
 /**
  * Interface for public key signing.
@@ -33,11 +32,12 @@ import java.security.GeneralSecurityException;
  *
  * @since 1.0.0
  */
-public interface PublicKeyVerify {
+trait PublicKeyVerify {
   /**
    * Verifies whether {@code signature} is a valid signature for {@code data}.
    *
    * @throws GeneralSecurityException if {@code signature} is not a valid signature for {@code data}
    */
-  void verify(final byte[] signature, final byte[] data) throws GeneralSecurityException;
+  @throws[GeneralSecurityException]
+  def verify(signature: Array[Byte], data: Array[Byte]): Unit
 }

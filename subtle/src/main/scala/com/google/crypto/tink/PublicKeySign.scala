@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
-
-import java.security.GeneralSecurityException;
+import java.security.GeneralSecurityException
 
 /**
  * Interface for public key signing.
@@ -33,11 +32,12 @@ import java.security.GeneralSecurityException;
  *
  * @since 1.0.0
  */
-public interface PublicKeySign {
+trait PublicKeySign {
   /**
    * Computes the signature for {@code data}.
    *
    * @return the signature of {@code data}
    */
-  byte[] sign(final byte[] data) throws GeneralSecurityException;
+  @throws[GeneralSecurityException]
+  def sign(data: Array[Byte]): Array[Byte]
 }

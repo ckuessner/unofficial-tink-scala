@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.subtle
 
-package com.google.crypto.tink.subtle;
-
-import java.security.GeneralSecurityException;
+import java.security.GeneralSecurityException
 
 /**
  * This interface for symmetric key ciphers that are indistinguishable against chosen-plaintext
@@ -27,19 +26,21 @@ import java.security.GeneralSecurityException;
  *
  * @since 1.0.0
  */
-public interface IndCpaCipher {
+trait IndCpaCipher {
   /**
    * Encrypts {@code plaintext}. The resulting ciphertext is indistinguishable under
    * chosen-plaintext attack. However, it does not have integrity protection.
    *
    * @return the resulting ciphertext.
    */
-  byte[] encrypt(final byte[] plaintext) throws GeneralSecurityException;
+  @throws[GeneralSecurityException]
+  def encrypt(plaintext: Array[Byte]): Array[Byte]
 
   /**
    * Decrypts {@code ciphertext}.
    *
    * @return the resulting plaintext.
    */
-  byte[] decrypt(final byte[] ciphertext) throws GeneralSecurityException;
+  @throws[GeneralSecurityException]
+  def decrypt(ciphertext: Array[Byte]): Array[Byte]
 }
