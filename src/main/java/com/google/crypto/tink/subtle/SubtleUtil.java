@@ -16,13 +16,10 @@
 
 package com.google.crypto.tink.subtle;
 
-import com.google.crypto.tink.internal.BigIntegerEncoding;
-import com.google.crypto.tink.internal.Util;
 import com.google.crypto.tink.subtle.Enums.HashType;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
 
 /** Helper methods. */
 public final class SubtleUtil {
@@ -77,26 +74,26 @@ public final class SubtleUtil {
     throw new GeneralSecurityException("Unsupported hash " + hash);
   }
 
-  /**
-   * Best-effort checks that this is Android.
-   *
-   * @return true if running on Android.
-   */
-  public static boolean isAndroid() {
-    // https://developer.android.com/reference/java/lang/System#getProperties%28%29
-    return "The Android Project".equals(System.getProperty("java.vendor"));
-  }
+  ///**
+  // * Best-effort checks that this is Android.
+  // *
+  // * @return true if running on Android.
+  // */
+  //public static boolean isAndroid() {
+  //  // https://developer.android.com/reference/java/lang/System#getProperties%28%29
+  //  return "The Android Project".equals(System.getProperty("java.vendor"));
+  //}
 
-  /**
-   * Converts an unsigned, big-endian encoded byte array to a non-negative integer
-   * (https://tools.ietf.org/html/rfc8017#section-4.1).
-   *
-   * @param bs the byte array to be converted to integer.
-   * @return the corresponding integer.
-   */
-  public static BigInteger bytes2Integer(byte[] bs) {
-    return BigIntegerEncoding.fromUnsignedBigEndianBytes(bs);
-  }
+  ///**
+  // * Converts an unsigned, big-endian encoded byte array to a non-negative integer
+  // * (https://tools.ietf.org/html/rfc8017#section-4.1).
+  // *
+  // * @param bs the byte array to be converted to integer.
+  // * @return the corresponding integer.
+  // */
+  //public static BigInteger bytes2Integer(byte[] bs) {
+  //  return BigIntegerEncoding.fromUnsignedBigEndianBytes(bs);
+  //}
 
   /**
    * Converts a nonnegative integer to a byte array of a specified length
