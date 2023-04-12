@@ -13,24 +13,17 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.aead.internal
 
-package com.google.crypto.tink.aead.internal;
-
-import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
+import java.security.{GeneralSecurityException, InvalidKeyException}
 
 /**
  * XChaCha20Poly1305 AEAD construction, as described in
  * https://tools.ietf.org/html/draft-arciszewski-xchacha-01.
  */
-public final class InsecureNonceXChaCha20Poly1305 extends InsecureNonceChaCha20Poly1305Base {
-  public InsecureNonceXChaCha20Poly1305(final byte[] key) throws GeneralSecurityException {
-    super(key);
-  }
-
-  @Override
-  InsecureNonceChaCha20Base newChaCha20Instance(final byte[] key, int initialCounter)
-      throws InvalidKeyException {
-    return new InsecureNonceXChaCha20(key, initialCounter);
+final class InsecureNonceXChaCha20Poly1305 @throws[GeneralSecurityException](key: Array[Byte]) extends InsecureNonceChaCha20Poly1305Base(key) {
+  @throws[InvalidKeyException]
+  override private[internal] def newChaCha20Instance(key: Array[Byte], initialCounter: Int) = {
+    new InsecureNonceXChaCha20(key, initialCounter)
   }
 }

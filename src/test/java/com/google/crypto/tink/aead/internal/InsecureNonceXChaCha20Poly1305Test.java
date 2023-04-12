@@ -136,7 +136,7 @@ public class InsecureNonceXChaCha20Poly1305Test {
                 cipher.decrypt(
                     new byte[24],
                     // NOTE: Valid ciphertext must contain enough bytes for the tag.
-                    new byte[Poly1305.MAC_TAG_SIZE_IN_BYTES - 1],
+                    new byte[Poly1305.MAC_TAG_SIZE_IN_BYTES() - 1],
                     new byte[1]));
     assertThat(e).hasMessageThat().containsMatch("ciphertext too short");
   }

@@ -69,7 +69,7 @@ public final class ChaCha20UtilTest {
               0x03020100, 0x07060504, 0x0b0a0908, 0x0f0e0d0c,
               0x13121110, 0x17161514, 0x1b1a1918, 0x1f1e1d1c
             });
-    int[] state = new int[ChaCha20Util.BLOCK_SIZE_IN_INTS];
+    int[] state = new int[ChaCha20Util.BLOCK_SIZE_IN_INTS()];
     ChaCha20Util.setSigmaAndKey(state, key);
     // Verify that first four words equal ChaCha20Util.SIGMA.
     assertThat(Arrays.copyOf(state, 4))
