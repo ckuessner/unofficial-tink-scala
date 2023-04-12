@@ -14,44 +14,33 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.google.crypto.tink.aead.internal;
+package com.google.crypto.tink.aead.internal
 
-import java.security.InvalidKeyException;
+import java.security.InvalidKeyException
 
 /**
  * A stream cipher, as described in RFC 8439 https://tools.ietf.org/html/rfc8439, section 2.4.
  *
  * <p>This cipher is meant to be used to construct an AEAD with Poly1305.
  */
-public class InsecureNonceChaCha20 extends InsecureNonceChaCha20Base {
-  public InsecureNonceChaCha20(final byte[] key, int initialCounter) throws InvalidKeyException {
-    super(key, initialCounter);
-  }
-
-  @Override
-  public int[] createInitialState(final int[] nonce, int counter) {
-    if (nonce.length != nonceSizeInBytes() / 4) {
-      throw new IllegalArgumentException(
-          String.format("ChaCha20 uses 96-bit nonces, but got a %d-bit nonce", nonce.length * 32));
-    }
+class InsecureNonceChaCha20 @throws[InvalidKeyException] (keyBytes: Array[Byte], initialCounter: Int) extends InsecureNonceChaCha20Base(keyBytes, initialCounter) {
+  override def createInitialState(nonce: Array[Int], counter: Int): Array[Int] = {
+    if (nonce.length != nonceSizeInBytes / 4) throw new IllegalArgumentException(s"ChaCha20 uses 96-bit nonces, but got a ${nonce.length * 32}-bit nonce")
     // Set the initial state based on https://tools.ietf.org/html/rfc8439#section-2.3
-    int[] state = new int[ChaCha20Util.BLOCK_SIZE_IN_INTS];
+    val state = new Array[Int](ChaCha20Util.BLOCK_SIZE_IN_INTS)
     // The first four words (0-3) are constants: 0x61707865, 0x3320646e, 0x79622d32, 0x6b206574.
     // The next eight words (4-11) are taken from the 256-bit key by reading the bytes in
     // little-endian order, in 4-byte chunks.
-    ChaCha20Util.setSigmaAndKey(state, this.key);
+    ChaCha20Util.setSigmaAndKey(state, this.key)
     // Word 12 is a block counter. Since each block is 64-byte, a 32-bit word is enough for 256
     // gigabytes of data. Ref: https://tools.ietf.org/html/rfc8439#section-2.3.
-    state[12] = counter;
+    state(12) = counter
     // Words 13-15 are a nonce, which must not be repeated for the same key. The 13th word is the
     // first 32 bits of the input nonce taken as a little-endian integer, while the 15th word is the
     // last 32 bits.
-    System.arraycopy(nonce, 0, state, 13, nonce.length);
-    return state;
+    System.arraycopy(nonce, 0, state, 13, nonce.length)
+    state
   }
 
-  @Override
-  public int nonceSizeInBytes() {
-    return 12;
-  }
+  override val nonceSizeInBytes = 12
 }
