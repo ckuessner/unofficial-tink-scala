@@ -1507,7 +1507,7 @@ final class Ed25519 {
 
   static byte[] getHashedScalar(final byte[] privateKey)
       throws GeneralSecurityException {
-    MessageDigest digest = EngineFactory.MESSAGE_DIGEST.getInstance("SHA-512");
+    MessageDigest digest = EngineFactory.sha512MessageDigestInstance();
     digest.update(privateKey, 0, FIELD_LEN);
     byte[] h = digest.digest();
     // https://tools.ietf.org/html/rfc8032#section-5.1.2.
@@ -1535,7 +1535,7 @@ final class Ed25519 {
     // Copying the message to make it thread-safe. Otherwise, if the caller modifies the message
     // between the first and the second hash then it might leak the private key.
     byte[] messageCopy = Arrays.copyOfRange(message, 0, message.length);
-    MessageDigest digest = EngineFactory.MESSAGE_DIGEST.getInstance("SHA-512");
+    MessageDigest digest = EngineFactory.sha512MessageDigestInstance();
     digest.update(hashedPrivateKey, FIELD_LEN, FIELD_LEN);
     digest.update(messageCopy);
     byte[] r = digest.digest();
@@ -1598,7 +1598,7 @@ final class Ed25519 {
     if (!isSmallerThanGroupOrder(s)) {
       return false;
     }
-    MessageDigest digest = EngineFactory.MESSAGE_DIGEST.getInstance("SHA-512");
+    MessageDigest digest = EngineFactory.sha512MessageDigestInstance();
     digest.update(signature, 0, FIELD_LEN);
     digest.update(publicKey);
     digest.update(message);
