@@ -57,7 +57,7 @@ class Ed25519PublicKeyManager extends KeyTypeManager<Ed25519PublicKey> {
 
   @Override
   public void validateKey(Ed25519PublicKey keyProto) throws GeneralSecurityException {
-    if (keyProto.getKeyValue() == null || keyProto.getKeyValue().size() != Ed25519Verify.PUBLIC_KEY_LEN) {
+    if (keyProto.getKeyValue() == null || keyProto.getKeyValue().size() != Ed25519Verify.PUBLIC_KEY_LEN()) {
       throw new GeneralSecurityException("invalid Ed25519 public key: incorrect key length");
     }
   }

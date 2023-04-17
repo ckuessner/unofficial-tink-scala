@@ -52,8 +52,8 @@ public final class Field25519Test {
   @Before
   public void setUp() {
     for (int i = 0; i < NUM_BASIC_TESTS; i++) {
-      x[i] = (new BigInteger(FIELD_LEN * 8, rand)).mod(P);
-      y[i] = (new BigInteger(FIELD_LEN * 8, rand)).mod(P);
+      x[i] = (new BigInteger(FIELD_LEN() * 8, rand)).mod(P);
+      y[i] = (new BigInteger(FIELD_LEN() * 8, rand)).mod(P);
     }
   }
 
@@ -63,7 +63,7 @@ public final class Field25519Test {
       BigInteger expectedResult = x[i].add(y[i]).mod(P);
       byte[] xBytes = toLittleEndian(x[i]);
       byte[] yBytes = toLittleEndian(y[i]);
-      long[] output = new long[LIMB_CNT * 2 + 1];
+      long[] output = new long[LIMB_CNT() * 2 + 1];
       Field25519.sum(output, Field25519.expand(xBytes), Field25519.expand(yBytes));
       Field25519.reduceCoefficients(output);
       BigInteger result = new BigInteger(reverse(Field25519.contract(output)));
@@ -77,7 +77,7 @@ public final class Field25519Test {
       BigInteger expectedResult = x[i].subtract(y[i]).mod(P);
       byte[] xBytes = toLittleEndian(x[i]);
       byte[] yBytes = toLittleEndian(y[i]);
-      long[] output = new long[LIMB_CNT * 2 + 1];
+      long[] output = new long[LIMB_CNT() * 2 + 1];
       Field25519.sub(output, Field25519.expand(xBytes), Field25519.expand(yBytes));
       Field25519.reduceCoefficients(output);
       BigInteger result = new BigInteger(reverse(Field25519.contract(output)));
@@ -91,7 +91,7 @@ public final class Field25519Test {
       BigInteger expectedResult = x[i].multiply(y[i]).mod(P);
       byte[] xBytes = toLittleEndian(x[i]);
       byte[] yBytes = toLittleEndian(y[i]);
-      long[] output = new long[LIMB_CNT * 2 + 1];
+      long[] output = new long[LIMB_CNT() * 2 + 1];
       Field25519.product(output, Field25519.expand(xBytes), Field25519.expand(yBytes));
       Field25519.reduceSizeByModularReduction(output);
       Field25519.reduceCoefficients(output);
@@ -106,7 +106,7 @@ public final class Field25519Test {
       BigInteger expectedResult = x[i].multiply(y[i]).mod(P);
       byte[] xBytes = toLittleEndian(x[i]);
       byte[] yBytes = toLittleEndian(y[i]);
-      long[] output = new long[LIMB_CNT * 2 + 1];
+      long[] output = new long[LIMB_CNT() * 2 + 1];
       Field25519.mult(output, Field25519.expand(xBytes), Field25519.expand(yBytes));
       BigInteger result = new BigInteger(reverse(Field25519.contract(output)));
       assertEquals("Multiplication x[i] * y[i]: " + x[i] + "*" + y[i], expectedResult, result);
@@ -119,7 +119,7 @@ public final class Field25519Test {
     for (int i = 0; i < NUM_BASIC_TESTS; i++) {
       BigInteger expectedResult = x[i].multiply(BigInteger.valueOf(scalar)).mod(P);
       byte[] xBytes = toLittleEndian(x[i]);
-      long[] output = new long[LIMB_CNT * 2 + 1];
+      long[] output = new long[LIMB_CNT() * 2 + 1];
       Field25519.scalarProduct(output, Field25519.expand(xBytes), scalar);
       Field25519.reduceSizeByModularReduction(output);
       Field25519.reduceCoefficients(output);
@@ -133,7 +133,7 @@ public final class Field25519Test {
     for (int i = 0; i < NUM_BASIC_TESTS; i++) {
       BigInteger expectedResult = x[i].multiply(x[i]).mod(P);
       byte[] xBytes = toLittleEndian(x[i]);
-      long[] output = new long[LIMB_CNT * 2 + 1];
+      long[] output = new long[LIMB_CNT() * 2 + 1];
       Field25519.square(output, Field25519.expand(xBytes));
       Field25519.reduceSizeByModularReduction(output);
       Field25519.reduceCoefficients(output);
@@ -147,7 +147,7 @@ public final class Field25519Test {
     for (int i = 0; i < NUM_BASIC_TESTS; i++) {
       BigInteger expectedResult = x[i].modInverse(P);
       byte[] xBytes = toLittleEndian(x[i]);
-      long[] output = new long[LIMB_CNT * 2 + 1];
+      long[] output = new long[LIMB_CNT() * 2 + 1];
       Field25519.inverse(output, Field25519.expand(xBytes));
       BigInteger result = new BigInteger(reverse(Field25519.contract(output)));
       assertEquals("Inverse: x[i]^(-1) mod P: " + x[i], expectedResult, result);

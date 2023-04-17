@@ -30,8 +30,8 @@ import org.junit.runners.JUnit4;
 public class Ed25519Test {
   @Test
   public void testGroupOrder() throws Exception {
-    assertEquals(32, Ed25519.GROUP_ORDER.length);
-    byte[] result = Ed25519.scalarMultWithBaseToBytes(Ed25519.GROUP_ORDER);
+    assertEquals(32, Ed25519.GROUP_ORDER().length);
+    byte[] result = Ed25519.scalarMultWithBaseToBytes(Ed25519.GROUP_ORDER());
     assertEquals(1, result[0]);
     for (int i = 1; i < 32; i++) {
       assertEquals(0, result[i]);
@@ -41,7 +41,7 @@ public class Ed25519Test {
   /** Test whether sign/verify method accidentally changes the public key or hashedPrivateKey. */
   @Test
   public void testUnmodifiedKey() throws Exception {
-    byte[] privateKey = Random.randBytes(Field25519.FIELD_LEN);
+    byte[] privateKey = Random.randBytes(Field25519.FIELD_LEN());
     byte[] hashedPrivateKey = Ed25519.getHashedScalar(privateKey);
     byte[] originalHashedPrivateKey =
         Arrays.copyOfRange(hashedPrivateKey, 0, hashedPrivateKey.length);

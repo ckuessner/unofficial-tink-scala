@@ -76,7 +76,7 @@ public final class Ed25519PrivateKeyManager
   @Override
   public void validateKey(Ed25519PrivateKey keyProto) throws GeneralSecurityException {
     new Ed25519PublicKeyManager().validateKey(keyProto.getPublicKey());
-    if (keyProto.getKeyValue().size() != Ed25519Sign.SECRET_KEY_LEN) {
+    if (keyProto.getKeyValue().size() != Ed25519Sign.SECRET_KEY_LEN()) {
       throw new GeneralSecurityException("invalid Ed25519 private key: incorrect key length");
     }
   }
@@ -110,7 +110,7 @@ public final class Ed25519PrivateKeyManager
       public Ed25519PrivateKey deriveKey(InputStream inputStream)
           throws GeneralSecurityException {
 
-        byte[] pseudorandomness = new byte[Ed25519Sign.SECRET_KEY_LEN];
+        byte[] pseudorandomness = new byte[Ed25519Sign.SECRET_KEY_LEN()];
         try {
           readFully(inputStream, pseudorandomness);
           Ed25519Sign.KeyPair keyPair = Ed25519Sign.KeyPair.newKeyPairFromSeed(pseudorandomness);

@@ -38,15 +38,15 @@ public final class Curve25519Test {
   /** 1st iteration test in Section 5.2 of RFC 7748. https://tools.ietf.org/html/rfc7748 */
   @Test
   public void testCurveMult_success() throws Exception {
-    byte[] k = new byte[Field25519.FIELD_LEN];
+    byte[] k = new byte[Field25519.FIELD_LEN()];
     k[0] = 9;
 
-    byte[] e = Arrays.copyOf(k, Field25519.FIELD_LEN);
+    byte[] e = Arrays.copyOf(k, Field25519.FIELD_LEN());
     e[0] &= (byte) 248;
     e[31] &= (byte) 127;
     e[31] |= (byte) 64;
 
-    long[] x = new long[Field25519.LIMB_CNT + 1];
+    long[] x = new long[Field25519.LIMB_CNT() + 1];
 
     Curve25519.curveMult(x, e, k);
     assertEquals(
@@ -60,17 +60,17 @@ public final class Curve25519Test {
    */
   @Test
   public void testCurveMultWithMbs_ignoresMsbAndDoesNotChangeInput() throws Exception {
-    byte[] kOriginal = new byte[Field25519.FIELD_LEN];
+    byte[] kOriginal = new byte[Field25519.FIELD_LEN()];
     kOriginal[0] = 9;
     kOriginal[31] = (byte) 0x80; // set MSB
 
-    byte[] k = Arrays.copyOf(kOriginal, Field25519.FIELD_LEN);
-    byte[] e = Arrays.copyOf(kOriginal, Field25519.FIELD_LEN);
+    byte[] k = Arrays.copyOf(kOriginal, Field25519.FIELD_LEN());
+    byte[] e = Arrays.copyOf(kOriginal, Field25519.FIELD_LEN());
     e[0] &= (byte) 248;
     e[31] &= (byte) 127;
     e[31] |= (byte) 64;
 
-    long[] x = new long[Field25519.LIMB_CNT + 1];
+    long[] x = new long[Field25519.LIMB_CNT() + 1];
 
     Curve25519.curveMult(x, e, k);
     expect
@@ -113,7 +113,7 @@ public final class Curve25519Test {
             "39382357235489614581723060781553021112529911719440698176882885853963445705823");
 
     byte[] n = toLittleEndian(two);
-    long[] x = new long[Field25519.LIMB_CNT + 1];
+    long[] x = new long[Field25519.LIMB_CNT() + 1];
 
     // 0
     assertThrows(
