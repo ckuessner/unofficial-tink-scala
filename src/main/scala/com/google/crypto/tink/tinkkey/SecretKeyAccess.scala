@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package com.google.crypto.tink.tinkkey;
+package com.google.crypto.tink.tinkkey
 
 /**
  * A class used to generate {@code KeyAccess} instances granting secret access.
@@ -24,15 +24,12 @@ package com.google.crypto.tink.tinkkey;
  * @deprecated Use {@link com.google.crypto.tink.InsecureSecretKeyAccess} instead.
  */
 //@Immutable
-@Deprecated /* Deprecation under consideration */
-public final class SecretKeyAccess {
-
-  private SecretKeyAccess() {}
-
+@deprecated /* Deprecation under consideration */ object SecretKeyAccess {
   /**
    * Returns a {@code KeyAccess} instance where {@code canAccessSecret()} returns true.
-   **/
-  public static KeyAccess insecureSecretAccess() {
-    return KeyAccess.secretAccess();
-  }
+   * */
+    def insecureSecretAccess: KeyAccess = KeyAccess.secretAccess
+}
+
+@deprecated final class SecretKeyAccess private {
 }

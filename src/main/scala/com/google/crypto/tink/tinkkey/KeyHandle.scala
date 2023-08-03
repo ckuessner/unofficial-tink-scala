@@ -13,15 +13,15 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package com.google.crypto.tink.tinkkey;
+package com.google.crypto.tink.tinkkey
 
-import com.google.crypto.tink.KeyTemplate;
-import com.google.crypto.tink.KeyTemplate.OutputPrefixType;
-import com.google.crypto.tink.Registry;
-import com.google.crypto.tink.internal.Util;
-import com.google.crypto.tink.proto.KeyData;
-import com.google.crypto.tink.tinkkey.internal.ProtoKey;
-import java.security.GeneralSecurityException;
+import com.google.crypto.tink.KeyTemplate
+import com.google.crypto.tink.KeyTemplate.OutputPrefixType
+import com.google.crypto.tink.Registry
+import com.google.crypto.tink.internal.Util
+import com.google.crypto.tink.proto.KeyData
+import com.google.crypto.tink.tinkkey.internal.ProtoKey
+import java.security.GeneralSecurityException
 
 /**
  * Wraps a {@link TinkKey} and enforces access to the underlying {@link TinkKey} with {@link
@@ -31,19 +31,15 @@ import java.security.GeneralSecurityException;
  * @deprecated Use {@link com.google.crypto.tink.Key} instead.
  */
 //@Immutable
-@Deprecated /* Deprecation under consideration */
-public class KeyHandle {
-
+@deprecated /* Deprecation under consideration */ object KeyHandle {
   /**
    * KeyStatusType is metadata associated to a key which is only meaningful when the key is part of
    * a {@link Keyset}. A key's status in the Keyset is either ENABLED (able to perform cryptographic
    * operations), DISABLED (unable to perform operations, but could be re-enabled), or DESTROYED
    * (the key's data is no longer present in the keyset).
    */
-  public enum KeyStatusType {
-    ENABLED,
-    DISABLED,
-    DESTROYED;
+  enum KeyStatusType extends java.lang.Enum[KeyStatusType] {
+    case ENABLED, DISABLED, DESTROYED
   }
 
   /**
@@ -52,11 +48,11 @@ public class KeyHandle {
    *
    * @throws GeneralSecurityException if {@code access} does not grant access to {@code key}
    */
-  public static KeyHandle createFromKey(TinkKey key, KeyAccess access)
-      throws GeneralSecurityException {
-    KeyHandle result = new KeyHandle(key);
-    result.checkAccess(access);
-    return result;
+  @throws[GeneralSecurityException]
+  def createFromKey(key: TinkKey, access: KeyAccess): KeyHandle = {
+    val result = new KeyHandle(key)
+    result.checkAccess(access)
+    result
   }
 
   /**
@@ -66,88 +62,81 @@ public class KeyHandle {
    *
    * @deprecated Use the KeyHandle(TinkKey, KeyAccess) constructor instead.
    */
-  @Deprecated /* Deprecation under consideration */
-  public static KeyHandle createFromKey(KeyData keyData, OutputPrefixType opt) {
-    return new KeyHandle(new ProtoKey(keyData, opt));
-  }
-
-  private final TinkKey key;
-  private final KeyStatusType status;
-  private final int id;
-
-  /**
-   * Constructs a KeyHandle wrapping the input TinkKey. The KeyStatusType is set to ENABLED and an
-   * arbitrary key ID is assigned.
-   */
-  private KeyHandle(TinkKey key) {
-    this.key = key;
-    this.status = KeyStatusType.ENABLED;
-    this.id = Util.randKeyId();
-  }
-
-  /**
-   * Constructor intended for Tink internal purposes; allows one to set all the member variables of
-   * a {@link KeyHandle}.
-   */
-  protected KeyHandle(TinkKey key, KeyStatusType status, int keyId) {
-    this.key = key;
-    this.status = status;
-    this.id = keyId;
-  }
+  @deprecated /* Deprecation under consideration */ def createFromKey(keyData: KeyData, opt: KeyTemplate.OutputPrefixType) = new KeyHandle(new ProtoKey(keyData, opt))
 
   /**
    * Generates a new {@link KeyHandle} that contains a fresh key generated according to {@code
    * keyTemplate}.
    *
    * @throws GeneralSecurityException if the key template's type URL has not been registered with
-   *     the {@link Registry}.
+   * the {@link Registry}.
    */
-  public static KeyHandle generateNew(KeyTemplate keyTemplate) throws GeneralSecurityException {
-    ProtoKey protoKey =
-        new ProtoKey(Registry.newKeyData(keyTemplate), keyTemplate.getOutputPrefixType());
-    return new KeyHandle(protoKey);
+  @throws[GeneralSecurityException]
+  def generateNew(keyTemplate: KeyTemplate): KeyHandle = {
+    val protoKey = new ProtoKey(Registry.newKeyData(keyTemplate), keyTemplate.getOutputPrefixType)
+    new KeyHandle(protoKey)
+  }
+}
+
+@deprecated class KeyHandle {
+  final private var key: TinkKey = null
+  final private var status: KeyHandle.KeyStatusType = null
+  final private var id = 0
+
+  /**
+   * Constructs a KeyHandle wrapping the input TinkKey. The KeyStatusType is set to ENABLED and an
+   * arbitrary key ID is assigned.
+   */
+  def this(key: TinkKey) = {
+    this()
+    this.key = key
+    this.status = KeyHandle.KeyStatusType.ENABLED
+    this.id = Util.randKeyId
+  }
+
+  /**
+   * Constructor intended for Tink internal purposes; allows one to set all the member variables of
+   * a {@link KeyHandle}.
+   */
+  def this(key: TinkKey, status: KeyHandle.KeyStatusType, keyId: Int) = {
+    this()
+    this.key = key
+    this.status = status
+    this.id = keyId
   }
 
   /** Returns {@code true} if the underlying {@link TinkKey} has a secret. */
-  public boolean hasSecret() {
-    return key.hasSecret();
-  }
+  def hasSecret: Boolean = key.hasSecret
 
   /** Returns the status of the key. See {@link KeyStatusType}. */
-  public KeyStatusType getStatus() {
-    return this.status;
-  }
+  def getStatus: KeyHandle.KeyStatusType = this.status
 
   /**
    * Returns the key ID of this key. The key ID is not guaranteed to be unique among all KeyHandles.
    */
-  public int getId() {
-    return id;
-  }
+  def getId: Int = id
 
   /**
    * Returns the underlying {@link TinkKey} key if {@code access} is a {@link SecretKeyAccess} and
    * the key has a secret, or if the key does not have a secret, otherwise throws a {@link
-   * GeneralSecurityException}.
+ * GeneralSecurityException}.
    */
-  public TinkKey getKey(KeyAccess access) throws GeneralSecurityException {
-    checkAccess(access);
-    return key;
+  @throws[GeneralSecurityException]
+  def getKey(access: KeyAccess): TinkKey = {
+    checkAccess(access)
+    key
   }
 
   /**
    * Returns the {@link KeyTemplate} of the underlying {@link TinkKey}.
    *
    * @throws UnsupportedOperationException if the underlying {@link TinkKey} has not implemented
-   *     getKeyTemplate().
+   *                                       getKeyTemplate().
    */
-  public KeyTemplate getKeyTemplate() {
-    return key.getKeyTemplate();
-  }
+  def getKeyTemplate: KeyTemplate = key.getKeyTemplate
 
-  private void checkAccess(KeyAccess access) throws GeneralSecurityException {
-    if (hasSecret() && !access.canAccessSecret()) {
-      throw new GeneralSecurityException("No access");
-    }
+  @throws[GeneralSecurityException]
+  private def checkAccess(access: KeyAccess): Unit = {
+    if (hasSecret && !access.canAccessSecret) throw new GeneralSecurityException("No access")
   }
 }

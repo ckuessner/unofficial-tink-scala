@@ -97,6 +97,6 @@ import java.security.GeneralSecurityException
     val kt = XChaCha20Poly1305KeyManager.xChaCha20Poly1305Template
     val kd = Registry.newKeyData(kt)
     val pk = new ProtoKey(kd, kt.getOutputPrefixType)
-    assertThrows(classOf[UnsupportedOperationException], () => pk.getKeyTemplate())
+    assertThrows(classOf[UnsupportedOperationException], () => pk.getKeyTemplate)
   }
 }

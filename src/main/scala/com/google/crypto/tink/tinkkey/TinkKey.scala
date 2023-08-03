@@ -13,9 +13,9 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package com.google.crypto.tink.tinkkey;
+package com.google.crypto.tink.tinkkey
 
-import com.google.crypto.tink.KeyTemplate;
+import com.google.crypto.tink.KeyTemplate
 
 /**
  * {@code TinkKey} represents how Tink views individual keys. In contrast, {@code KeysetHandle} only
@@ -28,10 +28,9 @@ import com.google.crypto.tink.KeyTemplate;
  * @deprecated Use {@link com.google.crypto.tink.Key} instead.
  */
 //@Immutable
-@Deprecated /* Deprecation under consideration */
-public interface TinkKey {
+@deprecated /* Deprecation under consideration */ trait TinkKey {
   /** Returns true if the key contains secret key material, and false otherwise. */
-  public boolean hasSecret();
+  def hasSecret: Boolean
 
   /**
    * A {@code TinkKey} should know the {@code KeyTemplate} from which it was generated,
@@ -43,8 +42,7 @@ public interface TinkKey {
    *
    * @return the {@code KeyTemplate} used to generate the key.
    * @throws UnsupportedOperationException if the {@code TinkKey} does not yet support returning
-   * its {@code KeyTemplate}
-   **/
-
-  public KeyTemplate getKeyTemplate();
+   *                                       its {@code KeyTemplate}
+   * */
+  def getKeyTemplate: KeyTemplate
 }

@@ -13,8 +13,7 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package com.google.crypto.tink.tinkkey;
-
+package com.google.crypto.tink.tinkkey
 
 /**
  * An access token for {@code TinkKey}. Access to Tink keys is governed by {@code KeyHandle}. A
@@ -25,30 +24,14 @@ package com.google.crypto.tink.tinkkey;
  * @deprecated Use {@link com.google.crypto.tink.SecretKeyAccess} instead.
  */
 //@Immutable
-@Deprecated /* Deprecation under consideration */
-public final class KeyAccess {
-
-  private final boolean canAccessSecret;
-
-  private KeyAccess(boolean canAccessSecret) {
-    this.canAccessSecret = canAccessSecret;
-  }
-
+@deprecated /* Deprecation under consideration */
+object KeyAccess {
   /**
    * Returns a {@code KeyAccess} instance where {@code canAccessSecret()} returns false.
-   **/
-  public static KeyAccess publicAccess() {
-    return new KeyAccess(false);
-  }
+   * */
+  def publicAccess = new KeyAccess(false)
 
-  static KeyAccess secretAccess() {
-    return new KeyAccess(true);
-  }
-
-  /**
-   * Returns true if the {@code KeyAccess} instance grants access to a key's secret
-   **/
-  public boolean canAccessSecret() {
-    return canAccessSecret;
-  }
+  private[tinkkey] def secretAccess = new KeyAccess(true)
 }
+
+@deprecated final class KeyAccess private(val canAccessSecret: Boolean) {}
