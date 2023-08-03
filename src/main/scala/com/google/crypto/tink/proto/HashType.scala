@@ -1,6 +1,6 @@
 package com.google.crypto.tink.proto
 
-enum HashType extends Enum[HashType] {
+enum HashType extends java.lang.Enum[HashType] {
   case SHA1
   case SHA224
   case SHA256

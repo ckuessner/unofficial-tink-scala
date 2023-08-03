@@ -17,7 +17,7 @@ case class KeyData(typeUrl: String, value: KeyProto, keyMaterialType: KeyMateria
 
 object KeyData {
 
-  enum KeyMaterialType extends Enum[KeyMaterialType] {
+  enum KeyMaterialType extends java.lang.Enum[KeyMaterialType] {
     case UNKNOWN_KEYMATERIAL
     case SYMMETRIC
     case ASYMMETRIC_PRIVATE
@@ -44,7 +44,7 @@ object KeyData {
       this
     }
 
-    def build(): KeyData = new KeyData(typeUrl, value, keyMaterialType)
+    def build: KeyData = new KeyData(typeUrl, value, keyMaterialType)
   }
 
   def newBuilder: Builder = new Builder()

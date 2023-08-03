@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
-
-import com.google.crypto.tink.annotations.Alpha;
+import com.google.crypto.tink.annotations.Alpha
 
 /**
  * Represents a cryptographic object.
@@ -33,8 +32,7 @@ import com.google.crypto.tink.annotations.Alpha;
  * dependencies need to be kept at a minimum.
  */
 //@Immutable
-@Alpha
-public abstract class Key {
+@Alpha abstract class Key {
   /**
    * Returns a {@link Parameters} object containing all the information about the key which is not
    * randomly chosen.
@@ -42,18 +40,19 @@ public abstract class Key {
    * <p>Implementations need to ensure that {@code getParameters().hasIdRequirement()} returns true
    * if and only if {@code getIdRequirementOrNull} is non-null.
    */
-  public abstract Parameters getParameters();
+  def getParameters: Parameters
 
   /**
-   * Returns null if this key has no id requirement, otherwise the required id.
+   * Returns None if this key has no id requirement, otherwise Some(the required id).
    *
    * <p>Some keys, when they are in a keyset, are required to have a certain ID to work properly.
    * This comes from the fact that Tink in some cases prefixes ciphertexts or signatures with the
    * string {@code 0x01<id>}, where the ID is encoded in big endian (see the documentation of the
    * key type for details), in which case the key requires a certain ID.
    */
-  //@Nullable
-  public abstract Integer getIdRequirementOrNull();
+  def getIdRequirement: Option[Int] = Option(getIdRequirementOrNull)
+
+  def getIdRequirementOrNull: Integer
 
   /**
    * Returns true if the key is equal to the passed in key.
@@ -64,5 +63,5 @@ public abstract class Key {
    * could risk leaking key material). Hence, they typically also should not override {@code
    * equals}.
    */
-  public abstract boolean equalsKey(Key other);
+  def equalsKey(other: Key): Boolean
 }

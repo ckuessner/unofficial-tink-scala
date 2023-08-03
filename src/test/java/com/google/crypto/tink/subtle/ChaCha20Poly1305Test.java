@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.testing.TestUtil;
-import com.google.crypto.tink.testing.TestUtil.BytesMutation;
+import com.google.crypto.tink.testing.BytesMutation;
 import com.google.crypto.tink.testing.WycheproofTestUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

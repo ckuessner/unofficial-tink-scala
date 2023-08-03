@@ -57,7 +57,7 @@ object Keyset {
       this
     }
 
-    def build(): Keyset = {
+    def build: Keyset = {
       new Keyset(primaryKeyId, keys.toList)
     }
   }
@@ -79,23 +79,27 @@ object Keyset {
   }
 
   object Key {
-    class Builder(private var keyData: KeyData = null,
-                  private var status: KeyStatusType = null,
+    class Builder(private var keyData: Option[KeyData] = None,
+                  private var status: Option[KeyStatusType] = None,
                   private var keyId: Int = 0,
-                  private var outputPrefixType: OutputPrefixType = null) {
+                  private var outputPrefixType: Option[OutputPrefixType] = None) {
+
+      def this(keyData: KeyData, keyStatusType: KeyStatusType, keyId: Int, outputPrefixType: OutputPrefixType) = {
+        this(Option(keyData), Option(keyStatusType), keyId, Option(outputPrefixType))
+      }
 
       def setKeyData(keyData: KeyData): Builder = {
-        this.keyData = keyData
+        this.keyData = Option(keyData)
         this
       }
 
       def clearKeyData(): Builder = {
-        this.keyData = null;
+        this.keyData = None
         this
       }
 
       def setStatus(status: KeyStatusType): Builder = {
-        this.status = status
+        this.status = Option(status)
         this
       }
 
@@ -105,12 +109,12 @@ object Keyset {
       }
 
       def setOutputPrefixType(outputPrefixType: OutputPrefixType): Builder = {
-        this.outputPrefixType = outputPrefixType
+        this.outputPrefixType = Option(outputPrefixType)
         this
       }
 
-      def build(): Keyset.Key = {
-        new Keyset.Key(keyData, status, keyId, outputPrefixType)
+      def build: Keyset.Key = {
+        new Keyset.Key(keyData.orNull, status.get, keyId, outputPrefixType.get)
       }
 
     }

@@ -18,7 +18,7 @@ object Ed25519PublicKey {
       this
     }
 
-    def build(): Ed25519PublicKey = {
+    def build: Ed25519PublicKey = {
       new Ed25519PublicKey(keyValue)
     }
 
