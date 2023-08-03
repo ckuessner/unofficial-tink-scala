@@ -13,20 +13,15 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package com.google.crypto.tink.tinkkey.internal;
+package com.google.crypto.tink.tinkkey.internal
 
-import com.google.crypto.tink.internal.KeyStatusTypeProtoConverter;
-import com.google.crypto.tink.tinkkey.KeyHandle;
-import com.google.crypto.tink.tinkkey.TinkKey;
+import com.google.crypto.tink.internal.KeyStatusTypeProtoConverter
+import com.google.crypto.tink.proto.KeyStatusType
+import com.google.crypto.tink.tinkkey.{KeyHandle, TinkKey}
 
 /**
  * Class used to expose the protected KeyHandle constructor to the rest of Tink. This class is for
  * Tink internal purposes only, and its public API is not guaranteed to be stable.
  */
-public final class InternalKeyHandle extends KeyHandle {
-
-  public InternalKeyHandle(
-      TinkKey key, com.google.crypto.tink.proto.KeyStatusType status, int keyId) {
-    super(key, KeyStatusTypeProtoConverter.fromProto(status), keyId);
-  }
+final class InternalKeyHandle(key: TinkKey, status: KeyStatusType, keyId: Int) extends KeyHandle(key, KeyStatusTypeProtoConverter.fromProto(status), keyId) {
 }

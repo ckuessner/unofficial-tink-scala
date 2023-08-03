@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import scala.NotImplementedError;
+import scala.Option;
 
 /** Tests for {@link KeyTester}. */
 @RunWith(JUnit4.class)

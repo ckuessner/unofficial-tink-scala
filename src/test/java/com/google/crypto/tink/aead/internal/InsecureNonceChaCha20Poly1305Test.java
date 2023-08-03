@@ -25,7 +25,7 @@ import com.google.crypto.tink.subtle.Bytes;
 import com.google.crypto.tink.subtle.Hex;
 import com.google.crypto.tink.subtle.Random;
 import com.google.crypto.tink.testing.TestUtil;
-import com.google.crypto.tink.testing.TestUtil.BytesMutation;
+import com.google.crypto.tink.testing.BytesMutation;
 import com.google.crypto.tink.testing.WycheproofTestUtil;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
@@ -324,14 +324,4 @@ public class InsecureNonceChaCha20Poly1305Test {
     }
     assertEquals(0, errors);
   }
-
-  //@Test
-  //public void testFailIfFipsModuleNotAvailable() throws Exception {
-  //  Assume.assumeTrue(TinkFips.useOnlyFips());
-
-  //  byte[] key = Random.randBytes(32);
-  //  assertThrows(
-  //      GeneralSecurityException.class,
-  //      () -> new InsecureNonceChaCha20Poly1305(key));
-  //}
 }

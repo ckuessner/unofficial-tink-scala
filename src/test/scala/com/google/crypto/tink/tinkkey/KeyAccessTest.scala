@@ -13,25 +13,21 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package com.google.crypto.tink.tinkkey;
+package com.google.crypto.tink.tinkkey
 
-import static com.google.common.truth.Truth.assertThat;
+import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.{assertFalse, assertTrue}
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.junit.{Assert, Test}
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-/** Tests for KeyAccess **/
-@RunWith(JUnit4.class)
-public final class KeyAccessTest {
-
-  @Test
-  public void testPublicAccess_shouldReturnKeyAccessWithoutSecretAccess() {
-    assertThat(KeyAccess.publicAccess().canAccessSecret()).isFalse();
+/** Tests for KeyAccess * */
+@RunWith(classOf[JUnit4]) final class KeyAccessTest {
+  @Test def testPublicAccess_shouldReturnKeyAccessWithoutSecretAccess(): Unit = {
+    assertFalse(KeyAccess.publicAccess.canAccessSecret)
   }
 
-  @Test
-  public void testSecretAccess_shouldReturnKeyAccessWithSecretAccess() {
-    assertThat(KeyAccess.secretAccess().canAccessSecret()).isTrue();
+  @Test def testSecretAccess_shouldReturnKeyAccessWithSecretAccess(): Unit = {
+    assertTrue(KeyAccess.secretAccess.canAccessSecret)
   }
 }
