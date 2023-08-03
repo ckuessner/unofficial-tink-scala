@@ -1,12 +1,13 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "3.2.2"
+ThisBuild / scalaVersion := "3.3.0"
 
 lazy val root = (project in file("."))
   .settings(
     name := "tink-scala",
     libraryDependencies += "com.github.sbt" % "junit-interface" % "0.13.3" % Test,
-    projectDependencies ++= testDependencies
+    projectDependencies ++= testDependencies,
+    Test / parallelExecution := false
   ).dependsOn(subtle)
 
 lazy val subtle = (project in file("./subtle"))
