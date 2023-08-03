@@ -13,27 +13,14 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.signature
 
-package com.google.crypto.tink.signature;
-
-import com.google.crypto.tink.Key;
-import com.google.crypto.tink.annotations.Alpha;
-import com.google.crypto.tink.util.Bytes;
+import com.google.crypto.tink.Parameters
+import com.google.crypto.tink.annotations.Alpha
 
 /**
- * A SignaturePublicKey represents the verification portion of a digital signature primitive.
+ * Represents a description of a {@link SignaturePrivateKey} and the coresponding {@link
+ * SignaturePublicKey} excluding the randomly chosen key material.
  */
 //@Immutable
-@Alpha
-public abstract class SignaturePublicKey extends Key {
-  /**
-   * Returns a {@link Bytes} instance which is prefixed to every signature.
-   */
-  public abstract Bytes getOutputPrefix();
-
-  /**
-   * Returns the parameters of this key.
-   */
-  @Override
-  public abstract SignatureParameters getParameters();
-}
+@Alpha abstract class SignatureParameters extends Parameters {}

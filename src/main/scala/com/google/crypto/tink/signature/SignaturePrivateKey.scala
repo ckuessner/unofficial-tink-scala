@@ -13,43 +13,38 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.signature
 
-package com.google.crypto.tink.signature;
-
-import com.google.crypto.tink.Key;
-import com.google.crypto.tink.PrivateKey;
-import com.google.crypto.tink.annotations.Alpha;
-import com.google.crypto.tink.util.Bytes;
+import com.google.crypto.tink.{Key, PrivateKey}
+import com.google.crypto.tink.annotations.Alpha
+import com.google.crypto.tink.util.Bytes
 
 /**
  * A {@link SignaturePrivateKey} represents a digital signature primitive, which consists of a sign
  * and a verify function.
  *
- * <p>The verify function is only available indirectly, with {@link #getPublicKey}.
+ * <p>The verify function is only available indirectly, with {@link # getPublicKey}.
  */
 //@Immutable
-@Alpha
-public abstract class SignaturePrivateKey extends Key implements PrivateKey {
+@Alpha abstract class SignaturePrivateKey extends Key with PrivateKey {
   /**
    * Returns the {@link SignaturePublicKey}, which contains the verify function of the digital
    * signature primitive.
    */
-  @Override
-  public abstract SignaturePublicKey getPublicKey();
+  override def getPublicKey: SignaturePublicKey
 
   /**
    * Returns a {@link Bytes} instance which is prefixed to every signature.
    *
    * <p>Returns the same as {@code getPublicKey().getOutputPrefix()}.
    */
-  public final Bytes getOutputPrefix() {
-    return getPublicKey().getOutputPrefix();
-  }
+  final def getOutputPrefix: Bytes = getPublicKey.getOutputPrefix
 
-  @Override
-  //@Nullable
-  public Integer getIdRequirementOrNull() {
-    return getPublicKey().getIdRequirementOrNull();
+  override def getIdRequirement: Option[Int] = getPublicKey.getIdRequirement
+
+  override def getIdRequirementOrNull: Integer = {
+    val idRequirement = getIdRequirement
+    if idRequirement.isEmpty then null else Int.box(idRequirement.get)
   }
 
   /**
@@ -57,8 +52,5 @@ public abstract class SignaturePrivateKey extends Key implements PrivateKey {
    *
    * <p>Returns the same as {@code getPublicKey().getParameters()}.
    */
-  @Override
-  public SignatureParameters getParameters() {
-    return getPublicKey().getParameters();
-  }
+  override def getParameters: SignatureParameters = getPublicKey.getParameters
 }

@@ -60,7 +60,7 @@ object Ed25519ProtoSerialization {
     com.google.crypto.tink.proto.Ed25519PublicKey(pubKey.publicBytes),
     KeyMaterialType.ASYMMETRIC_PUBLIC,
     toOutputPrefixType(pubKey.parameters.variant),
-    pubKey.idRequirementOrNull
+    pubKey.idRequirement
   )
 
   def parsePublicKey(serialization: ProtoKeySerialization, unused: SecretKeyAccess): Ed25519PublicKey = {
@@ -75,7 +75,7 @@ object Ed25519ProtoSerialization {
     new Ed25519PublicKey(
       serialization.getValue.asInstanceOf[proto.Ed25519PublicKey].keyValue,
       Ed25519Parameters.create(toVariant(outputPrefixType)),
-      serialization.getIdRequirementOrNull
+      serialization.getIdRequirement
     )
   }
 
@@ -87,7 +87,7 @@ object Ed25519ProtoSerialization {
     ),
     KeyMaterialType.ASYMMETRIC_PUBLIC,
     toOutputPrefixType(key.publicKey.parameters.variant),
-    key.getIdRequirementOrNull
+    key.getIdRequirement
   )
 
   def parsePrivateKey(serialization: ProtoKeySerialization, access: SecretKeyAccess): Ed25519PrivateKey = {
@@ -101,7 +101,7 @@ object Ed25519ProtoSerialization {
     try {
       val protoKey = serialization.getValue.asInstanceOf[com.google.crypto.tink.proto.Ed25519PrivateKey]
       val parameters = Ed25519Parameters.create(toVariant(serialization.getOutputPrefixType))
-      val parsedPubKey = new Ed25519PublicKey(protoKey.publicKey.keyValue, parameters, serialization.getIdRequirementOrNull)
+      val parsedPubKey = new Ed25519PublicKey(protoKey.publicKey.keyValue, parameters, serialization.getIdRequirement)
       new Ed25519PrivateKey(SecretBytes.copyFrom(protoKey.keyValue.toByteArray, access), parsedPubKey)
     } catch {
       case e: Throwable => throw new GeneralSecurityException("Parsing PrivateEd25519Key failed")
