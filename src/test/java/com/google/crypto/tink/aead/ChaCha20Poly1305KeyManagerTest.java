@@ -26,6 +26,7 @@ import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.internal.KeyTypeManager;
 import com.google.crypto.tink.proto.ChaCha20Poly1305Key;
+import com.google.crypto.tink.proto.KeyData;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.subtle.Random;
 import com.google.crypto.tink.testing.TestUtil;
@@ -48,7 +49,7 @@ public class ChaCha20Poly1305KeyManagerTest {
     assertThat(new ChaCha20Poly1305KeyManager().getKeyType())
         .isEqualTo("type.googleapis.com/google.crypto.tink.ChaCha20Poly1305Key");
     assertThat(new ChaCha20Poly1305KeyManager().keyMaterialType())
-        .isEqualTo(KeyMaterialType.SYMMETRIC);
+        .isEqualTo(KeyData.KeyMaterialType$.SYMMETRIC);
   }
 
   //@Test
@@ -139,7 +140,7 @@ public class ChaCha20Poly1305KeyManagerTest {
   public void testChaCha20Poly1305Template() throws Exception {
     KeyTemplate template = ChaCha20Poly1305KeyManager.chaCha20Poly1305Template();
     assertEquals(new ChaCha20Poly1305KeyManager().getKeyType(), template.getTypeUrl());
-    assertEquals(KeyTemplate.OutputPrefixType.TINK, template.getOutputPrefixType());
+    assertEquals(KeyTemplate.OutputPrefixType$.TINK, template.getOutputPrefixType());
     //ChaCha20Poly1305KeyFormat unused =
     //    ChaCha20Poly1305KeyFormat.parseFrom(
     //        template.getValue(), ExtensionRegistryLite.getEmptyRegistry());
@@ -149,7 +150,7 @@ public class ChaCha20Poly1305KeyManagerTest {
   public void testRawChaCha20Poly1305Template() throws Exception {
     KeyTemplate template = ChaCha20Poly1305KeyManager.rawChaCha20Poly1305Template();
     assertEquals(new ChaCha20Poly1305KeyManager().getKeyType(), template.getTypeUrl());
-    assertEquals(KeyTemplate.OutputPrefixType.RAW, template.getOutputPrefixType());
+    assertEquals(KeyTemplate.OutputPrefixType$.RAW, template.getOutputPrefixType());
     //ChaCha20Poly1305KeyFormat unused =
     //    ChaCha20Poly1305KeyFormat.parseFrom(
     //        template.getValue(), ExtensionRegistryLite.getEmptyRegistry());

@@ -13,12 +13,10 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.aead
 
-package com.google.crypto.tink.aead;
-
-import com.google.crypto.tink.Parameters;
-//import com.google.errorprone.annotations.Immutable;
+import com.google.crypto.tink.Parameters
 
 /** Represents a description of a {@link AeadKey} */
 //@Immutable
-public abstract class AeadParameters extends Parameters {}
+abstract class AeadParameters extends Parameters {}

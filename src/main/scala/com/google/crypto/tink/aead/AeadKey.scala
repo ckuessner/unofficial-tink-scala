@@ -13,14 +13,13 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.aead
 
-package com.google.crypto.tink.aead;
-
-import com.google.crypto.tink.Key;
-import com.google.crypto.tink.util.Bytes;
+import com.google.crypto.tink.Key
+import com.google.crypto.tink.util.Bytes
 
 /** Represents functions to encrypt and decrypt data using AEAD. */
-public abstract class AeadKey extends Key {
+abstract class AeadKey extends Key {
   /**
    * Returns a {@link Bytes} instance which is prefixed to the ciphertext.
    *
@@ -32,8 +31,8 @@ public abstract class AeadKey extends Key {
    * built in Tink keys use the convention that the prefix is either '0x00<big endian key id>' or
    * '0x01<big endian key id>'. See the Tink keys for details.
    */
-  public abstract Bytes getOutputPrefix();
+  def getOutputPrefix: Bytes
+
   /** Returns the parameters of this key. */
-  @Override
-  public abstract AeadParameters getParameters();
+  override def getParameters: AeadParameters
 }
