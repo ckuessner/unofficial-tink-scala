@@ -1,5 +1,4 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
-
 ThisBuild / scalaVersion := "3.3.0"
 
 lazy val root = (project in file("."))
@@ -8,11 +7,11 @@ lazy val root = (project in file("."))
     libraryDependencies += "com.github.sbt" % "junit-interface" % "0.13.3" % Test,
     projectDependencies ++= testDependencies,
     Test / parallelExecution := false
-  ).dependsOn(subtle)
+  ).dependsOn(subtle.jvm)
 
-lazy val subtle = (project in file("./subtle"))
+lazy val subtle = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("./subtle"))
   .settings(
-    name := "tink-scala-subtle"
+    name := "tink-scala-subtle",
   )
 
 val testDependencies = Seq(
