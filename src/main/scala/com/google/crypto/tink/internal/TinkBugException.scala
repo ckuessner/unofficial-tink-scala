@@ -13,8 +13,7 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-
-package com.google.crypto.tink.internal;
+package com.google.crypto.tink.internal
 
 /**
  * An exception to be thrown in case there is a bug in Tink.
@@ -22,19 +21,10 @@ package com.google.crypto.tink.internal;
  * <p>This exception is thrown by Tink in cases there is a guaranteed bug in Tink. No non-Tink code
  * should throw such an exception.
  */
-public final class TinkBugException extends RuntimeException {
-  /** Constructs a new TinkBugException with the specified detail message. */
-  public TinkBugException(String message) {
-    super(message);
-  }
-
-  /** Constructs a new TinkBugException with the specified detail message and cause. */
-  public TinkBugException(String message, Throwable cause) {
-    super(message, cause);
-  }
+final class TinkBugException(message: String = "", cause: Throwable = null) extends RuntimeException(message, cause) {
+  /** Constructs a new TinkBugException as a wrapper on a root cause */
+  def this(cause: Throwable) = this("", cause)
 
   /** Constructs a new TinkBugException as a wrapper on a root cause */
-  public TinkBugException(Throwable cause) {
-    super(cause);
-  }
+  def this(message: String) = this(message, null)
 }

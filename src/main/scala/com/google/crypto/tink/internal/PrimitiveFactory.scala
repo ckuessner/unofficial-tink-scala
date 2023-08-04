@@ -13,25 +13,15 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.internal
 
-package com.google.crypto.tink.internal;
-
-import com.google.crypto.tink.proto.KeyProto;
-
-import java.security.GeneralSecurityException;
+import com.google.crypto.tink.proto.KeyProto
+import java.security.GeneralSecurityException
 
 /** A PrimitiveFactory knows how to create primitives from a given key. */
-public abstract class PrimitiveFactory<PrimitiveT, KeyProtoT extends KeyProto> {
-  private final Class<PrimitiveT> clazz;
-
-  public PrimitiveFactory(Class<PrimitiveT> clazz) {
-    this.clazz = clazz;
-  }
-
+abstract class PrimitiveFactory[PrimitiveT, KeyProtoT <: KeyProto](private val clazz: Class[PrimitiveT]) {
   /** Returns the class object corresponding to the generic parameter {@code PrimitiveT}. */
-  final Class<PrimitiveT> getPrimitiveClass() {
-    return clazz;
-  }
+  final private[internal] def getPrimitiveClass = clazz
 
   /**
    * Creates a new instance of {@code PrimitiveT}.
@@ -40,5 +30,6 @@ public abstract class PrimitiveFactory<PrimitiveT, KeyProtoT extends KeyProto> {
    * PublicKeyVerify}, {@code DeterministicAead}, {@code HybridEncrypt}, and {@code HybridDecrypt}
    * this should be a primitive which <b>ignores</b> the output prefix and assumes "RAW".
    */
-  public abstract PrimitiveT getPrimitive(KeyProtoT key) throws GeneralSecurityException;
+  @throws[GeneralSecurityException]
+  def getPrimitive(key: KeyProtoT): PrimitiveT
 }

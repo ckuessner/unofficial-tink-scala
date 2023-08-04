@@ -112,7 +112,14 @@ final class KeysetManager private(private val keysetBuilder: Keyset.Builder) {
         throw new UnsupportedOperationException("KeyHandles which contain TinkKeys that are not ProtoKeys are not yet supported.", e)
     }
     if (keyIdExists(keyHandle.getId)) throw new GeneralSecurityException("Trying to add a key with an ID already contained in the keyset.")
-    keysetBuilder.addKey(Keyset.Key.newBuilder.setKeyData(pkey.getProtoKey).setKeyId(keyHandle.getId).setStatus(KeyStatusTypeProtoConverter.toProto(keyHandle.getStatus)).setOutputPrefixType(KeyTemplate.toProto(pkey.getOutputPrefixType)).build)
+    keysetBuilder.addKey(
+      Keyset.Key.newBuilder
+        .setKeyData(pkey.getProtoKey)
+        .setKeyId(keyHandle.getId)
+        .setStatus(KeyStatusTypeProtoConverter.toProto(keyHandle.getStatus))
+        .setOutputPrefixType(KeyTemplate.toProto(pkey.getOutputPrefixType))
+        .build
+    )
     this
   }
 

@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.internal
 
-package com.google.crypto.tink.internal;
-
-import com.google.crypto.tink.util.Bytes;
+import com.google.crypto.tink.util.Bytes
 
 /**
  * Represents either a serialized {@code Key} or a serialized {@code Parameters} object.
@@ -29,7 +28,7 @@ import com.google.crypto.tink.util.Bytes;
  * that.
  */
 //@Immutable
-public interface Serialization {
+trait Serialization {
   /**
    * Identifies which parsing method to use in the registry.
    *
@@ -37,5 +36,5 @@ public interface Serialization {
    * identifier. When the registry is asked to parse a Serialization, the registry will then
    * dispatch it to the corresponding method.
    */
-  public Bytes getObjectIdentifier();
+  def getObjectIdentifier: Bytes
 }

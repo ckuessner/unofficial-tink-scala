@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
-
-import com.google.crypto.tink.annotations.Alpha;
+import com.google.crypto.tink.annotations.Alpha
 
 /**
  * Represents a cryptographic function without the actual key material.
@@ -25,18 +24,17 @@ import com.google.crypto.tink.annotations.Alpha;
  * the information about the function which is not randomly chosen with each instance.
  */
 //@Immutable
-@Alpha
-public abstract class Parameters {
+@Alpha abstract class Parameters {
   /**
    * Returns true if a key created with the parameters in this object has to have a certain ID when
    * it is in a keyset.
    *
    * <p>In Tink, certain keys change their behavior depending on the key id (for example, an {@link
-   * Aead} object can prefix the ciphertext with the big endian encoding of the key id). If this is
-   * the case, such a key should require a unique id in {@link Key#getIdRequirementOrNull} and
+ * Aead} object can prefix the ciphertext with the big endian encoding of the key id). If this is
+   * the case, such a key should require a unique id in {@link Key# getIdRequirementOrNull} and
    * return true here.
    */
-  public abstract boolean hasIdRequirement();
+  def hasIdRequirement: Boolean
 
-  public abstract KeyTemplate toKeyTemplate();
+  def toKeyTemplate: KeyTemplate
 }

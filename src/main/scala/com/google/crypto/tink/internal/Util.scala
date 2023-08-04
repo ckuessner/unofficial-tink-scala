@@ -13,41 +13,34 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.internal
 
-package com.google.crypto.tink.internal;
-
-import com.google.crypto.tink.util.Bytes;
-import java.nio.charset.Charset;
-import java.security.SecureRandom;
-import java.util.Objects;
+import com.google.crypto.tink.util.Bytes
+import java.nio.charset.Charset
+import java.security.SecureRandom
+import java.util.Objects
 
 /** Helper functions used throughout Tink, for Tink internal use only. */
-public final class Util {
-  /** Android 18-compatible alternative to {@link java.nio.charset.StandardCharsets#UTF_8}. */
-  public static final Charset UTF_8 = Charset.forName("UTF-8");
+object Util {
+  /** Android 18-compatible alternative to {@link java.nio.charset.StandardCharsets# UTF_8}. */
+  val UTF_8: Charset = Charset.forName("UTF-8")
 
   /** Returns a positive random int which can be used as a key ID in a keyset. */
-  public static int randKeyId() {
-    SecureRandom secureRandom = new SecureRandom();
-    byte[] rand = new byte[4];
-    int result = 0;
+  def randKeyId: Int = {
+    val secureRandom = new SecureRandom
+    val rand = new Array[Byte](4)
+    var result = 0
     while (result == 0) {
-      secureRandom.nextBytes(rand);
+      secureRandom.nextBytes(rand)
       // TODO(b/148124847): Other languages create key_ids with the MSB set, so we should here too.
-      result =
-          ((rand[0] & 0x7f) << 24)
-              | ((rand[1] & 0xff) << 16)
-              | ((rand[2] & 0xff) << 8)
-              | (rand[3] & 0xff);
+      result = ((rand(0) & 0x7f) << 24) | ((rand(1) & 0xff) << 16) | ((rand(2) & 0xff) << 8) | (rand(3) & 0xff)
     }
-    return result;
+    result
   }
 
-  private static final byte toByteFromPrintableAscii(char c) {
-    if (c < '!' || c > '~') {
-      throw new TinkBugException("Not a printable ASCII character: " + c);
-    }
-    return (byte) c;
+  private def toByteFromPrintableAscii(c: Char) = {
+    if (c < '!' || c > '~') throw new TinkBugException("Not a printable ASCII character: " + c)
+    c.toByte
   }
 
   /**
@@ -58,13 +51,11 @@ public final class Util {
    *
    * @throws TinkBugException if s contains a character which is not a printable ASCII character.
    */
-  public static final Bytes toBytesFromPrintableAscii(String s) {
-    byte[] result = new byte[s.length()];
-    for (int i = 0; i < s.length(); ++i) {
-      result[i] = toByteFromPrintableAscii(s.charAt(i));
+  def toBytesFromPrintableAscii(s: String): Bytes = {
+    val result = new Array[Byte](s.length)
+    for (i <- 0 until s.length) {
+      result(i) = toByteFromPrintableAscii(s.charAt(i))
     }
-    return Bytes.copyFrom(result);
+    Bytes.copyFrom(result)
   }
-
-  private Util() {}
 }

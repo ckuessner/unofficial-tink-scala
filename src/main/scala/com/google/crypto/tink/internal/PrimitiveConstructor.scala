@@ -13,11 +13,10 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.internal
 
-package com.google.crypto.tink.internal;
-
-import com.google.crypto.tink.Key;
-import java.security.GeneralSecurityException;
+import com.google.crypto.tink.Key
+import java.security.GeneralSecurityException
 
 /**
  * Create Primitive objects from {@code Key} objects of a certain kind.
@@ -28,36 +27,16 @@ import java.security.GeneralSecurityException;
  * option "PrimitiveFactory" is unavailable because such a class already exists.)
  */
 //TODO(lizatretyakova): reconsider the name before this class becomes public.
-public abstract class PrimitiveConstructor<KeyT extends Key, PrimitiveT> {
+object PrimitiveConstructor {
   /**
    * A function which creates a Primitive object.
    *
-   * <p>This interface exists only so we have a type we can reference in {@link #create}. Users
-   * should not use this directly; see the explanation in {@link #create}.
+   * <p>This interface exists only so we have a type we can reference in {@link # create}. Users
+   * should not use this directly; see the explanation in {@link # create}.
    */
-  public interface PrimitiveConstructionFunction<
-      KeyT extends Key, PrimitiveT> {
-    PrimitiveT constructPrimitive(KeyT key) throws GeneralSecurityException;
-  }
-
-  private final Class<KeyT> keyClass;
-  private final Class<PrimitiveT> primitiveClass;
-
-  private PrimitiveConstructor(
-      Class<KeyT> keyClass, Class<PrimitiveT> primitiveClass) {
-    this.keyClass = keyClass;
-    this.primitiveClass = primitiveClass;
-  }
-
-  public abstract PrimitiveT constructPrimitive(KeyT key)
-      throws GeneralSecurityException;
-
-  public Class<KeyT> getKeyClass() {
-    return keyClass;
-  }
-
-  public Class<PrimitiveT> getPrimitiveClass() {
-    return primitiveClass;
+  trait PrimitiveConstructionFunction[KeyT <: Key, PrimitiveT] {
+    @throws[GeneralSecurityException]
+    def constructPrimitive(key: KeyT): PrimitiveT
   }
 
   /**
@@ -71,10 +50,10 @@ public abstract class PrimitiveConstructor<KeyT extends Key, PrimitiveT> {
    *
    * <pre>{@code
    * class MyClass {
-   *   private static MyPrimitive getPrimitive(MyKey key)
-   *             throws GeneralSecurityException {
-   *     ...
-   *   }
+   * private static MyPrimitive getPrimitive(MyKey key)
+   * throws GeneralSecurityException {
+   * ...
+   * }
    * }
    * }</pre>
    *
@@ -82,23 +61,29 @@ public abstract class PrimitiveConstructor<KeyT extends Key, PrimitiveT> {
    *
    * <pre>{@code
    * PrimitiveConstructor<MyKey, MyPrimitive> serializer =
-   *       PrimitiveConstructor.create(MyClass::getPrimitive, MyKey.class,
-   *                                  MyPrimitive.class);
+   * PrimitiveConstructor.create(MyClass::getPrimitive, MyKey.class,
+   * MyPrimitive.class);
    * }</pre>
    *
    * -- and the resulting {@code PrimitiveConstructor} object can in turn be registered in a
    * {@code PrimitiveRegistry}.
    */
-  public static <KeyT extends Key, PrimitiveT>
-  PrimitiveConstructor<KeyT, PrimitiveT> create(
-      PrimitiveConstructionFunction<KeyT, PrimitiveT> function,
-      Class<KeyT> keyClass,
-      Class<PrimitiveT> primitiveClass) {
-    return new PrimitiveConstructor<KeyT, PrimitiveT>(keyClass, primitiveClass) {
-      @Override
-      public PrimitiveT constructPrimitive(KeyT key) throws GeneralSecurityException {
-        return function.constructPrimitive(key);
-      }
-    };
+  def create[KeyT <: Key, PrimitiveT](function: PrimitiveConstructor.PrimitiveConstructionFunction[KeyT, PrimitiveT],
+                                      keyClass: Class[KeyT],
+                                      primitiveClass: Class[PrimitiveT]
+                                     ): PrimitiveConstructor[KeyT, PrimitiveT] = {
+    new PrimitiveConstructor[KeyT, PrimitiveT](keyClass, primitiveClass) {
+      @throws[GeneralSecurityException]
+      override def constructPrimitive(key: KeyT): PrimitiveT = return function.constructPrimitive(key)
+    }
   }
+}
+
+abstract class PrimitiveConstructor[KeyT <: Key, PrimitiveT] private(private val keyClass: Class[KeyT], private val primitiveClass: Class[PrimitiveT]) {
+  @throws[GeneralSecurityException]
+  def constructPrimitive(key: KeyT): PrimitiveT
+
+  def getKeyClass: Class[KeyT] = keyClass
+
+  def getPrimitiveClass: Class[PrimitiveT] = primitiveClass
 }

@@ -13,14 +13,13 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.annotations
 
-package com.google.crypto.tink.annotations;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.Documented
+import java.lang.annotation.ElementType
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
+import java.lang.annotation.Target
 
 /**
  * Signifies that a public API (public class, method or field) is subject to incompatible changes,
@@ -35,12 +34,6 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.CLASS)
-@Target({
-  ElementType.ANNOTATION_TYPE,
-  ElementType.CONSTRUCTOR,
-  ElementType.FIELD,
-  ElementType.METHOD,
-  ElementType.TYPE
-})
+@Target(Array(ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.METHOD, ElementType.TYPE))
 @Documented
-public @interface Alpha {}
+class Alpha extends scala.annotation.Annotation {}

@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
-
-import java.security.GeneralSecurityException;
+import java.security.GeneralSecurityException
 
 /**
  * Basic interface for wrapping a primitive.
@@ -31,25 +30,26 @@ import java.security.GeneralSecurityException;
  * wrapper for each result primitive {@code P} (as Tink needs to know how to generate a {@code P}),
  * but there may be many wrapping the same {@code B}.
  */
-public interface PrimitiveWrapper<B, P> {
+trait PrimitiveWrapper[B, P] {
   /**
    * Wraps a {@code PrimitiveSet} and returns a single instance.
    *
    * <p> This method gets called when a new primitive is created. {@code primitiveSet} is immutable.
    *
    * This has to be implemented when a new primitive type is added. */
-  P wrap(PrimitiveSet<B> primitiveSet) throws GeneralSecurityException;
+  @throws[GeneralSecurityException]
+  def wrap(primitiveSet: PrimitiveSet[B]): P
 
   /**
    * Returns the primitive class object of the primitive managed. Used for internal management.
    * Should be implemented as {@code return P.class;} when implementing a wrapper creating objects
    * of type {@code P}.
    */
-  Class<P> getPrimitiveClass();
+  def getPrimitiveClass: Class[P]
 
   /**
    * Returns the primitive class object of the primitive used to create B. Used for internal
    * management. Should be implemented as {@code return B.class;}.
    */
-  Class<B> getInputPrimitiveClass();
+  def getInputPrimitiveClass: Class[B]
 }
