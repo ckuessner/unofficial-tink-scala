@@ -13,11 +13,10 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
-
-import com.google.crypto.tink.annotations.Alpha;
-import java.security.GeneralSecurityException;
+import com.google.crypto.tink.annotations.Alpha
+import java.security.GeneralSecurityException
 
 /**
  * Represents access to secret key material.
@@ -27,30 +26,24 @@ import java.security.GeneralSecurityException;
  * individiual key bytes might look like this:
  *
  * <pre>
- *   class HmacKey {
- *      ...
- *      public byte[] getKeyMaterial(SecretKeyAccess access) {
- *        checkNotNull(access);
- *        return keyMaterial;
- *      }
- *   }
+ * class HmacKey {
+ * ...
+ * public byte[] getKeyMaterial(SecretKeyAccess access) {
+ * checkNotNull(access);
+ * return keyMaterial;
+ * }
+ * }
  * </pre>
  *
  * Users who want to call {@code getKeyMaterial} then need to get a {@code SecretKeyAccess} object
  * via {@code InsecureSecretKeyAccess.get()}.
  */
 //@CheckReturnValue
-@Alpha
-//@Immutable
-public final class SecretKeyAccess {
-  private SecretKeyAccess() {}
-
-  private static final SecretKeyAccess INSTANCE = new SecretKeyAccess();
+@Alpha object SecretKeyAccess {
+  private val INSTANCE = new SecretKeyAccess
 
   /** Package visibility restricted for {@link InsecureSecretKeyAccess}. */
-  static SecretKeyAccess instance() {
-    return INSTANCE;
-  }
+  private[tink] def instance = INSTANCE
 
   /**
    * Throws an exception if the passed in {@link SecretKeyAccess} is null, otherwise returns it.
@@ -64,11 +57,12 @@ public final class SecretKeyAccess {
    * throw a null pointer exception (and one does not want to use {@code requireAccess}).
    */
   //@CanIgnoreReturnValue
-  public static SecretKeyAccess requireAccess(/*@Nullable*/ SecretKeyAccess access)
-      throws GeneralSecurityException {
-    if (access == null) {
-      throw new GeneralSecurityException("SecretKeyAccess is required");
-    }
-    return access;
+  @throws[GeneralSecurityException]
+  def requireAccess(access: SecretKeyAccess): SecretKeyAccess = {
+    if (access == null) throw new GeneralSecurityException("SecretKeyAccess is required")
+    access
   }
+}
+
+@Alpha final class SecretKeyAccess private {
 }

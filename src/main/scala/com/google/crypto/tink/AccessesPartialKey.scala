@@ -13,12 +13,12 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package com.google.crypto.tink;
+package com.google.crypto.tink
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.ElementType
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
+import java.lang.annotation.Target
 
 /**
  * Annotates methods and classes which access parts of keys.
@@ -44,23 +44,23 @@ import java.lang.annotation.Target;
  * annotated with {@code AccessesPartialKey}:
  *
  * <pre>
- *   class KeyExporter {
- *      ...
- *      {@literal @}AccessesPartialKey
- *      public static SecretBytes exportHmacKey(HmacKey key) {
- *        // The caller of this method can only handle keys without prefix, SHA256, 20 byte tags,
- *        // and 32 byte keys.
- *        if (key.getParameters().getVariant() != HmacParameters.Variant.NO_PREFIX ||
- *            key.getParameters().getHashType() != HMacParameters.Hash.SHA_256 ||
- *            key.getParameters().getTagSizeBytes() != 20 ||
- *            key.getParameters().getKeySizeBytes() != 32) {
- *          throw new IllegalArgumentException("Parameters not supported by receiver.");
- *        }
- *        return key.getKeyBytes();
- *      }
- *   }
+ * class KeyExporter {
+ * ...
+ * {@literal @}AccessesPartialKey
+ * public static SecretBytes exportHmacKey(HmacKey key) {
+ * // The caller of this method can only handle keys without prefix, SHA256, 20 byte tags,
+ * // and 32 byte keys.
+ * if (key.getParameters().getVariant() != HmacParameters.Variant.NO_PREFIX ||
+ * key.getParameters().getHashType() != HMacParameters.Hash.SHA_256 ||
+ * key.getParameters().getTagSizeBytes() != 20 ||
+ * key.getParameters().getKeySizeBytes() != 32) {
+ * throw new IllegalArgumentException("Parameters not supported by receiver.");
+ * }
+ * return key.getKeyBytes();
+ * }
+ * }
  * </pre>
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target(Array(ElementType.TYPE, ElementType.METHOD))
 @Retention(RetentionPolicy.CLASS)
-public @interface AccessesPartialKey {}
+class AccessesPartialKey extends scala.annotation.Annotation {}

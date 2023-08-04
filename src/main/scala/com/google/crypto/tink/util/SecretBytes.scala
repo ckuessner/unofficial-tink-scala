@@ -13,66 +13,51 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink.util
 
-package com.google.crypto.tink.util;
-
-import com.google.crypto.tink.SecretKeyAccess;
-import com.google.crypto.tink.annotations.Alpha;
-import com.google.crypto.tink.subtle.Random;
+import com.google.crypto.tink.SecretKeyAccess
+import com.google.crypto.tink.annotations.Alpha
+import com.google.crypto.tink.subtle.Random
+import java.security.MessageDigest
 //import com.google.errorprone.annotations.Immutable;
-import java.security.MessageDigest;
 
 /** A class storing an immutable byte array, protecting the data via {@link SecretKeyAccess}. */
-@Alpha
-//@Immutable
-public final class SecretBytes {
-  private final Bytes bytes;
-
-  private SecretBytes(Bytes bytes) {
-    this.bytes = bytes;
-  }
-
+@Alpha object SecretBytes {
   /**
    * Creates a new SecretBytes with the contents given in {@code value}.
    *
    * <p>The parameter {@code access} must be non-null.
    */
-  public static SecretBytes copyFrom(byte[] value, SecretKeyAccess access) {
-    if (access == null) {
-      throw new NullPointerException("SecretKeyAccess required");
+    def copyFrom(value: Array[Byte], access: SecretKeyAccess): SecretBytes = {
+      if (access == null) throw new NullPointerException("SecretKeyAccess required")
+      new SecretBytes(Bytes.copyFrom(value))
     }
-    return new SecretBytes(Bytes.copyFrom(value));
-  }
 
-  /** Creates a new SecretBytes with bytes chosen uniformly at random of length {@code length}. */
-  public static SecretBytes randomBytes(int length) {
-    return new SecretBytes(Bytes.copyFrom(Random.randBytes(length)));
-  }
+    /** Creates a new SecretBytes with bytes chosen uniformly at random of length {@code length}. */
+      def randomBytes(length: Int) = new SecretBytes(Bytes.copyFrom(Random.randBytes(length)))
+}
 
+@Alpha final class SecretBytes private(private val bytes: Bytes) {
   /**
    * Returns a copy of the bytes wrapped by this object.
    *
    * <p>The parameter {@code access} must be non-null.
    */
-  public byte[] toByteArray(SecretKeyAccess access) {
-    if (access == null) {
-      throw new NullPointerException("SecretKeyAccess required");
-    }
-    return bytes.toByteArray();
+  def toByteArray(access: SecretKeyAccess): Array[Byte] = {
+    if (access == null) throw new NullPointerException("SecretKeyAccess required")
+    bytes.toByteArray
   }
 
   /** Returns the length of the bytes wrapped by this object. */
-  public int size() {
-    return bytes.size();
-  }
+  def size: Int = bytes.size
 
   /**
    * Returns true if the {@code other} byte array has the same bytes, in time depending only on the
    * length of both SecretBytes objects.
    */
-  public boolean equalsSecretBytes(SecretBytes other) {
-    byte[] myArray = bytes.toByteArray();
-    byte[] otherArray = other.bytes.toByteArray();
-    return MessageDigest.isEqual(myArray, otherArray);
+  def equalsSecretBytes(other: SecretBytes): Boolean = {
+    val myArray = bytes.toByteArray
+    val otherArray = other.bytes.toByteArray
+    MessageDigest.isEqual(myArray, otherArray)
   }
 }

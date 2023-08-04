@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
-
-import com.google.crypto.tink.annotations.Alpha;
+import com.google.crypto.tink.annotations.Alpha
 
 /**
  * Represents the status of a key in a keyset.
@@ -25,20 +24,12 @@ import com.google.crypto.tink.annotations.Alpha;
  * that is for example stored in a keyset.
  */
 //@Immutable
-@Alpha
-public final class KeyStatus {
-  public static final KeyStatus ENABLED = new KeyStatus("ENABLED");
-  public static final KeyStatus DISABLED = new KeyStatus("DISABLED");
-  public static final KeyStatus DESTROYED = new KeyStatus("DESTROYED");
+@Alpha object KeyStatus {
+  val ENABLED = new KeyStatus("ENABLED")
+  val DISABLED = new KeyStatus("DISABLED")
+  val DESTROYED = new KeyStatus("DESTROYED")
+}
 
-  private final String name;
-
-  private KeyStatus(String name) {
-    this.name = name;
-  }
-
-  @Override
-  public String toString() {
-    return name;
-  }
+@Alpha final class KeyStatus private(private val name: String) {
+  override def toString: String = name
 }

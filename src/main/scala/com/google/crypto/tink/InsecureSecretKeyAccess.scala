@@ -1,4 +1,4 @@
-// Copyright 2017 Google Inc.
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,30 +13,22 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
+import com.google.crypto.tink.annotations.Alpha
 
-import com.google.crypto.tink.proto.EncryptedKeyset;
-import com.google.crypto.tink.proto.Keyset;
-import java.io.IOException;
-
-/**
- * A KeysetReader knows how to read a {@link Keyset} or an {@link EncryptedKeyset} from some source.
- *
- * @since 1.0.0
- */
-public interface KeysetReader {
+/** A helper class to create {@link SecretKeyAccess} tokens. */
+//@CheckReturnValue
+@Alpha object InsecureSecretKeyAccess {
   /**
-   * Tries to read and return a cleartext {@link Keyset}.
+   * Returns a {@link SecretKeyAccess} token.
    *
-   * @return the Keyset
+   * <p>The token can be used to access secret key material. Within Google, access to this function
+   * is restricted by the build system. Outside of Google, users can search their codebase for
+   * "InsecureSecretKeyAccess" to find instances where it is used.
    */
-  Keyset read() throws IOException;
+    def get: SecretKeyAccess = SecretKeyAccess.instance
+}
 
-  /**
-   * Tries to read and return an {@link EncryptedKeyset}.
-   *
-   * @return the EncryptedKeyset
-   */
-  EncryptedKeyset readEncrypted() throws IOException;
+@Alpha final class InsecureSecretKeyAccess private {
 }

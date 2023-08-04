@@ -13,12 +13,11 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
-
-import com.google.crypto.tink.proto.EncryptedKeyset;
-import com.google.crypto.tink.proto.Keyset;
-import java.io.IOException;
+import com.google.crypto.tink.proto.EncryptedKeyset
+import com.google.crypto.tink.proto.Keyset
+import java.io.IOException
 
 /**
  * A KeysetWriter knows how to write a {@link Keyset} or an {@link EncryptedKeyset} to some storage
@@ -26,10 +25,12 @@ import java.io.IOException;
  *
  * @since 1.0.0
  */
-public interface KeysetWriter {
+trait KeysetWriter {
   /** Tries to write a {@link Keyset} to some storage system. */
-  void write(Keyset keyset) throws IOException;
+  @throws[IOException]
+  def write(keyset: Keyset): Unit
 
   /** Tries to write an {@link EncryptedKeyset} to some storage system. */
-  void write(EncryptedKeyset keyset) throws IOException;
+  @throws[IOException]
+  def write(keyset: EncryptedKeyset): Unit
 }
