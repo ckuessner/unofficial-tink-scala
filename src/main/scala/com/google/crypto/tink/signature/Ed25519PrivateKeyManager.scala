@@ -100,11 +100,11 @@ final class Ed25519PrivateKeyManager private[signature]
       }
     }
 
-    override def keyFormats: util.Map[String, KeyTypeManager.KeyFactory.KeyFormat[Ed25519PrivateKey]] = {
-      val result = new util.HashMap[String, KeyTypeManager.KeyFactory.KeyFormat[Ed25519PrivateKey]]
-      result.put("ED25519", new KeyTypeManager.KeyFactory.KeyFormat[Ed25519PrivateKey](KeyTemplate.OutputPrefixType.TINK))
-      result.put("ED25519_RAW", new KeyTypeManager.KeyFactory.KeyFormat[Ed25519PrivateKey](KeyTemplate.OutputPrefixType.RAW))
-      Collections.unmodifiableMap(result)
+    override def keyFormats: Map[String, KeyTypeManager.KeyFactory.KeyFormat[Ed25519PrivateKey]] = {
+      Map(
+        "ED25519" -> new KeyTypeManager.KeyFactory.KeyFormat[Ed25519PrivateKey](KeyTemplate.OutputPrefixType.TINK),
+        "ED25519_RAW" -> new KeyTypeManager.KeyFactory.KeyFormat[Ed25519PrivateKey](KeyTemplate.OutputPrefixType.RAW)
+      )
     }
   }
 }

@@ -97,11 +97,11 @@ class XChaCha20Poly1305KeyManager private[tink]
     }
 
     @throws[GeneralSecurityException]
-    override def keyFormats: util.Map[String, KeyFactory.KeyFormat[XChaCha20Poly1305Key]] = {
-      val result = new util.HashMap[String, KeyFactory.KeyFormat[XChaCha20Poly1305Key]]
-      result.put("XCHACHA20_POLY1305", new KeyFactory.KeyFormat[XChaCha20Poly1305Key](KeyTemplate.OutputPrefixType.TINK))
-      result.put("XCHACHA20_POLY1305_RAW", new KeyFactory.KeyFormat[XChaCha20Poly1305Key](KeyTemplate.OutputPrefixType.RAW))
-      Collections.unmodifiableMap(result)
+    override def keyFormats: Map[String, KeyFactory.KeyFormat[XChaCha20Poly1305Key]] = {
+      Map(
+        "XCHACHA20_POLY1305" -> new KeyFactory.KeyFormat[XChaCha20Poly1305Key](KeyTemplate.OutputPrefixType.TINK),
+        "XCHACHA20_POLY1305_RAW" -> new KeyFactory.KeyFormat[XChaCha20Poly1305Key](KeyTemplate.OutputPrefixType.RAW)
+      )
     }
   }
 }

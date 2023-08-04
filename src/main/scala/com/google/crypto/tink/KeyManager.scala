@@ -13,14 +13,12 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
+import com.google.crypto.tink.proto.{KeyData, KeyProto}
+import com.google.protobuf.ByteString
 
-import com.google.crypto.tink.proto.KeyData;
-import com.google.crypto.tink.proto.KeyProto;
-import com.google.protobuf.ByteString;
-
-import java.security.GeneralSecurityException;
+import java.security.GeneralSecurityException
 
 /**
  * A KeyManager "understands" keys of a specific key type: it can generate keys of the supported
@@ -35,23 +33,7 @@ import java.security.GeneralSecurityException;
  *
  * @since 1.0.0
  */
-public interface KeyManager<P> {
-  // APIs for primitive development
-
-  ///**
-  // * Constructs an instance of P for the key given in {@code serializedKey}, which must be a
-  // * serialized key protocol buffer handled by this manager.
-  // *
-  // * <p>For primitives of type {@code Mac}, {@code Aead}, {@code PublicKeySign}, {@code
-  // * PublicKeyVerify}, {@code DeterministicAead}, {@code HybridEncrypt}, and {@code HybridDecrypt}
-  // * this should be a primitive which <b>ignores</b> the output prefix and assumes "RAW".
-  // *
-  // * @return the new constructed P
-  // * @throws GeneralSecurityException if the key given in {@code serializedKey} is corrupted or not
-  // *     supported
-  // */
-  //P getPrimitive(ByteString serializedKey) throws GeneralSecurityException;
-
+trait KeyManager[P] {
   /**
    * Constructs an instance of P for the key given in {@code key}.
    *
@@ -62,29 +44,22 @@ public interface KeyManager<P> {
    * @return the new constructed P
    * @throws GeneralSecurityException if the key given in {@code key} is corrupted or not supported
    */
-  P getPrimitive(KeyProto key) throws GeneralSecurityException;
-
-  ///**
-  // * Generates a new key according to specification in {@code serializedKeyFormat}, which must be a
-  // * serialized key format protocol buffer handled by this manager.
-  // *
-  // * @return the new generated key
-  // * @throws GeneralSecurityException if the specified format is wrong or not supported
-  // */
-  //MessageLite newKey(ByteString serializedKeyFormat) throws GeneralSecurityException;
+  @throws[GeneralSecurityException]
+  def getPrimitive(key: KeyProto): P
 
   /**
    * Generates a new key.
    *
    * @return the new generated key
    */
-  KeyProto newKey() throws GeneralSecurityException;
+  @throws[GeneralSecurityException]
+  def newKey: KeyProto
 
   /** @return true iff this KeyManager supports key type identified by {@code typeUrl}. */
-  boolean doesSupport(String typeUrl);
+  def doesSupport(typeUrl: String): Boolean
 
   /** @return the type URL that identifies the key type of keys managed by this KeyManager. */
-  String getKeyType();
+  def getKeyType: String
 
   /**
    * Returns the primitive class object of the P. Should be implemented as {@code return P.class;}
@@ -92,9 +67,7 @@ public interface KeyManager<P> {
    *
    * @return {@code P.class}
    */
-  Class<P> getPrimitiveClass();
-
-  // APIs for Key Management
+  def getPrimitiveClass: Class[P]
 
   /**
    * Generates a new {@code KeyData}.
@@ -104,5 +77,7 @@ public interface KeyManager<P> {
    * @return the new generated key
    * @throws GeneralSecurityException if the specified format is wrong or not supported
    */
-  KeyData newKeyData() throws GeneralSecurityException;
+  // APIs for Key Management
+  @throws[GeneralSecurityException]
+  def newKeyData: KeyData
 }

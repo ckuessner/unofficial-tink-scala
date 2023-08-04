@@ -98,14 +98,14 @@ import java.security.GeneralSecurityException
     }, new PrimitiveFactory[KeyTypeManagerTest.Primitive2, XChaCha20Poly1305Key](classOf[KeyTypeManagerTest.Primitive2]) {
       override def getPrimitive(key: XChaCha20Poly1305Key) = new KeyTypeManagerTest.Primitive2(key.getKeyValue.size)
     })
-    assertThat(keyManager.supportedPrimitives).containsExactly(classOf[KeyTypeManagerTest.Primitive1], classOf[KeyTypeManagerTest.Primitive2])
+    assertThat(keyManager.supportedPrimitives).isEqualTo(Set(classOf[KeyTypeManagerTest.Primitive1], classOf[KeyTypeManagerTest.Primitive2]))
   }
 
   @Test
   @throws[Exception]
   def supportedPrimitives_canBeEmpty(): Unit = {
     val keyManager = new KeyTypeManagerTest.TestKeyTypeManager
-    assertThat(keyManager.supportedPrimitives).isEmpty()
+    assert(keyManager.supportedPrimitives.isEmpty)
   }
 
   @Test

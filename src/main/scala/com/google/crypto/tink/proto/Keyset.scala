@@ -37,8 +37,7 @@ object Keyset {
 
     def getKeyCount: Int = keys.length
 
-    // TODO: change to scala native mutable.List
-    def getKeyList: java.util.List[Keyset.Key] = keys.asJava
+    def getKeyList: List[Keyset.Key] = keys.toList
 
     def getKey(index: Int): Keyset.Key = keys(index)
 

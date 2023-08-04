@@ -13,25 +13,24 @@
 // limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+package com.google.crypto.tink
 
-package com.google.crypto.tink;
-
-import com.google.crypto.tink.proto.KeyData;
-import com.google.crypto.tink.proto.KeyProto;
-
-import java.security.GeneralSecurityException;
+import com.google.crypto.tink.proto.KeyData
+import com.google.crypto.tink.proto.KeyProto
+import java.security.GeneralSecurityException
 
 /**
  * A {@link KeyManager} that understands asymmetric private key types.
  *
  * @since 1.0.0
  */
-public interface PrivateKeyManager<P> extends KeyManager<P> {
+trait PrivateKeyManager[P] extends KeyManager[P] {
   /**
    * Extracts the public key data from the private key data.
    *
    * @return the {@link KeyData} containing the public keys
    * @throws GeneralSecurityException if the specified format is wrong or not supported
    */
-  KeyData getPublicKeyData(KeyProto privateKey) throws GeneralSecurityException;
+  @throws[GeneralSecurityException]
+  def getPublicKeyData(privateKey: KeyProto): KeyData
 }

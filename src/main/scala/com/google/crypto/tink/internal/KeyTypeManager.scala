@@ -23,8 +23,7 @@ import com.google.crypto.tink.proto.{KeyData, KeyProto}
 
 import java.io.{IOException, InputStream}
 import java.security.GeneralSecurityException
-import java.util
-import java.util.Collections
+import scala.collection.mutable
 
 /**
  * An object which collects all the operations which one can do on for a single key type, identified
@@ -114,7 +113,6 @@ object KeyTypeManager {
       throw new GeneralSecurityException("deriveKey not implemented by " + this.getClass)
     }
 
-    // TODO: change to scala Map
     /**
      * Returns supported key formats and their names.
      *
@@ -122,7 +120,7 @@ object KeyTypeManager {
      *                                  their key formats depend on other key formats that were not registered.
      */
     @throws[GeneralSecurityException]
-    def keyFormats: util.Map[String, KeyFactory.KeyFormat[KeyProtoT]] = Collections.emptyMap
+    def keyFormats: Map[String, KeyFactory.KeyFormat[KeyProtoT]] = Map.empty
   }
 }
 
@@ -135,19 +133,19 @@ object KeyTypeManager {
  * @throws IllegalArgumentException if two of the passed in factories produce primitives of the
  *                                  same class.
  */
-@Alpha abstract class KeyTypeManager[KeyProtoT <: KeyProto] @SafeVarargs protected(private val clazz: Class[KeyProtoT], factoriesArg: PrimitiveFactory[_, KeyProtoT]*) {
-  final private val firstPrimitiveClass: Class[_] =
+@Alpha abstract class KeyTypeManager[KeyProtoT <: KeyProto] @SafeVarargs protected(private val clazz: Class[KeyProtoT], factoriesArg: PrimitiveFactory[?, KeyProtoT]*) {
+  final private val firstPrimitiveClass: Class[?] =
     if (factoriesArg.nonEmpty) factoriesArg(0).getPrimitiveClass
     else classOf[Void]
 
-  final private val factories: util.Map[Class[_], PrimitiveFactory[_, KeyProtoT]] = {
-    val factoriesMap = new util.HashMap[Class[_], PrimitiveFactory[_, KeyProtoT]]
+  final private val factories: Map[Class[?], PrimitiveFactory[?, KeyProtoT]] = {
+    val factoriesMap = mutable.Map.empty[Class[?], PrimitiveFactory[?, KeyProtoT]]
     for (factory <- factoriesArg) {
-      if (factoriesMap.containsKey(factory.getPrimitiveClass)) throw new IllegalArgumentException("KeyTypeManager constructed with duplicate factories for primitive " + factory.getPrimitiveClass.getCanonicalName)
+      if (factoriesMap.contains(factory.getPrimitiveClass)) throw new IllegalArgumentException("KeyTypeManager constructed with duplicate factories for primitive " + factory.getPrimitiveClass.getCanonicalName)
       factoriesMap.put(factory.getPrimitiveClass, factory)
     }
 
-    Collections.unmodifiableMap(factoriesMap)
+    factoriesMap.toMap
   }
 
 
@@ -179,7 +177,7 @@ object KeyTypeManager {
   @throws[GeneralSecurityException]
   final def getPrimitive[P](key: KeyProtoT, primitiveClass: Class[P]): P = {
     @SuppressWarnings(Array("unchecked")) //  factories maps Class<P> to PrimitiveFactory<P, KeyProtoT>.
-    val factory: PrimitiveFactory[P, KeyProtoT] = factories.get(primitiveClass).asInstanceOf[PrimitiveFactory[P, KeyProtoT]]
+    val factory: PrimitiveFactory[P, KeyProtoT] = factories.get(primitiveClass).orNull.asInstanceOf[PrimitiveFactory[P, KeyProtoT]]
     if (factory == null) throw new IllegalArgumentException(s"Requested primitive class ${primitiveClass.getCanonicalName} not supported.")
     factory.getPrimitive(key)
   }
@@ -187,13 +185,13 @@ object KeyTypeManager {
   /**
    * Returns a set containing the supported primitives.
    */
-  final def supportedPrimitives: util.Set[Class[_]] = factories.keySet
+  final def supportedPrimitives: Set[Class[?]] = factories.keySet
 
   /**
    * Returns the first class object of the first supported primitive, or {@code Class<Void>} if the
    * key manager supports no primitive at all.
    */
-  final def firstSupportedPrimitiveClass: Class[_] = firstPrimitiveClass
+  final def firstSupportedPrimitiveClass: Class[?] = firstPrimitiveClass
 
   /**
    * Returns the {@link KeyFactory} for this key type.

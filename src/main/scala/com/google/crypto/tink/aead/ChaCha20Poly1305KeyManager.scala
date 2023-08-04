@@ -75,11 +75,11 @@ class ChaCha20Poly1305KeyManager private[tink] extends KeyTypeManager[ChaCha20Po
     }
 
     @throws[GeneralSecurityException]
-    override def keyFormats: util.Map[String, KeyFactory.KeyFormat[ChaCha20Poly1305Key]] = {
-      val result = new util.HashMap[String, KeyFactory.KeyFormat[ChaCha20Poly1305Key]]
-      result.put("CHACHA20_POLY1305", new KeyFactory.KeyFormat[ChaCha20Poly1305Key](KeyTemplate.OutputPrefixType.TINK))
-      result.put("CHACHA20_POLY1305_RAW", new KeyFactory.KeyFormat[ChaCha20Poly1305Key](KeyTemplate.OutputPrefixType.RAW))
-      Collections.unmodifiableMap(result)
+    override def keyFormats: Map[String, KeyFactory.KeyFormat[ChaCha20Poly1305Key]] = {
+      Map(
+        "CHACHA20_POLY1305" -> new KeyFactory.KeyFormat[ChaCha20Poly1305Key](KeyTemplate.OutputPrefixType.TINK),
+        "CHACHA20_POLY1305_RAW" -> new KeyFactory.KeyFormat[ChaCha20Poly1305Key](KeyTemplate.OutputPrefixType.RAW)
+      )
     }
   }
 }
