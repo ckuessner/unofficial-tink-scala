@@ -14,7 +14,7 @@ lazy val root = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full).
     projectDependencies ++= junitDeps,
   ).dependsOn(subtle)
 
-lazy val subtle = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("./subtle"))
+lazy val subtle = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full).in(file("./subtle"))
   .settings(
     name := "tink-scala-subtle",
   ).jsSettings(
