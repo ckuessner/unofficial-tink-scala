@@ -54,6 +54,15 @@ trait Digest {
   def update(in: Array[Byte], inOff: Int, len: Int): Unit
 
   /**
+   * update the message digest with a block of bytes.
+   *
+   * @param in the byte array containing the data.
+   */
+  def update(in: Array[Byte]): Unit = {
+    update(in, 0, in.length)
+  }
+
+  /**
    * close the digest, producing the final digest value. The doFinal
    * call leaves the digest reset.
    *
@@ -61,6 +70,12 @@ trait Digest {
    * @param outOff the offset into the out array the digest is to start at.
    */
   def doFinal(out: Array[Byte], outOff: Int): Int
+
+  def digest(): Array[Byte] = {
+    val digest = new Array[Byte](getDigestSize)
+    doFinal(digest, 0)
+    digest
+  }
 
   /**
    * reset the digest back to it's initial state.

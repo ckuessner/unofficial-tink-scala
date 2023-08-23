@@ -1469,7 +1469,7 @@ object Ed25519 {
   private[subtle] def getHashedScalar(privateKey: Array[Byte]) = {
     val digest = EngineFactory.sha512MessageDigestInstance
     digest.update(privateKey, 0, FIELD_LEN)
-    val h: Array[Byte] = digest.digest
+    val h: Array[Byte] = digest.digest()
     // https://tools.ietf.org/html/rfc8032#section-5.1.2.
     // Clear the lowest three bits of the first octet.
     h(0) = (h(0) & 248).toByte
@@ -1498,7 +1498,7 @@ object Ed25519 {
     val digest = EngineFactory.sha512MessageDigestInstance
     digest.update(hashedPrivateKey, FIELD_LEN, FIELD_LEN)
     digest.update(messageCopy)
-    val r = digest.digest
+    val r = digest.digest()
     reduce(r)
 
     val rB = util.Arrays.copyOfRange(scalarMultWithBase(r).toBytes, 0, FIELD_LEN)
@@ -1506,7 +1506,7 @@ object Ed25519 {
     digest.update(rB)
     digest.update(publicKey)
     digest.update(messageCopy)
-    val hram = digest.digest
+    val hram = digest.digest()
     reduce(hram)
     val s = new Array[Byte](FIELD_LEN)
     mulAdd(s, hram, hashedPrivateKey, r)
@@ -1560,11 +1560,11 @@ object Ed25519 {
     if (!isSmallerThanGroupOrder(s)) {
       return false
     }
-    val digest: MessageDigest = EngineFactory.sha512MessageDigestInstance
+    val digest = EngineFactory.sha512MessageDigestInstance
     digest.update(signature, 0, FIELD_LEN)
     digest.update(publicKey)
     digest.update(message)
-    val h = digest.digest
+    val h = digest.digest()
     reduce(h)
 
     val negPublicKey = XYZT.fromBytesNegateVarTime(publicKey)

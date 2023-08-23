@@ -19,14 +19,13 @@ DEALINGS IN THE SOFTWARE.
  */
 package org.bouncycastle.crypto.digests
 
-import org.bouncycastle.crypto.ExtendedDigest
+import org.bouncycastle.crypto.Digest
 import org.bouncycastle.util.Pack
 
 /**
  * Base class for SHA-384 and SHA-512.
  */
-abstract class LongDigest protected ()
-  extends ExtendedDigest {
+abstract class LongDigest protected() extends Digest {
 
   private val xBuf = new Array[Byte](8)
   private var xBufOff = 0
@@ -160,7 +159,7 @@ abstract class LongDigest protected ()
     }
   }
 
-  override def getByteLength: Int = LongDigest.BYTE_LENGTH
+  def getByteLength: Int = LongDigest.BYTE_LENGTH
 
   protected def processWord(in: Array[Byte], inOff: Int): Unit = {
     W(wOff) = Pack.bigEndianToLong(in, inOff)
@@ -215,42 +214,58 @@ abstract class LongDigest protected ()
 
     for (i <- 0 until 10) {
       // t = 8 * i
-      h += Sum1(e) + Ch(e, f, g) + LongDigest.K(t) + W({t += 1; t - 1})
+      h += Sum1(e) + Ch(e, f, g) + LongDigest.K(t) + W({
+        t += 1; t - 1
+      })
       d += h
       h += Sum0(a) + Maj(a, b, c)
 
       // t = 8 * i + 1
-      g += Sum1(d) + Ch(d, e, f) + LongDigest.K(t) + W({t += 1; t - 1})
+      g += Sum1(d) + Ch(d, e, f) + LongDigest.K(t) + W({
+        t += 1; t - 1
+      })
       c += g
       g += Sum0(h) + Maj(h, a, b)
 
       // t = 8 * i + 2
-      f += Sum1(c) + Ch(c, d, e) + LongDigest.K(t) + W({t += 1; t - 1})
+      f += Sum1(c) + Ch(c, d, e) + LongDigest.K(t) + W({
+        t += 1; t - 1
+      })
       b += f
       f += Sum0(g) + Maj(g, h, a)
 
       // t = 8 * i + 3
-      e += Sum1(b) + Ch(b, c, d) + LongDigest.K(t) + W({t += 1; t - 1})
+      e += Sum1(b) + Ch(b, c, d) + LongDigest.K(t) + W({
+        t += 1; t - 1
+      })
       a += e
       e += Sum0(f) + Maj(f, g, h)
 
       // t = 8 * i + 4
-      d += Sum1(a) + Ch(a, b, c) + LongDigest.K(t) + W({t += 1; t - 1})
+      d += Sum1(a) + Ch(a, b, c) + LongDigest.K(t) + W({
+        t += 1; t - 1
+      })
       h += d
       d += Sum0(e) + Maj(e, f, g)
 
       // t = 8 * i + 5
-      c += Sum1(h) + Ch(h, a, b) + LongDigest.K(t) + W({t += 1; t - 1})
+      c += Sum1(h) + Ch(h, a, b) + LongDigest.K(t) + W({
+        t += 1; t - 1
+      })
       g += c
       c += Sum0(d) + Maj(d, e, f)
 
       // t = 8 * i + 6
-      b += Sum1(g) + Ch(g, h, a) + LongDigest.K(t) + W({t += 1; t - 1})
+      b += Sum1(g) + Ch(g, h, a) + LongDigest.K(t) + W({
+        t += 1; t - 1
+      })
       f += b
       b += Sum0(c) + Maj(c, d, e)
 
       // t = 8 * i + 7
-      a += Sum1(f) + Ch(f, g, h) + LongDigest.K(t) + W({t += 1; t - 1})
+      a += Sum1(f) + Ch(f, g, h) + LongDigest.K(t) + W({
+        t += 1; t - 1
+      })
       e += a
       a += Sum0(b) + Maj(b, c, d)
     }

@@ -15,7 +15,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.google.crypto.tink.subtle
 
-import java.security.{GeneralSecurityException, MessageDigest}
+import java.security.MessageDigest
 
 /**
  * A factory that returns JCE engines, using pre-specified j.security.Providers.
