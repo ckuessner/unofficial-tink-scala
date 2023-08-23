@@ -17,6 +17,8 @@ lazy val root = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full).
 lazy val subtle = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("./subtle"))
   .settings(
     name := "tink-scala-subtle",
+  ).jsSettings(
+    libraryDependencies += ("org.scala-js" %%% "scalajs-java-securerandom" % "1.0.0").cross(CrossVersion.for3Use2_13)
   )
 
 val junitDeps = Seq(
