@@ -17,16 +17,14 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
  */
-package org.bouncycastle.crypto;
+package org.bouncycastle.crypto
 
-public interface ExtendedDigest 
-    extends Digest
-{
-    /**
-     * Return the size in bytes of the internal buffer the digest applies it's compression
-     * function to.
-     * 
-     * @return byte length of the digests internal buffer.
-     */
-    public int getByteLength();
+trait ExtendedDigest extends Digest {
+  /**
+   * Return the size in bytes of the internal buffer the digest applies it's compression
+   * function to.
+   *
+   * @return byte length of the digests internal buffer.
+   */
+  def getByteLength: Int
 }
