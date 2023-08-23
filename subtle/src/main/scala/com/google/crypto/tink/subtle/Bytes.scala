@@ -31,7 +31,25 @@ object Bytes {
    *
    * @return true if two arrays are equal.
    */
-  def equal(x: Array[Byte], y: Array[Byte]): Boolean = MessageDigest.isEqual(x, y)
+  def equal(x: Array[Byte], y: Array[Byte]): Boolean = {
+    if (x eq y) return true
+    if (x == null || y == null) return false
+
+    val lenX = x.length
+    val lenY = y.length
+
+    if (lenY == 0) return lenX == 0
+
+    var result = 0
+    result |= lenX - lenY
+
+    for (i <- 0 until lenX) {
+      val indexY = ((i - lenY) >>> 31) * i
+      result |= x(i) ^ y(indexY)
+    }
+
+    result == 0
+  }
 
   /**
    * Returns the concatenation of the input arrays in a single array. For example, {@code concat(new
