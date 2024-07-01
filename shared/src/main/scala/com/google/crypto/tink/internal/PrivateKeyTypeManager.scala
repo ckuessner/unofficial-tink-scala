@@ -27,8 +27,8 @@ import java.security.GeneralSecurityException
 @Alpha
 abstract class PrivateKeyTypeManager[KeyProtoT <: KeyProto, PublicKeyProtoT <: PublicKeyProto] @SafeVarargs protected(clazz: Class[KeyProtoT],
                                                                                                                       private val publicKeyClazz: Class[PublicKeyProtoT],
-                                                                                                                      _factories: PrimitiveFactory[_, KeyProtoT]*
-                                                                                                                     ) extends KeyTypeManager[KeyProtoT](clazz, _factories : _*) {
+                                                                                                                      _factories: PrimitiveFactory[?, KeyProtoT]*
+                                                                                                                     ) extends KeyTypeManager[KeyProtoT](clazz, _factories*) {
   /** Returns the class corresponding to the public key protobuffer. */
   final def getPublicKeyClass: Class[PublicKeyProtoT] = publicKeyClazz
 

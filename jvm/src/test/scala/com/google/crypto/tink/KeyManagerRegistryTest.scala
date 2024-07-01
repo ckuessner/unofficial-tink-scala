@@ -383,7 +383,7 @@ import java.security.GeneralSecurityException
     registry.registerAsymmetricKeyManagers(privateKeyTypeManager, publicKeyTypeManager)
     val publicKey = Ed25519PublicKey.newBuilder.setKeyValue(ByteString.copyFrom(Array[Byte](0, 1, 2, 3))).build
     val privateKey = Ed25519PrivateKey.newBuilder.setPublicKey(publicKey).build
-    val publicKeyData = registry.getUntypedKeyManager("privateTypeUrl").asInstanceOf[PrivateKeyManager[_]].getPublicKeyData(privateKey)
+    val publicKeyData = registry.getUntypedKeyManager("privateTypeUrl").asInstanceOf[PrivateKeyManager[?]].getPublicKeyData(privateKey)
     //Ed25519PublicKey parsedPublicKey =
     //    Ed25519PublicKey.parseFrom(
     //        publicKeyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());
@@ -456,7 +456,7 @@ import java.security.GeneralSecurityException
     // If one ever registers the two together, we keep that one, so one can get public keys:
     val publicKey = Ed25519PublicKey.newBuilder.setKeyValue(ByteString.copyFrom(Array[Byte](0, 1, 2, 3))).build
     val privateKey = Ed25519PrivateKey.newBuilder.setPublicKey(publicKey).build
-    val publicKeyData = registry.getUntypedKeyManager("privateTypeUrl").asInstanceOf[PrivateKeyManager[_]].getPublicKeyData(privateKey)
+    val publicKeyData = registry.getUntypedKeyManager("privateTypeUrl").asInstanceOf[PrivateKeyManager[?]].getPublicKeyData(privateKey)
     //Ed25519PublicKey parsedPublicKey =
     //    Ed25519PublicKey.parseFrom(
     //        publicKeyData.getValue(), ExtensionRegistryLite.getEmptyRegistry());

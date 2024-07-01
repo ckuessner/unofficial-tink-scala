@@ -10,7 +10,7 @@ case class Ed25519PublicKey(keyValue: ByteString) extends PublicKeyProto {
 
 object Ed25519PublicKey {
   class Builder {
-    var keyValue: ByteString = _
+    var keyValue: ByteString = scala.compiletime.uninitialized
 
     def setKeyValue(keyValue: ByteString): Builder = {
       if (keyValue == null) throw new NullPointerException()

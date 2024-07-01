@@ -31,7 +31,7 @@ import java.util.stream.{Collectors, Stream}
  * with such objects.
  */
 object SerializationRegistry {
-  private val keySerializerMap: Map[SerializationRegistry.SerializerIndex, KeySerializer[_, _]] = Seq(
+  private val keySerializerMap: Map[SerializationRegistry.SerializerIndex, KeySerializer[?, ?]] = Seq(
     ChaCha20Poly1305ProtoSerialization.KEY_SERIALIZER,
     XChaCha20Poly1305ProtoSerialization.KEY_SERIALIZER,
     Ed25519ProtoSerialization.PRIVATE_KEY_SERIALIZER,
@@ -39,7 +39,7 @@ object SerializationRegistry {
   ).map(serializer => new SerializationRegistry.SerializerIndex(serializer.getKeyClass, serializer.getSerializationClass) -> serializer)
     .toMap
 
-  private val keyParserMap: Map[SerializationRegistry.ParserIndex, KeyParser[_]] = Seq(
+  private val keyParserMap: Map[SerializationRegistry.ParserIndex, KeyParser[?]] = Seq(
     ChaCha20Poly1305ProtoSerialization.KEY_PARSER,
     XChaCha20Poly1305ProtoSerialization.KEY_PARSER,
     Ed25519ProtoSerialization.PRIVATE_KEY_PARSER,
@@ -47,7 +47,7 @@ object SerializationRegistry {
   ).map(parser => new SerializationRegistry.ParserIndex(parser.getSerializationClass, parser.getObjectIdentifier) -> parser)
     .toMap
 
-  private[SerializationRegistry] class SerializerIndex private[SerializationRegistry](private val keyClass: Class[_], private val keySerializationClass: Class[_ <: Serialization]) {
+  private[SerializationRegistry] class SerializerIndex private[SerializationRegistry](private val keyClass: Class[?], private val keySerializationClass: Class[? <: Serialization]) {
     override def equals(o: Any): Boolean = {
       if (!o.isInstanceOf[SerializationRegistry.SerializerIndex]) return false
       val other = o.asInstanceOf[SerializationRegistry.SerializerIndex]
@@ -59,7 +59,7 @@ object SerializationRegistry {
     override def toString: String = keyClass.getSimpleName + " with serialization type: " + keySerializationClass.getSimpleName
   }
 
-  private[SerializationRegistry] class ParserIndex private[SerializationRegistry](private val keySerializationClass: Class[_ <: Serialization], private val serializationIdentifier: Bytes) {
+  private[SerializationRegistry] class ParserIndex private[SerializationRegistry](private val keySerializationClass: Class[? <: Serialization], private val serializationIdentifier: Bytes) {
     override def equals(o: Any): Boolean = {
       if (!o.isInstanceOf[SerializationRegistry.ParserIndex]) return false
       val other = o.asInstanceOf[SerializationRegistry.ParserIndex]

@@ -111,7 +111,7 @@ import java.util.concurrent.{ExecutorService, Executors, Future}
   @throws[Exception]
   def registerAndGetKeyManager_works(): Unit = {
     val threadPool = Executors.newFixedThreadPool(4)
-    val futures = new util.ArrayList[Future[_]]
+    val futures = new util.ArrayList[Future[?]]
     Registry.registerKeyManager(new RegistryMultithreadTest.TestKeyManager("KeyManagerStart"), false)
     //Registry.registerKeyManager(new TestKeyTypeManager("KeyTypeManagerStart"), false);
     //Registry.registerAsymmetricKeyManagers(

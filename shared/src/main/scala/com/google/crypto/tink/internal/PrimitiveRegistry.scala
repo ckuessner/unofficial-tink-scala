@@ -29,13 +29,13 @@ import java.util.Objects
 object PrimitiveRegistry {
   /** Allows building PrimitiveRegistry objects. */
   final class Builder {
-    private[PrimitiveRegistry] var primitiveConstructorMap: util.Map[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[_, _]] = new util.HashMap[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[_, _]]
-    private[PrimitiveRegistry] var primitiveWrapperMap: util.Map[Class[_], PrimitiveWrapper[_, _]] = new util.HashMap[Class[_], PrimitiveWrapper[_, _]]
+    private[PrimitiveRegistry] var primitiveConstructorMap: util.Map[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[?, ?]] = new util.HashMap[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[?, ?]]
+    private[PrimitiveRegistry] var primitiveWrapperMap: util.Map[Class[?], PrimitiveWrapper[?, ?]] = new util.HashMap[Class[?], PrimitiveWrapper[?, ?]]
 
     def this(registry: PrimitiveRegistry) = {
       this()
-      primitiveConstructorMap = new util.HashMap[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[_, _]](registry.primitiveConstructorMap)
-      primitiveWrapperMap = new util.HashMap[Class[_], PrimitiveWrapper[_, _]](registry.primitiveWrapperMap)
+      primitiveConstructorMap = new util.HashMap[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[?, ?]](registry.primitiveConstructorMap)
+      primitiveWrapperMap = new util.HashMap[Class[?], PrimitiveWrapper[?, ?]](registry.primitiveWrapperMap)
     }
 
     /**
@@ -75,7 +75,7 @@ object PrimitiveRegistry {
     private[internal] def build = new PrimitiveRegistry(this)
   }
 
-  final private[PrimitiveRegistry] class PrimitiveConstructorIndex private[PrimitiveRegistry](private val keyClass: Class[_], private val primitiveClass: Class[_]) {
+  final private[PrimitiveRegistry] class PrimitiveConstructorIndex private[PrimitiveRegistry](private val keyClass: Class[?], private val primitiveClass: Class[?]) {
     override def equals(o: Any): Boolean = {
       if (!o.isInstanceOf[PrimitiveRegistry.PrimitiveConstructorIndex]) return false
       val other = o.asInstanceOf[PrimitiveRegistry.PrimitiveConstructorIndex]
@@ -89,8 +89,8 @@ object PrimitiveRegistry {
 }
 
 class PrimitiveRegistry private(builder: PrimitiveRegistry.Builder) {
-  final private val primitiveConstructorMap: util.Map[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[_, _]] = new util.HashMap[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[_, _]](builder.primitiveConstructorMap)
-  final private val primitiveWrapperMap: util.Map[Class[_], PrimitiveWrapper[_, _]] = new util.HashMap[Class[_], PrimitiveWrapper[_, _]](builder.primitiveWrapperMap)
+  final private val primitiveConstructorMap: util.Map[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[?, ?]] = new util.HashMap[PrimitiveRegistry.PrimitiveConstructorIndex, PrimitiveConstructor[?, ?]](builder.primitiveConstructorMap)
+  final private val primitiveWrapperMap: util.Map[Class[?], PrimitiveWrapper[?, ?]] = new util.HashMap[Class[?], PrimitiveWrapper[?, ?]](builder.primitiveWrapperMap)
 
 
   /**
@@ -110,7 +110,7 @@ class PrimitiveRegistry private(builder: PrimitiveRegistry.Builder) {
   }
 
   @throws[GeneralSecurityException]
-  def getInputPrimitiveClass(wrapperClassObject: Class[_]): Class[_] = {
+  def getInputPrimitiveClass(wrapperClassObject: Class[?]): Class[?] = {
     if (!primitiveWrapperMap.containsKey(wrapperClassObject)) throw new GeneralSecurityException("No input primitive class for " + wrapperClassObject + " available")
     primitiveWrapperMap.get(wrapperClassObject).getInputPrimitiveClass
   }
@@ -119,7 +119,7 @@ class PrimitiveRegistry private(builder: PrimitiveRegistry.Builder) {
   def wrap[InputPrimitiveT, WrapperPrimitiveT](primitives: PrimitiveSet[InputPrimitiveT], wrapperClassObject: Class[WrapperPrimitiveT]): WrapperPrimitiveT = {
     if (!primitiveWrapperMap.containsKey(wrapperClassObject)) throw new GeneralSecurityException("No wrapper found for " + wrapperClassObject)
     @SuppressWarnings(Array("unchecked")) // We know this is how this map is organized.
-    val wrapper: PrimitiveWrapper[_, WrapperPrimitiveT] = primitiveWrapperMap.get(wrapperClassObject).asInstanceOf[PrimitiveWrapper[_, WrapperPrimitiveT]]
+    val wrapper: PrimitiveWrapper[?, WrapperPrimitiveT] = primitiveWrapperMap.get(wrapperClassObject).asInstanceOf[PrimitiveWrapper[?, WrapperPrimitiveT]]
     if (!(primitives.getPrimitiveClass == wrapper.getInputPrimitiveClass) || !(wrapper.getInputPrimitiveClass == primitives.getPrimitiveClass)) throw new GeneralSecurityException("Input primitive type of the wrapper doesn't match the type of primitives in the provided" + " PrimitiveSet")
     @SuppressWarnings(Array("unchecked")) // The check above ensured this.
     val typedWrapper: PrimitiveWrapper[InputPrimitiveT, WrapperPrimitiveT] = wrapper.asInstanceOf[PrimitiveWrapper[InputPrimitiveT, WrapperPrimitiveT]]

@@ -274,7 +274,7 @@ object Registry {
 
   /** @return a {@link KeyManager} for the given {@code typeUrl} (if found). */
   @throws[GeneralSecurityException]
-  def getUntypedKeyManager(typeUrl: String): KeyManager[_] = keyManagerRegistry.get.getUntypedKeyManager(typeUrl)
+  def getUntypedKeyManager(typeUrl: String): KeyManager[?] = keyManagerRegistry.get.getUntypedKeyManager(typeUrl)
 
   /**
    * Convenience method for generating a new {@link KeyData} for the specified {@code template}.
@@ -320,8 +320,8 @@ object Registry {
   @throws[GeneralSecurityException]
   def getPublicKeyData(typeUrl: String, privateKeyProto: KeyProto): KeyData = {
     val manager = getKeyManager(typeUrl)
-    if (!manager.isInstanceOf[PrivateKeyManager[_]]) throw new GeneralSecurityException("manager for key type " + typeUrl + " is not a PrivateKeyManager")
-    manager.asInstanceOf[PrivateKeyManager[_]].getPublicKeyData(privateKeyProto)
+    if (!manager.isInstanceOf[PrivateKeyManager[?]]) throw new GeneralSecurityException("manager for key type " + typeUrl + " is not a PrivateKeyManager")
+    manager.asInstanceOf[PrivateKeyManager[?]].getPublicKeyData(privateKeyProto)
   }
 
   /**
@@ -400,7 +400,7 @@ object Registry {
    * primitive of type {@code wrappedPrimitive}. Returns {@code null} if no wrapper for this
    * primitive has been registered.
    */
-  def getInputPrimitive(wrappedPrimitive: Class[_]): Class[_] = try MutablePrimitiveRegistry.globalInstance.getInputPrimitiveClass(wrappedPrimitive)
+  def getInputPrimitive(wrappedPrimitive: Class[?]): Class[?] = try MutablePrimitiveRegistry.globalInstance.getInputPrimitiveClass(wrappedPrimitive)
   catch {
     case e: GeneralSecurityException =>
       null

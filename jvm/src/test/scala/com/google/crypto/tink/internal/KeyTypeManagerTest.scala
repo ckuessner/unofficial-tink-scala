@@ -35,7 +35,7 @@ import java.security.GeneralSecurityException
    * A KeyTypeManager for testing. It accepts XChaCha20Poly1305Keys and produces primitives as with the passed
    * in factory.
    */
-  class TestKeyTypeManager(factories: PrimitiveFactory[_, XChaCha20Poly1305Key]*) extends KeyTypeManager[XChaCha20Poly1305Key](classOf[XChaCha20Poly1305Key], factories:_*) {
+  class TestKeyTypeManager(factories: PrimitiveFactory[?, XChaCha20Poly1305Key]*) extends KeyTypeManager[XChaCha20Poly1305Key](classOf[XChaCha20Poly1305Key], factories*) {
     override def getKeyType = "type.googleapis.com/google.crypto.tink.XChaCha20Poly1305Key"
 
     override def keyMaterialType: KeyData.KeyMaterialType = KeyMaterialType.SYMMETRIC

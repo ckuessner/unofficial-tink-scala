@@ -44,10 +44,10 @@ object KeysetInfo {
 
   object KeyInfo {
     class Builder {
-      var typeUrl: String = _
-      var status: KeyStatusType = _
+      var typeUrl: String = scala.compiletime.uninitialized
+      var status: KeyStatusType = scala.compiletime.uninitialized
       var keyId: Int = -1
-      var outputPrefixType: OutputPrefixType = _
+      var outputPrefixType: OutputPrefixType = scala.compiletime.uninitialized
 
       def setTypeUrl(typeUrl: String): Builder = {
         this.typeUrl = typeUrl

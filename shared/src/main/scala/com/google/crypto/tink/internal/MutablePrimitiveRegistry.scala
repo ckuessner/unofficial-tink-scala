@@ -76,7 +76,7 @@ final class MutablePrimitiveRegistry private[internal] {
   def getPrimitive[KeyT <: Key, PrimitiveT](key: KeyT, primitiveClass: Class[PrimitiveT]): PrimitiveT = registry.get.getPrimitive(key, primitiveClass)
 
   @throws[GeneralSecurityException]
-  def getInputPrimitiveClass[WrapperPrimitiveT](wrapperClassObject: Class[WrapperPrimitiveT]): Class[_] = registry.get.getInputPrimitiveClass(wrapperClassObject)
+  def getInputPrimitiveClass[WrapperPrimitiveT](wrapperClassObject: Class[WrapperPrimitiveT]): Class[?] = registry.get.getInputPrimitiveClass(wrapperClassObject)
 
   @throws[GeneralSecurityException]
   def wrap[InputPrimitiveT, WrapperPrimitiveT](primitives: PrimitiveSet[InputPrimitiveT], wrapperClassObject: Class[WrapperPrimitiveT]): WrapperPrimitiveT = registry.get.wrap(primitives, wrapperClassObject)

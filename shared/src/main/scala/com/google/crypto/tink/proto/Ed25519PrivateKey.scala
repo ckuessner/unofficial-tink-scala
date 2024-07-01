@@ -21,8 +21,8 @@ case class Ed25519PrivateKey(keyValue: ByteString, publicKey: Ed25519PublicKey) 
 
 object Ed25519PrivateKey {
   class Builder {
-    var keyValue: ByteString = _
-    var publicKey: Ed25519PublicKey = _
+    var keyValue: ByteString = scala.compiletime.uninitialized
+    var publicKey: Ed25519PublicKey = scala.compiletime.uninitialized
 
     def setKeyValue(keyValue: ByteString): Builder = {
       if (keyValue == null) throw new NullPointerException()

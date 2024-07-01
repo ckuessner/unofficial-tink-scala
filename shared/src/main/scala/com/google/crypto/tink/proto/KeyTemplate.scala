@@ -12,8 +12,8 @@ object KeyTemplate {
   def newBuilder: Builder = new Builder()
 
   class Builder {
-    var typeUrl: String = _
-    var outputPrefixType: OutputPrefixType = _
+    var typeUrl: String = scala.compiletime.uninitialized
+    var outputPrefixType: OutputPrefixType = scala.compiletime.uninitialized
 
     def setTypeUrl(typeUrl: String): Builder = {
       if (typeUrl == null) throw NullPointerException()

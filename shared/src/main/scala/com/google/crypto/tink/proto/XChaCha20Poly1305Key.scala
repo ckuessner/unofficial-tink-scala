@@ -8,7 +8,7 @@ case class XChaCha20Poly1305Key(keyValue: ByteString) extends KeyProto {
 
 object XChaCha20Poly1305Key {
   class Builder {
-    private var keyValue: ByteString = _
+    private var keyValue: ByteString = scala.compiletime.uninitialized
 
     def setKeyValue(keyValue: ByteString): Builder = {
       if (keyValue == null) throw NullPointerException()
